@@ -1,0 +1,173 @@
+zabbix_export:
+  version: '6.2'
+  date: '2022-10-18T04:03:57Z'
+  template_groups:
+    -
+      uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
+      name: BA/Generic
+  templates:
+    -
+      uuid: 1096884d9c9340b095f2b3473a20a7f5
+      template: 'BA - ICMP'
+      name: 'BA - ICMP'
+      groups:
+        -
+          name: BA/Generic
+      items:
+        -
+          uuid: 157c0a57578f4b6fa626c497c413b7ff
+          name: 'ICMP Ping'
+          type: SIMPLE
+          key: icmpping
+          delay: 10s
+          history: 7d
+          valuemap:
+            name: 'Ping Status'
+          triggers:
+            -
+              uuid: 77f9ed9ba5d44b938fd34d222cd5c502
+              expression: 'last(/BA - ICMP/icmpping)=0'
+              name: 'ICMP Ping Down'
+              priority: HIGH
+        -
+          uuid: 925ec895069249bca0ec0472a970d21a
+          name: 'ICMP Loss'
+          type: SIMPLE
+          key: icmppingloss
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          triggers:
+            -
+              uuid: 7e3ebb73a3e4415a8f69c2ddb2d40edb
+              expression: 'last(/BA - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
+              name: 'ICMP High Loss'
+              priority: WARNING
+              dependencies:
+                -
+                  name: 'ICMP Ping Down'
+                  expression: 'last(/BA - ICMP/icmpping)=0'
+        -
+          uuid: 8b397b5e4de74806b3d4814da8ca7497
+          name: 'ICMP Latency'
+          type: SIMPLE
+          key: icmppingsec
+          history: 7d
+          value_type: FLOAT
+          units: ms
+          preprocessing:
+            -
+              type: MULTIPLIER
+              parameters:
+                - '1000'
+          triggers:
+            -
+              uuid: 0b6fa791e1cc4993bd779488cc08fe64
+              expression: 'last(/BA - ICMP/icmppingsec)>={$HIGH_LATENCY_WARN}'
+              name: 'ICMP High Latency'
+              priority: INFO
+              dependencies:
+                -
+                  name: 'ICMP Ping Down'
+                  expression: 'last(/BA - ICMP/icmpping)=0'
+      macros:
+        -
+          macro: '{$HIGH_LATENCY_WARN}'
+          value: '500'
+          description: 'In MS'
+        -
+          macro: '{$HIGH_LOSS_WARN}'
+          value: '10'
+          description: 'In %'
+      dashboards:
+        -
+          uuid: fd7f3696289d4db0a96b6e8a9b22bd76
+          name: 'ICMP Statistics'
+          pages:
+            -
+              widgets:
+                -
+                  type: ITEM
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '3'
+                    -
+                      type: INTEGER
+                      name: value_v_pos
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: units_show
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: units_bold
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: time_v_pos
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ICMP'
+                        key: icmpping
+                -
+                  type: GRAPH_CLASSIC
+                  x: '4'
+                  width: '20'
+                  height: '7'
+                  fields:
+                    -
+                      type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'BA - ICMP'
+                        name: 'ICMP Statistics'
+                -
+                  type: CLOCK
+                  'y': '2'
+                  width: '4'
+                  height: '5'
+      valuemaps:
+        -
+          uuid: 4e0b1b29cccb413ea3dbe1730a188450
+          name: 'Ping Status'
+          mappings:
+            -
+              value: '0'
+              newvalue: Down
+            -
+              value: '1'
+              newvalue: Up
+  graphs:
+    -
+      uuid: 4c4d6eca42594740977ac9df1727d1bd
+      name: 'ICMP Statistics'
+      graph_items:
+        -
+          color: 1A7C11
+          calc_fnc: ALL
+          item:
+            host: 'BA - ICMP'
+            key: icmppingsec
+        -
+          sortorder: '1'
+          color: F63100
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'BA - ICMP'
+            key: icmppingloss

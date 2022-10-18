@@ -1,0 +1,20 @@
+zabbix_export:
+  version: '6.2'
+  date: '2022-10-18T04:04:16Z'
+  template_groups:
+    -
+      uuid: 6c7a687fb7bb4cbf96fd27bae48cfa47
+      name: BA/HW/Aruba
+  templates:
+    -
+      uuid: f0572d351d6547c7a33ae487fab360e7
+      template: 'BA - Aruba Switch'
+      name: 'BA - Aruba Switch'
+      templates:
+        -
+          name: 'BA - Interfaces'
+        -
+          name: 'BA - SNMP'
+      groups:
+        -
+          name: BA/HW/Aruba

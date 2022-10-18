@@ -1,0 +1,332 @@
+zabbix_export:
+  version: '6.2'
+  date: '2022-10-18T04:04:08Z'
+  template_groups:
+    -
+      uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/Modules
+  templates:
+    -
+      uuid: b1abf69b89d145d0bb16bf3296e42c7d
+      template: 'BA - Host Resources'
+      name: 'BA - Host Resources (HOST-RESOURCES-MIB)'
+      groups:
+        -
+          name: BA/Modules
+      items:
+        -
+          uuid: 9848e28bab61439aa0e341e228cc25e2
+          name: 'CPU Utilization'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#CPULOAD}, .1.3.6.1.2.1.25.3.3.1.2]'
+          key: snmp.hr.cpu.utilization
+          delay: 30s
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.*.[''{#CPULOAD}''].avg()'
+          triggers:
+            -
+              uuid: 9dd1e48ee61545ae8f930540b2ef2754
+              expression: 'avg(/BA - Host Resources/snmp.hr.cpu.utilization,#2)>={$CPU_HIGH_AVG_PERC_WARN}'
+              name: 'High CPU Utilization'
+              priority: WARNING
+      discovery_rules:
+        -
+          uuid: b06ed58b63fe4b74b7028ec8eb23facc
+          name: 'Fixed Disk Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#TYPE}, .1.3.6.1.2.1.25.2.3.1.2, {#DESC}, .1.3.6.1.2.1.25.2.3.1.3, {#AUNITS}, .1.3.6.1.2.1.25.2.3.1.4]'
+          key: snmp.hr.fdisk.discovery
+          delay: 1h
+          filter:
+            conditions:
+              -
+                macro: '{#TYPE}'
+                value: iso.3.6.1.2.1.25.2.1.4
+                formulaid: A
+          lifetime: 90d
+          item_prototypes:
+            -
+              uuid: 974a620b61674937a5561e9227ab54c3
+              name: 'Disk ({#DESC}) Size'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
+              key: 'snmp.hr.fdisk.size[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              units: B
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '{#AUNITS}'
+            -
+              uuid: d12b45c4665144ab99bcc2b12ee4073d
+              name: 'Disk ({#DESC}) Used'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
+              key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              units: B
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '{#AUNITS}'
+            -
+              uuid: d9309c8752944c33ad352b0b23118259
+              name: 'Disk ({#DESC}) Utilization'
+              type: CALCULATED
+              key: 'snmp.hr.fdisk.utilization[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//snmp.hr.fdisk.used[{#SNMPINDEX}])/last(//snmp.hr.fdisk.size[{#SNMPINDEX}])'
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '100'
+              trigger_prototypes:
+                -
+                  uuid: 4e5aa0b34f4745ada32f998ac09fe99e
+                  expression: 'last(/BA - Host Resources/snmp.hr.fdisk.utilization[{#SNMPINDEX}])>={$DISK_HIGH_AVG_PERC_WARN}'
+                  name: 'High Disk Usage: {#DESC}'
+                  priority: HIGH
+          graph_prototypes:
+            -
+              uuid: c257fe03d5424e8485a040c39e920cc0
+              name: 'Disk ({#DESC}) Statistics'
+              graph_items:
+                -
+                  color: 1A7C11
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - Host Resources'
+                    key: 'snmp.hr.fdisk.size[{#SNMPINDEX}]'
+                -
+                  sortorder: '1'
+                  color: F63100
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - Host Resources'
+                    key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
+                -
+                  sortorder: '2'
+                  color: 2774A4
+                  yaxisside: RIGHT
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - Host Resources'
+                    key: 'snmp.hr.fdisk.utilization[{#SNMPINDEX}]'
+            -
+              uuid: 80c9eb5bde2e4873af69913d1cc94a51
+              name: 'Disk ({#DESC}) Usage'
+              yaxismax: '0'
+              show_work_period: 'NO'
+              show_triggers: 'NO'
+              type: PIE
+              show_3d: 'YES'
+              graph_items:
+                -
+                  color: F0F0F0
+                  calc_fnc: LAST
+                  type: GRAPH_SUM
+                  item:
+                    host: 'BA - Host Resources'
+                    key: 'snmp.hr.fdisk.size[{#SNMPINDEX}]'
+                -
+                  sortorder: '1'
+                  color: E57373
+                  calc_fnc: LAST
+                  item:
+                    host: 'BA - Host Resources'
+                    key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
+        -
+          uuid: 97d4e3dfa7e24575a508a1a02efefefe
+          name: 'Physical Memory Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#TYPE}, .1.3.6.1.2.1.25.2.3.1.2, {#AUNITS}, .1.3.6.1.2.1.25.2.3.1.4]'
+          key: snmp.hr.pmemory.discovery
+          delay: 1h
+          filter:
+            conditions:
+              -
+                macro: '{#TYPE}'
+                value: iso.3.6.1.2.1.25.2.1.2
+                formulaid: A
+          lifetime: 90d
+          item_prototypes:
+            -
+              uuid: d98fce5f76554b27b4bec73937cd52c1
+              name: 'Physical Memory Size'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
+              key: 'snmp.hr.pmemory.size[{#SNMPINDEX}]'
+              delay: 30m
+              history: 7d
+              units: B
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '{#AUNITS}'
+            -
+              uuid: ff86e673f16f4254bd7e31b89f2b463d
+              name: 'Physical Memory Used'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
+              key: 'snmp.hr.pmemory.used[{#SNMPINDEX}]'
+              delay: 30s
+              history: 7d
+              units: B
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '{#AUNITS}'
+            -
+              uuid: ca6d5b1417b6453c90b538d8cc3e2dd5
+              name: 'Physical Memory Utilization'
+              type: CALCULATED
+              key: 'snmp.hr.pmemory.utilization[{#SNMPINDEX}]'
+              delay: 30s
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//snmp.hr.pmemory.used[{#SNMPINDEX}])/last(//snmp.hr.pmemory.size[{#SNMPINDEX}])'
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '100'
+              trigger_prototypes:
+                -
+                  uuid: 0ee6a2a7f5ca4c43b99cb7a003266b4f
+                  expression: 'last(/BA - Host Resources/snmp.hr.pmemory.utilization[{#SNMPINDEX}])>={$MEM_HIGH_AVG_PERC_WARN}'
+                  name: 'High Memory Usage #{#SNMPINDEX}'
+                  priority: HIGH
+          graph_prototypes:
+            -
+              uuid: 627d5c0a60964b6da483b3b06f12e37b
+              name: 'Physical Memory #{#SNMPINDEX}'
+              graph_items:
+                -
+                  color: 1A7C11
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - Host Resources'
+                    key: 'snmp.hr.pmemory.size[{#SNMPINDEX}]'
+                -
+                  sortorder: '1'
+                  color: F63100
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - Host Resources'
+                    key: 'snmp.hr.pmemory.used[{#SNMPINDEX}]'
+                -
+                  sortorder: '2'
+                  color: 2774A4
+                  yaxisside: RIGHT
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - Host Resources'
+                    key: 'snmp.hr.pmemory.utilization[{#SNMPINDEX}]'
+      macros:
+        -
+          macro: '{$CPU_HIGH_AVG_PERC_WARN}'
+          value: '90'
+          description: 'Percentage to warn.'
+        -
+          macro: '{$DISK_HIGH_AVG_PERC_WARN}'
+          value: '90'
+          description: 'Percentage to warn.'
+        -
+          macro: '{$MEM_HIGH_AVG_PERC_WARN}'
+          value: '90'
+          description: 'Percentage to warn.'
+      dashboards:
+        -
+          uuid: 230ad7e9ab814c76a271c4d937cb0e4f
+          name: 'Host Resources'
+          pages:
+            -
+              widgets:
+                -
+                  type: GRAPH_PROTOTYPE
+                  'y': '6'
+                  width: '9'
+                  height: '6'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: columns
+                      value: '1'
+                    -
+                      type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - Host Resources'
+                        name: 'Physical Memory #{#SNMPINDEX}'
+                -
+                  type: GRAPH_CLASSIC
+                  width: '9'
+                  height: '6'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: source_type
+                      value: '1'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - Host Resources'
+                        key: snmp.hr.cpu.utilization
+                -
+                  type: GRAPH_PROTOTYPE
+                  x: '9'
+                  width: '4'
+                  height: '12'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: columns
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: rows
+                      value: '3'
+                    -
+                      type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - Host Resources'
+                        name: 'Disk ({#DESC}) Usage'
+                -
+                  type: GRAPH_PROTOTYPE
+                  x: '13'
+                  width: '11'
+                  height: '12'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: columns
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: rows
+                      value: '3'
+                    -
+                      type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - Host Resources'
+                        name: 'Disk ({#DESC}) Statistics'
