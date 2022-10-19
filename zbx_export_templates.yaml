@@ -1,0 +1,1015 @@
+zabbix_export:
+  version: '6.2'
+  date: '2022-10-19T06:17:55Z'
+  template_groups:
+    -
+      uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
+      name: BA/Generic
+    -
+      uuid: ca9da747aeb34dbcbaacd78655243f3e
+      name: BA/Macros
+    -
+      uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+    -
+      uuid: a9ae9cbb57864537879e36c074d112ca
+      name: BA/Profiles/Networking
+    -
+      uuid: 2128cf518279432187a98490d555a270
+      name: BA/Profiles/Servers
+  templates:
+    -
+      uuid: 1096884d9c9340b095f2b3473a20a7f5
+      template: 'BA - Generic - ICMP'
+      name: 'BA - Generic - ICMP'
+      groups:
+        -
+          name: BA/Generic
+      items:
+        -
+          uuid: 157c0a57578f4b6fa626c497c413b7ff
+          name: 'ICMP Ping'
+          type: SIMPLE
+          key: icmpping
+          delay: 10s
+          history: 7d
+          valuemap:
+            name: 'Ping Status'
+          triggers:
+            -
+              uuid: 77f9ed9ba5d44b938fd34d222cd5c502
+              expression: 'last(/BA - Generic - ICMP/icmpping)=0'
+              name: 'ICMP Ping Down'
+              priority: HIGH
+        -
+          uuid: 925ec895069249bca0ec0472a970d21a
+          name: 'ICMP Loss'
+          type: SIMPLE
+          key: icmppingloss
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          triggers:
+            -
+              uuid: 7e3ebb73a3e4415a8f69c2ddb2d40edb
+              expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
+              name: 'ICMP High Loss'
+              priority: WARNING
+              dependencies:
+                -
+                  name: 'ICMP Ping Down'
+                  expression: 'last(/BA - Generic - ICMP/icmpping)=0'
+        -
+          uuid: 8b397b5e4de74806b3d4814da8ca7497
+          name: 'ICMP Latency'
+          type: SIMPLE
+          key: icmppingsec
+          history: 7d
+          value_type: FLOAT
+          units: ms
+          preprocessing:
+            -
+              type: MULTIPLIER
+              parameters:
+                - '1000'
+          triggers:
+            -
+              uuid: 0b6fa791e1cc4993bd779488cc08fe64
+              expression: 'last(/BA - Generic - ICMP/icmppingsec)>={$HIGH_LATENCY_WARN}'
+              name: 'ICMP High Latency'
+              priority: INFO
+              dependencies:
+                -
+                  name: 'ICMP Ping Down'
+                  expression: 'last(/BA - Generic - ICMP/icmpping)=0'
+      macros:
+        -
+          macro: '{$HIGH_LATENCY_WARN}'
+          value: '500'
+          description: 'In MS'
+        -
+          macro: '{$HIGH_LOSS_WARN}'
+          value: '50'
+          description: 'In %'
+      dashboards:
+        -
+          uuid: fd7f3696289d4db0a96b6e8a9b22bd76
+          name: 'ICMP Statistics'
+          pages:
+            -
+              widgets:
+                -
+                  type: ITEM
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '3'
+                    -
+                      type: INTEGER
+                      name: value_v_pos
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: units_show
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: units_bold
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: time_v_pos
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - Generic - ICMP'
+                        key: icmpping
+                -
+                  type: GRAPH_CLASSIC
+                  x: '4'
+                  width: '20'
+                  height: '7'
+                  fields:
+                    -
+                      type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'BA - Generic - ICMP'
+                        name: 'ICMP Statistics'
+                -
+                  type: CLOCK
+                  'y': '2'
+                  width: '4'
+                  height: '5'
+      valuemaps:
+        -
+          uuid: 4e0b1b29cccb413ea3dbe1730a188450
+          name: 'Ping Status'
+          mappings:
+            -
+              value: '0'
+              newvalue: Down
+            -
+              value: '1'
+              newvalue: Up
+    -
+      uuid: 2e06dea1d714489c8d284e35778039ce
+      template: 'BA - Macro - Interfaces'
+      name: 'BA - Macro - Interfaces'
+      groups:
+        -
+          name: BA/Macros
+      macros:
+        -
+          macro: '{$INTER_FILTER_REGEX}'
+          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int)'
+          description: 'Filters via Name & Alias'
+    -
+      uuid: 0ed25cacfaad433dbf26caee5e9849a0
+      template: 'BA - MIB - Generic'
+      name: 'BA - MIB - Generic (RFC1213)'
+      groups:
+        -
+          name: BA/MIBs
+      items:
+        -
+          uuid: e56547fd128b4f38a3fba5cd167bb047
+          name: 'SNMP Description'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.2.1.1.1.0
+          key: snmp.description
+          delay: 1h
+          history: 365d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: NOTES
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED
+              parameters:
+                - ''
+        -
+          uuid: 0aac83f830854eedbb489a7623b73dd4
+          name: 'SNMP Location'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.2.1.1.6.0
+          key: snmp.location
+          delay: 1h
+          history: 365d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: LOCATION
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED
+              parameters:
+                - ''
+        -
+          uuid: 892eced5e100486b8e5353fa6ba6fe31
+          name: 'SNMP Name'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.2.1.1.5.0
+          key: snmp.name
+          delay: 1h
+          history: 365d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: NAME
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED
+              parameters:
+                - ''
+          triggers:
+            -
+              uuid: b02a2f213a7b4df28c734ddd3e4415da
+              expression: 'change(/BA - MIB - Generic/snmp.name)=1'
+              recovery_mode: NONE
+              name: 'SNMP Name Changed'
+              priority: INFO
+              manual_close: 'YES'
+        -
+          uuid: 72a2a3118d0d4bdc8196f91d45d06094
+          name: 'SNMP Object ID'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.2.1.1.2.0
+          key: snmp.objectid
+          delay: 1h
+          history: 365d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: TYPE
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED
+              parameters:
+                - ''
+        -
+          uuid: 8d6e1a0ceb5f4d52b884d4be397652a8
+          name: 'SNMP Uptime'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.2.1.1.3.0
+          key: snmp.uptime
+          history: 7d
+          units: seconds
+          preprocessing:
+            -
+              type: MULTIPLIER
+              parameters:
+                - '0.01'
+          triggers:
+            -
+              uuid: ed77aa0f513b454d90a231185baef9be
+              expression: 'last(/BA - MIB - Generic/snmp.uptime,#1)<last(/BA - MIB - Generic/snmp.uptime,#2)'
+              recovery_mode: NONE
+              name: 'SNMP Device Rebooted'
+              priority: INFO
+              manual_close: 'YES'
+    -
+      uuid: b1abf69b89d145d0bb16bf3296e42c7d
+      template: 'BA - MIB - Host Resources'
+      name: 'BA - MIB - Host Resources (HOST-RESOURCES)'
+      groups:
+        -
+          name: BA/MIBs
+      items:
+        -
+          uuid: 9848e28bab61439aa0e341e228cc25e2
+          name: 'CPU Utilization'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#CPULOAD}, .1.3.6.1.2.1.25.3.3.1.2]'
+          key: snmp.hr.cpu.utilization
+          delay: 30s
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.*.[''{#CPULOAD}''].avg()'
+          triggers:
+            -
+              uuid: 9dd1e48ee61545ae8f930540b2ef2754
+              expression: 'avg(/BA - MIB - Host Resources/snmp.hr.cpu.utilization,#2)>={$CPU_HIGH_AVG_PERC_WARN}'
+              name: 'High CPU Utilization'
+              priority: WARNING
+      discovery_rules:
+        -
+          uuid: b06ed58b63fe4b74b7028ec8eb23facc
+          name: 'Fixed Disk Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#TYPE}, .1.3.6.1.2.1.25.2.3.1.2, {#DESC}, .1.3.6.1.2.1.25.2.3.1.3, {#AUNITS}, .1.3.6.1.2.1.25.2.3.1.4]'
+          key: snmp.hr.fdisk.discovery
+          delay: 1h
+          filter:
+            conditions:
+              -
+                macro: '{#TYPE}'
+                value: iso.3.6.1.2.1.25.2.1.4
+                formulaid: A
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: 974a620b61674937a5561e9227ab54c3
+              name: 'Disk ({#DESC}) Size'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
+              key: 'snmp.hr.fdisk.size[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              units: B
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '{#AUNITS}'
+            -
+              uuid: d12b45c4665144ab99bcc2b12ee4073d
+              name: 'Disk ({#DESC}) Used'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
+              key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              units: B
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '{#AUNITS}'
+            -
+              uuid: d9309c8752944c33ad352b0b23118259
+              name: 'Disk ({#DESC}) Utilization'
+              type: CALCULATED
+              key: 'snmp.hr.fdisk.utilization[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//snmp.hr.fdisk.used[{#SNMPINDEX}])/last(//snmp.hr.fdisk.size[{#SNMPINDEX}])'
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '100'
+              trigger_prototypes:
+                -
+                  uuid: 4e5aa0b34f4745ada32f998ac09fe99e
+                  expression: 'last(/BA - MIB - Host Resources/snmp.hr.fdisk.utilization[{#SNMPINDEX}])>={$DISK_HIGH_AVG_PERC_WARN}'
+                  name: 'High Disk Usage: {#DESC}'
+                  priority: HIGH
+          graph_prototypes:
+            -
+              uuid: c257fe03d5424e8485a040c39e920cc0
+              name: 'Disk ({#DESC}) Statistics'
+              graph_items:
+                -
+                  color: 1A7C11
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.fdisk.size[{#SNMPINDEX}]'
+                -
+                  sortorder: '1'
+                  color: F63100
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
+                -
+                  sortorder: '2'
+                  color: 2774A4
+                  yaxisside: RIGHT
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.fdisk.utilization[{#SNMPINDEX}]'
+            -
+              uuid: 80c9eb5bde2e4873af69913d1cc94a51
+              name: 'Disk ({#DESC}) Usage'
+              yaxismax: '0'
+              show_work_period: 'NO'
+              show_triggers: 'NO'
+              type: PIE
+              show_3d: 'YES'
+              graph_items:
+                -
+                  color: F0F0F0
+                  calc_fnc: LAST
+                  type: GRAPH_SUM
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.fdisk.size[{#SNMPINDEX}]'
+                -
+                  sortorder: '1'
+                  color: E57373
+                  calc_fnc: LAST
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
+        -
+          uuid: 97d4e3dfa7e24575a508a1a02efefefe
+          name: 'Physical Memory Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#TYPE}, .1.3.6.1.2.1.25.2.3.1.2, {#AUNITS}, .1.3.6.1.2.1.25.2.3.1.4]'
+          key: snmp.hr.pmemory.discovery
+          delay: 1h
+          filter:
+            conditions:
+              -
+                macro: '{#TYPE}'
+                value: iso.3.6.1.2.1.25.2.1.2
+                formulaid: A
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: d98fce5f76554b27b4bec73937cd52c1
+              name: 'Physical Memory Size'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
+              key: 'snmp.hr.pmemory.size[{#SNMPINDEX}]'
+              delay: 30m
+              history: 7d
+              units: B
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '{#AUNITS}'
+            -
+              uuid: ff86e673f16f4254bd7e31b89f2b463d
+              name: 'Physical Memory Used'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
+              key: 'snmp.hr.pmemory.used[{#SNMPINDEX}]'
+              delay: 30s
+              history: 7d
+              units: B
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '{#AUNITS}'
+            -
+              uuid: ca6d5b1417b6453c90b538d8cc3e2dd5
+              name: 'Physical Memory Utilization'
+              type: CALCULATED
+              key: 'snmp.hr.pmemory.utilization[{#SNMPINDEX}]'
+              delay: 30s
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//snmp.hr.pmemory.used[{#SNMPINDEX}])/last(//snmp.hr.pmemory.size[{#SNMPINDEX}])'
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '100'
+              trigger_prototypes:
+                -
+                  uuid: 0ee6a2a7f5ca4c43b99cb7a003266b4f
+                  expression: 'last(/BA - MIB - Host Resources/snmp.hr.pmemory.utilization[{#SNMPINDEX}])>={$MEM_HIGH_AVG_PERC_WARN}'
+                  name: 'High Memory Usage #{#SNMPINDEX}'
+                  priority: HIGH
+          graph_prototypes:
+            -
+              uuid: 627d5c0a60964b6da483b3b06f12e37b
+              name: 'Physical Memory #{#SNMPINDEX}'
+              graph_items:
+                -
+                  color: 1A7C11
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.pmemory.size[{#SNMPINDEX}]'
+                -
+                  sortorder: '1'
+                  color: F63100
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.pmemory.used[{#SNMPINDEX}]'
+                -
+                  sortorder: '2'
+                  color: 2774A4
+                  yaxisside: RIGHT
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.pmemory.utilization[{#SNMPINDEX}]'
+      macros:
+        -
+          macro: '{$CPU_HIGH_AVG_PERC_WARN}'
+          value: '90'
+          description: 'Percentage to warn.'
+        -
+          macro: '{$DISK_HIGH_AVG_PERC_WARN}'
+          value: '90'
+          description: 'Percentage to warn.'
+        -
+          macro: '{$MEM_HIGH_AVG_PERC_WARN}'
+          value: '90'
+          description: 'Percentage to warn.'
+      dashboards:
+        -
+          uuid: 230ad7e9ab814c76a271c4d937cb0e4f
+          name: 'Host Resources'
+          pages:
+            -
+              widgets:
+                -
+                  type: GRAPH_PROTOTYPE
+                  'y': '6'
+                  width: '9'
+                  height: '6'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: columns
+                      value: '1'
+                    -
+                      type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Physical Memory #{#SNMPINDEX}'
+                -
+                  type: GRAPH_CLASSIC
+                  width: '9'
+                  height: '6'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: source_type
+                      value: '1'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        key: snmp.hr.cpu.utilization
+                -
+                  type: GRAPH_PROTOTYPE
+                  x: '9'
+                  width: '4'
+                  height: '12'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: columns
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: rows
+                      value: '3'
+                    -
+                      type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Disk ({#DESC}) Usage'
+                -
+                  type: GRAPH_PROTOTYPE
+                  x: '13'
+                  width: '11'
+                  height: '12'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: columns
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: rows
+                      value: '3'
+                    -
+                      type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Disk ({#DESC}) Statistics'
+    -
+      uuid: 71e181bbccaf4ac6ad6dbc31f4ef7ffa
+      template: 'BA - MIB - Interfaces'
+      name: 'BA - MIB - Interfaces (RFC1213 & IF)'
+      groups:
+        -
+          name: BA/MIBs
+      discovery_rules:
+        -
+          uuid: e4cdcd9f67b24b3c93b312a52bf78a11
+          name: 'Interfaces Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18, {#OSTATUS}, .1.3.6.1.2.1.2.2.1.8, {#ASTATUS}, .1.3.6.1.2.1.2.2.1.7]'
+          key: snmp.interfaces.discovery
+          delay: 1h
+          filter:
+            conditions:
+              -
+                macro: '{#NAME}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+                formulaid: C
+              -
+                macro: '{#ALIAS}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+                formulaid: A
+              -
+                macro: '{#OSTATUS}'
+                value: '6'
+                operator: NOT_MATCHES_REGEX
+                formulaid: D
+              -
+                macro: '{#ASTATUS}'
+                value: '2'
+                operator: NOT_MATCHES_REGEX
+                formulaid: B
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: 5760b2886c8640fd9bab2f200c57ce0d
+              name: 'Interface ({#NAME}: {#ALIAS}) In Errors'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.2.2.1.14.{#SNMPINDEX}'
+              key: 'snmp.interfaces.in.errors[{#SNMPINDEX}]'
+              delay: 15s
+              history: 7d
+              units: bps
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '8'
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+            -
+              uuid: 6b9bd480242345febbcfc08b18bece36
+              name: 'Interface ({#NAME}: {#ALIAS}) In Usage'
+              type: CALCULATED
+              key: 'snmp.interfaces.in.usage[{#SNMPINDEX}]'
+              delay: 15s
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//snmp.interfaces.in[{#SNMPINDEX}])/last(//snmp.interfaces.speed[{#SNMPINDEX}])'
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '100'
+            -
+              uuid: d41db500945643b6afc4b82015f5f5e6
+              name: 'Interface ({#NAME}: {#ALIAS}) In Rate'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.2.2.1.10.{#SNMPINDEX}'
+              key: 'snmp.interfaces.in[{#SNMPINDEX}]'
+              delay: 15s
+              history: 7d
+              units: bps
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '8'
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+            -
+              uuid: b39447b3446c4432a3c66ef3e46fb5a6
+              name: 'Interface ({#NAME}: {#ALIAS}) Operational Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.2.2.1.8.{#SNMPINDEX}'
+              key: 'snmp.interfaces.operstatus[{#SNMPINDEX}]'
+              delay: 15s
+              history: 7d
+              valuemap:
+                name: 'Operational Status'
+              trigger_prototypes:
+                -
+                  uuid: 5436374b9ed946e79cb2bf75e02f30e4
+                  expression: 'changecount(/BA - MIB - Interfaces/snmp.interfaces.operstatus[{#SNMPINDEX}],{$INTER_FLAP_WARN_TIME},"dec")>={$INTER_FLAP_WARN_COUNT}'
+                  name: 'High Flap on Interface: {#NAME}: {#ALIAS}'
+                  priority: WARNING
+            -
+              uuid: 8767d44b389a4d39bfa7cdd9bef3e19d
+              name: 'Interface ({#NAME}: {#ALIAS}) Out Errors'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.2.2.1.20.{#SNMPINDEX}'
+              key: 'snmp.interfaces.out.errors[{#SNMPINDEX}]'
+              delay: 15s
+              history: 7d
+              units: bps
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '8'
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+            -
+              uuid: 27685ca79f79438f9dcd391306f44291
+              name: 'Interface ({#NAME}: {#ALIAS}) Out Usage'
+              type: CALCULATED
+              key: 'snmp.interfaces.out.usage[{#SNMPINDEX}]'
+              delay: 15s
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//snmp.interfaces.out[{#SNMPINDEX}])/last(//snmp.interfaces.speed[{#SNMPINDEX}])'
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '100'
+            -
+              uuid: 560a80f3986f4daaa67307817be05cda
+              name: 'Interface ({#NAME}: {#ALIAS}) Out Rate'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.2.2.1.16.{#SNMPINDEX}'
+              key: 'snmp.interfaces.out[{#SNMPINDEX}]'
+              delay: 15s
+              history: 7d
+              units: bps
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '8'
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+            -
+              uuid: d025c6fb73e04829822ba94aa58f4a45
+              name: 'Interface ({#NAME}: {#ALIAS}) Speed'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.31.1.1.1.15.{#SNMPINDEX}'
+              key: 'snmp.interfaces.speed[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              units: bps
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '1000000'
+          trigger_prototypes:
+            -
+              uuid: 62ed56a4a893446fa8515de4852ca5fa
+              expression: 'sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#SNMPINDEX}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#SNMPINDEX}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN}'
+              name: 'Errors on Interface: {#NAME}: {#ALIAS}'
+              priority: WARNING
+            -
+              uuid: b429247383cd421db1f0e4471e286c98
+              expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.in.usage[{#SNMPINDEX}])>={$INTER_USAGE_WARN} or last(/BA - MIB - Interfaces/snmp.interfaces.out.usage[{#SNMPINDEX}])>={$INTER_USAGE_WARN}'
+              name: 'High Usage on Interface: {#NAME}: {#ALIAS}'
+              priority: WARNING
+          graph_prototypes:
+            -
+              uuid: 777a7a1a8c8d49aea746670c7dacd759
+              name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
+              graph_items:
+                -
+                  color: 1E88E5
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Interfaces'
+                    key: 'snmp.interfaces.in[{#SNMPINDEX}]'
+                -
+                  sortorder: '1'
+                  color: 2E7D32
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Interfaces'
+                    key: 'snmp.interfaces.out[{#SNMPINDEX}]'
+                -
+                  sortorder: '2'
+                  color: FF5722
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Interfaces'
+                    key: 'snmp.interfaces.in.errors[{#SNMPINDEX}]'
+                -
+                  sortorder: '3'
+                  color: FFA726
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Interfaces'
+                    key: 'snmp.interfaces.out.errors[{#SNMPINDEX}]'
+      macros:
+        -
+          macro: '{$INTER_ERROR_WARN}'
+          value: '100'
+          description: '# of bps to warn in the last 5 minutes.'
+        -
+          macro: '{$INTER_ERROR_WARN_TIME}'
+          value: 5m
+        -
+          macro: '{$INTER_FLAP_WARN_COUNT}'
+          value: '3'
+          description: 'Flaps to trigger a warning.'
+        -
+          macro: '{$INTER_FLAP_WARN_TIME}'
+          value: 30m
+          description: 'Duration to count flaps.'
+        -
+          macro: '{$INTER_USAGE_WARN}'
+          value: '95'
+          description: '%'
+      dashboards:
+        -
+          uuid: 9f66f49a16914a42b4731103a16d816f
+          name: Interfaces
+          pages:
+            -
+              widgets:
+                -
+                  type: GRAPH_PROTOTYPE
+                  width: '24'
+                  height: '11'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: rows
+                      value: '2'
+                    -
+                      type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Interfaces'
+                        name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
+      valuemaps:
+        -
+          uuid: 042dd6004ca744328459b83d571efd02
+          name: 'Operational Status'
+          mappings:
+            -
+              value: '1'
+              newvalue: Up
+            -
+              value: '2'
+              newvalue: Down
+            -
+              value: '3'
+              newvalue: Testing
+    -
+      uuid: a882acc6990047b492315f6d10e851ee
+      template: 'BA - MIB - Interfaces VLAN'
+      name: 'BA - MIB - Interfaces VLAN (RFC1213 & IF & Q-BRIDGE)'
+      groups:
+        -
+          name: BA/MIBs
+      discovery_rules:
+        -
+          uuid: 9b3f3fcece214eea9a16084fa0039e13
+          name: 'Interfaces Discovery VLAN'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#VLAN}, .1.3.6.1.2.1.17.7.1.4.5.1.1, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18, {#ASTATUS}, .1.3.6.1.2.1.2.2.1.7]'
+          key: snmp.interfaces.vlan.discovery
+          delay: 1h
+          filter:
+            conditions:
+              -
+                macro: '{#VLAN}'
+                operator: EXISTS
+                formulaid: D
+              -
+                macro: '{#ASTATUS}'
+                value: '2'
+                operator: NOT_MATCHES_REGEX
+                formulaid: B
+              -
+                macro: '{#ALIAS}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+                formulaid: A
+              -
+                macro: '{#NAME}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+                formulaid: C
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: dec676c9f63b4fe4804f11bc396bf9d5
+              name: 'Interface ({#NAME}: {#ALIAS}) VLAN PVID'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.17.7.1.4.5.1.1.{#SNMPINDEX}'
+              key: 'snmp.interfaces.vlan.pvid[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              trends: '0'
+              value_type: CHAR
+              preprocessing:
+                -
+                  type: DISCARD_UNCHANGED
+                  parameters:
+                    - ''
+    -
+      uuid: f0572d351d6547c7a33ae487fab360e7
+      template: 'BA - Profile - Aruba Switch'
+      name: 'BA - Profile - Aruba Switch'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - MIB - Interfaces VLAN'
+      groups:
+        -
+          name: BA/Profiles/Networking
+    -
+      uuid: c14d11008b524874a40ab65d935d01cf
+      template: 'BA - Profile - Cisco Switch'
+      name: 'BA - Profile - Cisco Switch'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - MIB - Interfaces VLAN'
+      groups:
+        -
+          name: BA/Profiles/Networking
+    -
+      uuid: c3286d6562bd4c1bad679f800b371f9f
+      template: 'BA - Profile - pfSense'
+      name: 'BA - Profile - pfSense'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+      groups:
+        -
+          name: BA/Profiles/Networking
+    -
+      uuid: 22526bb9690840debbaa02fd6f35d5b0
+      template: 'BA - Profile - Windows'
+      name: 'BA - Profile - Windows'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Host Resources'
+        -
+          name: 'BA - MIB - Interfaces'
+      groups:
+        -
+          name: BA/Profiles/Servers
+  graphs:
+    -
+      uuid: 4c4d6eca42594740977ac9df1727d1bd
+      name: 'ICMP Statistics'
+      graph_items:
+        -
+          color: 1A7C11
+          calc_fnc: ALL
+          item:
+            host: 'BA - Generic - ICMP'
+            key: icmppingsec
+        -
+          sortorder: '1'
+          color: F63100
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'BA - Generic - ICMP'
+            key: icmppingloss
