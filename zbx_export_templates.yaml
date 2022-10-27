@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2022-10-20T17:06:49Z'
+  date: '2022-10-27T05:08:16Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -38,7 +38,7 @@ zabbix_export:
           triggers:
             -
               uuid: 77f9ed9ba5d44b938fd34d222cd5c502
-              expression: 'last(/BA - Generic - ICMP/icmpping)=0'
+              expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
               name: 'ICMP Ping Down'
               priority: HIGH
         -
@@ -58,7 +58,7 @@ zabbix_export:
               dependencies:
                 -
                   name: 'ICMP Ping Down'
-                  expression: 'last(/BA - Generic - ICMP/icmpping)=0'
+                  expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
         -
           uuid: 8b397b5e4de74806b3d4814da8ca7497
           name: 'ICMP Latency'
@@ -81,7 +81,7 @@ zabbix_export:
               dependencies:
                 -
                   name: 'ICMP Ping Down'
-                  expression: 'last(/BA - Generic - ICMP/icmpping)=0'
+                  expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
       macros:
         -
           macro: '{$HIGH_LATENCY_WARN}'
@@ -174,7 +174,7 @@ zabbix_export:
       macros:
         -
           macro: '{$INTER_FILTER_REGEX}'
-          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int)'
+          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1$)'
           description: 'Filters via Name & Alias'
     -
       uuid: 0ed25cacfaad433dbf26caee5e9849a0
@@ -675,6 +675,12 @@ zabbix_export:
               params: 'last(//snmp.interfaces.in[{#SNMPINDEX}])/last(//snmp.interfaces.speed[{#SNMPINDEX}])'
               preprocessing:
                 -
+                  type: CHECK_NOT_SUPPORTED
+                  parameters:
+                    - ''
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+                -
                   type: MULTIPLIER
                   parameters:
                     - '100'
@@ -741,6 +747,12 @@ zabbix_export:
               units: '%'
               params: 'last(//snmp.interfaces.out[{#SNMPINDEX}])/last(//snmp.interfaces.speed[{#SNMPINDEX}])'
               preprocessing:
+                -
+                  type: CHECK_NOT_SUPPORTED
+                  parameters:
+                    - ''
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
                 -
                   type: MULTIPLIER
                   parameters:
@@ -903,6 +915,11 @@ zabbix_export:
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
                 formulaid: B
+              -
+                macro: '{#NAME}'
+                value: '^(Vl|Bl|Nu).*$'
+                operator: NOT_MATCHES_REGEX
+                formulaid: C
           lifetime: 1d
           item_prototypes:
             -
@@ -980,7 +997,7 @@ zabbix_export:
           uuid: fc9a676e681547f7976992861096cbee
           name: 'Interfaces Discovery POE'
           type: SNMP_AGENT
-          snmp_oid: 'discovery[{#POEENAB}, .1.3.6.1.2.1.105.1.1.1.3, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18, {#ASTATUS}, .1.3.6.1.2.1.2.2.1.7]'
+          snmp_oid: 'discovery[{#POEENAB}, .1.3.6.1.2.1.105.1.1.1.3, {#IFINDEX}, .1.3.6.1.2.1.17.1.4.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18, {#ASTATUS}, .1.3.6.1.2.1.2.2.1.7]'
           key: snmp.interfaces.poe.discovery
           delay: 1h
           filter:
@@ -1160,12 +1177,6 @@ zabbix_export:
           name: 'BA - MIB - Generic'
         -
           name: 'BA - MIB - Interfaces'
-        -
-          name: 'BA - MIB - Interfaces LLDP'
-        -
-          name: 'BA - MIB - Interfaces POE'
-        -
-          name: 'BA - MIB - Interfaces VLAN'
       groups:
         -
           name: BA/Profiles/Networking
