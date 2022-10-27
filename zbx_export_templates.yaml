@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2022-10-27T05:08:16Z'
+  date: '2022-10-27T07:26:47Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -197,9 +197,9 @@ zabbix_export:
           inventory_link: NOTES
           preprocessing:
             -
-              type: DISCARD_UNCHANGED
+              type: DISCARD_UNCHANGED_HEARTBEAT
               parameters:
-                - ''
+                - 1d
         -
           uuid: 0aac83f830854eedbb489a7623b73dd4
           name: 'SNMP Location'
@@ -213,9 +213,9 @@ zabbix_export:
           inventory_link: LOCATION
           preprocessing:
             -
-              type: DISCARD_UNCHANGED
+              type: DISCARD_UNCHANGED_HEARTBEAT
               parameters:
-                - ''
+                - 1d
         -
           uuid: 892eced5e100486b8e5353fa6ba6fe31
           name: 'SNMP Name'
@@ -229,9 +229,9 @@ zabbix_export:
           inventory_link: NAME
           preprocessing:
             -
-              type: DISCARD_UNCHANGED
+              type: DISCARD_UNCHANGED_HEARTBEAT
               parameters:
-                - ''
+                - 1d
           triggers:
             -
               uuid: b02a2f213a7b4df28c734ddd3e4415da
@@ -253,9 +253,9 @@ zabbix_export:
           inventory_link: TYPE
           preprocessing:
             -
-              type: DISCARD_UNCHANGED
+              type: DISCARD_UNCHANGED_HEARTBEAT
               parameters:
-                - ''
+                - 1d
         -
           uuid: 8d6e1a0ceb5f4d52b884d4be397652a8
           name: 'SNMP Uptime'
@@ -934,9 +934,9 @@ zabbix_export:
               value_type: CHAR
               preprocessing:
                 -
-                  type: DISCARD_UNCHANGED
+                  type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
-                    - ''
+                    - 1d
             -
               uuid: ac8d2f33e8444fba9e6275d1a531ebb2
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Host'
@@ -949,9 +949,9 @@ zabbix_export:
               value_type: CHAR
               preprocessing:
                 -
-                  type: DISCARD_UNCHANGED
+                  type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
-                    - ''
+                    - 1d
             -
               uuid: 0559d8d6479a4eac8e12a88170d63e89
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Port'
@@ -964,9 +964,9 @@ zabbix_export:
               value_type: CHAR
               preprocessing:
                 -
-                  type: DISCARD_UNCHANGED
+                  type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
-                    - ''
+                    - 1d
           preprocessing:
             -
               type: JAVASCRIPT
