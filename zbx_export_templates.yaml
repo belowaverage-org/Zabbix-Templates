@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2022-11-02T09:20:28Z'
+  date: '2022-11-02T09:26:28Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -1049,13 +1049,15 @@ zabbix_export:
                 -
                   type: MATCHES_REGEX
                   parameters:
-                    - '{.SNMPINDEX}":"{#SNMPINDEX}","{.NAME}":"{#NAME}"'
+                    - '{.SNMPINDEX}":"{#SNMPINDEX}","{.PORT}":"{#PORT}"'
                   error_handler: CUSTOM_VALUE
                   error_handler_params: '0'
                 -
                   type: JAVASCRIPT
                   parameters:
-                    - 'return 1;'
+                    - |
+                      if (value == 0) return value;
+                      return 1;
               master_item:
                 key: snmp.interfaces.mac.discovery.json
           master_item:
