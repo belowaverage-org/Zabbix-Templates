@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2022-10-27T07:26:47Z'
+  date: '2022-11-02T09:20:28Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -986,6 +986,92 @@ zabbix_export:
                   });
                   return JSON.stringify(newData);
     -
+      uuid: 6ca02ebb5e5b4ba7a83e37c81d53c44b
+      template: 'BA - MIB - Interfaces MAC'
+      name: 'BA - MIB - Interfaces MAC (IF & BRIDGE)'
+      groups:
+        -
+          name: BA/MIBs
+      items:
+        -
+          uuid: 9ebe2ba0750e44d6aba6d54dba1504b4
+          name: 'Interfaces Discovery MAC'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#ADDR}, .1.3.6.1.2.1.17.4.3.1.1, {#PORT}, .1.3.6.1.2.1.17.4.3.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
+          key: snmp.interfaces.mac.discovery.json
+          history: 1h
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            -
+              type: JAVASCRIPT
+              parameters:
+                - |
+                  var result = [];
+                  var addressReg = /("{#ADDR}":"..)( )(..)( )(..)( )(..)( )(..)( )(..)( )/g;
+                  value = value.replace(addressReg, '$1:$3:$5:$7:$9:$11');
+                  var jvalue = JSON.parse(value);
+                  jvalue.forEach(function(address) {
+                      if (address['{#ADDR}'] == undefined) return;
+                      jvalue.forEach(function(port) {
+                          if (port['{#ALIAS}'] == undefined) return;
+                          if (address['{#PORT}'] == port['{#SNMPINDEX}']) {
+                              var obj = {
+                                  '{#SNMPINDEX}': address['{#ADDR}'].toLowerCase(),
+                                  '{#PORT}': port['{#SNMPINDEX}'],
+                                  '{#NAME}': port['{#NAME}'],
+                                  '{#ALIAS}': port['{#ALIAS}']
+                              };
+                              result.push(obj);
+                          }
+                      });
+                  });
+                  return JSON.stringify(result);
+      discovery_rules:
+        -
+          uuid: 5bcb64d2d3f54e908235d4610981cddd
+          name: 'Interfaces Discovery MAC'
+          type: DEPENDENT
+          key: snmp.interfaces.mac.discovery
+          delay: '0'
+          item_prototypes:
+            -
+              uuid: 44672117f4544766855c1c106404e8c7
+              name: 'Interface ({#NAME}: {#ALIAS}) MAC: {#SNMPINDEX}'
+              type: DEPENDENT
+              key: 'snmp.interfaces.mac.status[{#PORT}:{#SNMPINDEX}]'
+              delay: '0'
+              history: 7d
+              trends: 30d
+              valuemap:
+                name: 'MAC Status'
+              preprocessing:
+                -
+                  type: MATCHES_REGEX
+                  parameters:
+                    - '{.SNMPINDEX}":"{#SNMPINDEX}","{.NAME}":"{#NAME}"'
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+                -
+                  type: JAVASCRIPT
+                  parameters:
+                    - 'return 1;'
+              master_item:
+                key: snmp.interfaces.mac.discovery.json
+          master_item:
+            key: snmp.interfaces.mac.discovery.json
+      valuemaps:
+        -
+          uuid: 4832488ec33a470b8f7ee84221ceb82b
+          name: 'MAC Status'
+          mappings:
+            -
+              value: '0'
+              newvalue: Stale
+            -
+              value: '1'
+              newvalue: Alive
+    -
       uuid: c96e74b51406426fa9678cb3e36e305f
       template: 'BA - MIB - Interfaces POE'
       name: 'BA - MIB - Interfaces POE (RFC1213 & IF & POWER-ETHERNET)'
@@ -1158,6 +1244,8 @@ zabbix_export:
         -
           name: 'BA - MIB - Interfaces LLDP'
         -
+          name: 'BA - MIB - Interfaces MAC'
+        -
           name: 'BA - MIB - Interfaces POE'
         -
           name: 'BA - MIB - Interfaces VLAN'
@@ -1166,8 +1254,8 @@ zabbix_export:
           name: BA/Profiles/Networking
     -
       uuid: c14d11008b524874a40ab65d935d01cf
-      template: 'BA - Profile - Cisco Switch'
-      name: 'BA - Profile - Cisco Switch'
+      template: 'BA - Profile - Cisco IOS Switch'
+      name: 'BA - Profile - Cisco IOS Switch'
       templates:
         -
           name: 'BA - Generic - ICMP'
@@ -1177,6 +1265,30 @@ zabbix_export:
           name: 'BA - MIB - Generic'
         -
           name: 'BA - MIB - Interfaces'
+      groups:
+        -
+          name: BA/Profiles/Networking
+    -
+      uuid: edfde163545d4f058f26a5ace12614f0
+      template: 'BA - Profile - Cisco Small Business Switch'
+      name: 'BA - Profile - Cisco Small Business Switch'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - MIB - Interfaces LLDP'
+        -
+          name: 'BA - MIB - Interfaces MAC'
+        -
+          name: 'BA - MIB - Interfaces POE'
+        -
+          name: 'BA - MIB - Interfaces VLAN'
       groups:
         -
           name: BA/Profiles/Networking
