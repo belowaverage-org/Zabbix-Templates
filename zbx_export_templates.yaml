@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2022-11-02T09:26:28Z'
+  date: '2022-11-03T16:25:33Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -35,12 +35,21 @@ zabbix_export:
           history: 7d
           valuemap:
             name: 'Ping Status'
+          tags:
+            -
+              tag: ICMP
+            -
+              tag: Type
+              value: Status
           triggers:
             -
               uuid: 77f9ed9ba5d44b938fd34d222cd5c502
               expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
               name: 'ICMP Ping Down'
               priority: HIGH
+              tags:
+                -
+                  tag: ICMP
         -
           uuid: 925ec895069249bca0ec0472a970d21a
           name: 'ICMP Loss'
@@ -49,6 +58,12 @@ zabbix_export:
           history: 7d
           value_type: FLOAT
           units: '%'
+          tags:
+            -
+              tag: ICMP
+            -
+              tag: Type
+              value: Loss
           triggers:
             -
               uuid: 7e3ebb73a3e4415a8f69c2ddb2d40edb
@@ -59,6 +74,9 @@ zabbix_export:
                 -
                   name: 'ICMP Ping Down'
                   expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+              tags:
+                -
+                  tag: ICMP
         -
           uuid: 8b397b5e4de74806b3d4814da8ca7497
           name: 'ICMP Latency'
@@ -72,6 +90,12 @@ zabbix_export:
               type: MULTIPLIER
               parameters:
                 - '1000'
+          tags:
+            -
+              tag: ICMP
+            -
+              tag: Type
+              value: Latency
           triggers:
             -
               uuid: 0b6fa791e1cc4993bd779488cc08fe64
@@ -82,6 +106,13 @@ zabbix_export:
                 -
                   name: 'ICMP Ping Down'
                   expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+              tags:
+                -
+                  tag: ICMP
+      tags:
+        -
+          tag: Type
+          value: Generic
       macros:
         -
           macro: '{$HIGH_LATENCY_WARN}'
@@ -171,6 +202,10 @@ zabbix_export:
       groups:
         -
           name: BA/Macros
+      tags:
+        -
+          tag: Type
+          value: Macro
       macros:
         -
           macro: '{$INTER_FILTER_REGEX}'
@@ -200,6 +235,12 @@ zabbix_export:
               type: DISCARD_UNCHANGED_HEARTBEAT
               parameters:
                 - 1d
+          tags:
+            -
+              tag: SNMP
+            -
+              tag: Type
+              value: Description
         -
           uuid: 0aac83f830854eedbb489a7623b73dd4
           name: 'SNMP Location'
@@ -216,6 +257,12 @@ zabbix_export:
               type: DISCARD_UNCHANGED_HEARTBEAT
               parameters:
                 - 1d
+          tags:
+            -
+              tag: SNMP
+            -
+              tag: Type
+              value: Location
         -
           uuid: 892eced5e100486b8e5353fa6ba6fe31
           name: 'SNMP Name'
@@ -232,6 +279,12 @@ zabbix_export:
               type: DISCARD_UNCHANGED_HEARTBEAT
               parameters:
                 - 1d
+          tags:
+            -
+              tag: SNMP
+            -
+              tag: Type
+              value: Name
           triggers:
             -
               uuid: b02a2f213a7b4df28c734ddd3e4415da
@@ -240,6 +293,9 @@ zabbix_export:
               name: 'SNMP Name Changed'
               priority: INFO
               manual_close: 'YES'
+              tags:
+                -
+                  tag: SNMP
         -
           uuid: 72a2a3118d0d4bdc8196f91d45d06094
           name: 'SNMP Object ID'
@@ -256,6 +312,12 @@ zabbix_export:
               type: DISCARD_UNCHANGED_HEARTBEAT
               parameters:
                 - 1d
+          tags:
+            -
+              tag: SNMP
+            -
+              tag: Type
+              value: 'Object ID'
         -
           uuid: 8d6e1a0ceb5f4d52b884d4be397652a8
           name: 'SNMP Uptime'
@@ -263,12 +325,18 @@ zabbix_export:
           snmp_oid: .1.3.6.1.2.1.1.3.0
           key: snmp.uptime
           history: 7d
-          units: seconds
+          units: s
           preprocessing:
             -
               type: MULTIPLIER
               parameters:
                 - '0.01'
+          tags:
+            -
+              tag: SNMP
+            -
+              tag: Type
+              value: Uptime
           triggers:
             -
               uuid: ed77aa0f513b454d90a231185baef9be
@@ -277,6 +345,13 @@ zabbix_export:
               name: 'SNMP Device Rebooted'
               priority: INFO
               manual_close: 'YES'
+              tags:
+                -
+                  tag: SNMP
+      tags:
+        -
+          tag: Type
+          value: MIB
     -
       uuid: b1abf69b89d145d0bb16bf3296e42c7d
       template: 'BA - MIB - Host Resources'
@@ -300,6 +375,12 @@ zabbix_export:
               type: JSONPATH
               parameters:
                 - '$.*.[''{#CPULOAD}''].avg()'
+          tags:
+            -
+              tag: CPU
+            -
+              tag: Type
+              value: Usage
           triggers:
             -
               uuid: 9dd1e48ee61545ae8f930540b2ef2754
@@ -307,6 +388,9 @@ zabbix_export:
               name: 'High CPU Utilization'
               priority: WARNING
               description: 'The CPU on this host has been over {$CPU_HIGH_AVG_PERC_WARN}% for over {$CPU_HIGH_AVG_TIME_WARN}.'
+              tags:
+                -
+                  tag: CPU
       discovery_rules:
         -
           uuid: b06ed58b63fe4b74b7028ec8eb23facc
@@ -337,6 +421,13 @@ zabbix_export:
                   type: MULTIPLIER
                   parameters:
                     - '{#AUNITS}'
+              tags:
+                -
+                  tag: Disk
+                  value: '{#DESC}'
+                -
+                  tag: Type
+                  value: Size
             -
               uuid: d12b45c4665144ab99bcc2b12ee4073d
               name: 'Disk ({#DESC}) Used'
@@ -351,6 +442,13 @@ zabbix_export:
                   type: MULTIPLIER
                   parameters:
                     - '{#AUNITS}'
+              tags:
+                -
+                  tag: Disk
+                  value: '{#DESC}'
+                -
+                  tag: Type
+                  value: Used
             -
               uuid: d9309c8752944c33ad352b0b23118259
               name: 'Disk ({#DESC}) Utilization'
@@ -366,6 +464,13 @@ zabbix_export:
                   type: MULTIPLIER
                   parameters:
                     - '100'
+              tags:
+                -
+                  tag: Disk
+                  value: '{#DESC}'
+                -
+                  tag: Type
+                  value: Usage
               trigger_prototypes:
                 -
                   uuid: 4e5aa0b34f4745ada32f998ac09fe99e
@@ -450,6 +555,12 @@ zabbix_export:
                   type: MULTIPLIER
                   parameters:
                     - '{#AUNITS}'
+              tags:
+                -
+                  tag: Memory
+                -
+                  tag: Type
+                  value: Size
             -
               uuid: ff86e673f16f4254bd7e31b89f2b463d
               name: 'Physical Memory Used'
@@ -464,6 +575,12 @@ zabbix_export:
                   type: MULTIPLIER
                   parameters:
                     - '{#AUNITS}'
+              tags:
+                -
+                  tag: Memory
+                -
+                  tag: Type
+                  value: Used
             -
               uuid: ca6d5b1417b6453c90b538d8cc3e2dd5
               name: 'Physical Memory Utilization'
@@ -479,12 +596,21 @@ zabbix_export:
                   type: MULTIPLIER
                   parameters:
                     - '100'
+              tags:
+                -
+                  tag: Memory
+                -
+                  tag: Type
+                  value: Usage
               trigger_prototypes:
                 -
                   uuid: 0ee6a2a7f5ca4c43b99cb7a003266b4f
                   expression: 'last(/BA - MIB - Host Resources/snmp.hr.pmemory.utilization[{#SNMPINDEX}])>={$MEM_HIGH_AVG_PERC_WARN}'
                   name: 'High Memory Usage #{#SNMPINDEX}'
                   priority: HIGH
+                  tags:
+                    -
+                      tag: Memory
           graph_prototypes:
             -
               uuid: 627d5c0a60964b6da483b3b06f12e37b
@@ -511,6 +637,10 @@ zabbix_export:
                   item:
                     host: 'BA - MIB - Host Resources'
                     key: 'snmp.hr.pmemory.utilization[{#SNMPINDEX}]'
+      tags:
+        -
+          tag: Type
+          value: MIB
       macros:
         -
           macro: '{$CPU_HIGH_AVG_PERC_WARN}'
@@ -663,6 +793,13 @@ zabbix_export:
                   type: CHANGE_PER_SECOND
                   parameters:
                     - ''
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Errors
             -
               uuid: 6b9bd480242345febbcfc08b18bece36
               name: 'Interface ({#NAME}: {#ALIAS}) In Usage'
@@ -684,6 +821,13 @@ zabbix_export:
                   type: MULTIPLIER
                   parameters:
                     - '100'
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Usage
             -
               uuid: d41db500945643b6afc4b82015f5f5e6
               name: 'Interface ({#NAME}: {#ALIAS}) In Rate'
@@ -702,6 +846,13 @@ zabbix_export:
                   type: CHANGE_PER_SECOND
                   parameters:
                     - ''
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Rate
             -
               uuid: b39447b3446c4432a3c66ef3e46fb5a6
               name: 'Interface ({#NAME}: {#ALIAS}) Operational Status'
@@ -712,12 +863,23 @@ zabbix_export:
               history: 7d
               valuemap:
                 name: 'Operational Status'
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Status
               trigger_prototypes:
                 -
                   uuid: 5436374b9ed946e79cb2bf75e02f30e4
                   expression: 'changecount(/BA - MIB - Interfaces/snmp.interfaces.operstatus[{#SNMPINDEX}],{$INTER_FLAP_WARN_TIME},"dec")>={$INTER_FLAP_WARN_COUNT}'
                   name: 'High Flap on Interface: {#NAME}: {#ALIAS}'
                   priority: WARNING
+                  tags:
+                    -
+                      tag: Interface
+                      value: '{#NAME}'
             -
               uuid: 8767d44b389a4d39bfa7cdd9bef3e19d
               name: 'Interface ({#NAME}: {#ALIAS}) Out Errors'
@@ -736,6 +898,13 @@ zabbix_export:
                   type: CHANGE_PER_SECOND
                   parameters:
                     - ''
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Errors
             -
               uuid: 27685ca79f79438f9dcd391306f44291
               name: 'Interface ({#NAME}: {#ALIAS}) Out Usage'
@@ -757,6 +926,13 @@ zabbix_export:
                   type: MULTIPLIER
                   parameters:
                     - '100'
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Usage
             -
               uuid: 560a80f3986f4daaa67307817be05cda
               name: 'Interface ({#NAME}: {#ALIAS}) Out Rate'
@@ -775,6 +951,13 @@ zabbix_export:
                   type: CHANGE_PER_SECOND
                   parameters:
                     - ''
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Rate
             -
               uuid: d025c6fb73e04829822ba94aa58f4a45
               name: 'Interface ({#NAME}: {#ALIAS}) Speed'
@@ -789,17 +972,32 @@ zabbix_export:
                   type: MULTIPLIER
                   parameters:
                     - '1000000'
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Speed
           trigger_prototypes:
             -
               uuid: 62ed56a4a893446fa8515de4852ca5fa
               expression: 'sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#SNMPINDEX}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#SNMPINDEX}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN}'
               name: 'Errors on Interface: {#NAME}: {#ALIAS}'
               priority: WARNING
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
             -
               uuid: b429247383cd421db1f0e4471e286c98
               expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.in.usage[{#SNMPINDEX}])>={$INTER_USAGE_WARN} or last(/BA - MIB - Interfaces/snmp.interfaces.out.usage[{#SNMPINDEX}])>={$INTER_USAGE_WARN}'
               name: 'High Usage on Interface: {#NAME}: {#ALIAS}'
               priority: WARNING
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
           graph_prototypes:
             -
               uuid: 777a7a1a8c8d49aea746670c7dacd759
@@ -832,6 +1030,10 @@ zabbix_export:
                   item:
                     host: 'BA - MIB - Interfaces'
                     key: 'snmp.interfaces.out.errors[{#SNMPINDEX}]'
+      tags:
+        -
+          tag: Type
+          value: MIB
       macros:
         -
           macro: '{$INTER_ERROR_WARN}'
@@ -937,6 +1139,15 @@ zabbix_export:
                   type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
                     - 1d
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: LLDP
+                -
+                  tag: Type
+                  value: Description
             -
               uuid: ac8d2f33e8444fba9e6275d1a531ebb2
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Host'
@@ -952,6 +1163,15 @@ zabbix_export:
                   type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
                     - 1d
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: LLDP
+                -
+                  tag: Type
+                  value: Host
             -
               uuid: 0559d8d6479a4eac8e12a88170d63e89
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Port'
@@ -967,6 +1187,15 @@ zabbix_export:
                   type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
                     - 1d
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: LLDP
+                -
+                  tag: Type
+                  value: 'Remote Port'
           preprocessing:
             -
               type: JAVASCRIPT
@@ -985,6 +1214,10 @@ zabbix_export:
                       }
                   });
                   return JSON.stringify(newData);
+      tags:
+        -
+          tag: Type
+          value: MIB
     -
       uuid: 6ca02ebb5e5b4ba7a83e37c81d53c44b
       template: 'BA - MIB - Interfaces MAC'
@@ -1060,8 +1293,22 @@ zabbix_export:
                       return 1;
               master_item:
                 key: snmp.interfaces.mac.discovery.json
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: MAC
+                  value: '{#SNMPINDEX}'
+                -
+                  tag: Type
+                  value: Status
           master_item:
             key: snmp.interfaces.mac.discovery.json
+      tags:
+        -
+          tag: Type
+          value: MIB
       valuemaps:
         -
           uuid: 4832488ec33a470b8f7ee84221ceb82b
@@ -1117,6 +1364,15 @@ zabbix_export:
               history: 7d
               valuemap:
                 name: 'POE Admin'
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: POE
+                -
+                  tag: Type
+                  value: Status
             -
               uuid: 617cdf1c471444099069446bb97565b5
               name: 'Interface ({#NAME}: {#ALIAS}) POE Detection'
@@ -1127,12 +1383,24 @@ zabbix_export:
               history: 7d
               valuemap:
                 name: 'POE Status'
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: POE
+                -
+                  tag: Type
+                  value: Status
               trigger_prototypes:
                 -
                   uuid: c0a0fe136b29476a883a005dddc2a666
                   expression: 'last(/BA - MIB - Interfaces POE/snmp.interfaces.poe.dstatus[{#SNMPINDEX}])=4 or last(/BA - MIB - Interfaces POE/snmp.interfaces.poe.dstatus[{#SNMPINDEX}])=6'
                   name: 'POE Fault on Interface: {#NAME}: {#ALIAS}'
                   priority: WARNING
+                  tags:
+                    -
+                      tag: POE
           preprocessing:
             -
               type: JAVASCRIPT
@@ -1151,6 +1419,10 @@ zabbix_export:
                       }
                   });
                   return JSON.stringify(newData);
+      tags:
+        -
+          tag: Type
+          value: MIB
       valuemaps:
         -
           uuid: 850c51d7192742ab927fcdf43d7ae8a4
@@ -1230,6 +1502,10 @@ zabbix_export:
               key: 'snmp.interfaces.vlan.pvid[{#SNMPINDEX}]'
               delay: 5m
               history: 7d
+      tags:
+        -
+          tag: Type
+          value: MIB
     -
       uuid: f0572d351d6547c7a33ae487fab360e7
       template: 'BA - Profile - Aruba Switch'
@@ -1254,6 +1530,10 @@ zabbix_export:
       groups:
         -
           name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
     -
       uuid: c14d11008b524874a40ab65d935d01cf
       template: 'BA - Profile - Cisco IOS Switch'
@@ -1270,6 +1550,10 @@ zabbix_export:
       groups:
         -
           name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
     -
       uuid: edfde163545d4f058f26a5ace12614f0
       template: 'BA - Profile - Cisco Small Business Switch'
@@ -1294,6 +1578,10 @@ zabbix_export:
       groups:
         -
           name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
     -
       uuid: c3286d6562bd4c1bad679f800b371f9f
       template: 'BA - Profile - pfSense'
@@ -1310,6 +1598,10 @@ zabbix_export:
       groups:
         -
           name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
     -
       uuid: 22526bb9690840debbaa02fd6f35d5b0
       template: 'BA - Profile - Windows'
@@ -1328,6 +1620,10 @@ zabbix_export:
       groups:
         -
           name: BA/Profiles/Servers
+      tags:
+        -
+          tag: Type
+          value: Profile
   graphs:
     -
       uuid: 4c4d6eca42594740977ac9df1727d1bd
