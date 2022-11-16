@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2022-11-03T16:25:33Z'
+  date: '2022-11-16T18:58:10Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -211,6 +211,133 @@ zabbix_export:
           macro: '{$INTER_FILTER_REGEX}'
           value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1$)'
           description: 'Filters via Name & Alias'
+    -
+      uuid: e062d321550c42d9bdce4b4c23a365e3
+      template: 'BA - MIB - ARP'
+      name: 'BA - MIB - ARP (IP-MIB)'
+      groups:
+        -
+          name: BA/MIBs
+      items:
+        -
+          uuid: 6f39fc0fe41f4d91ac1f0eb612fc88c4
+          name: 'ARP Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#MAC}, .1.3.6.1.2.1.4.35.1.4]'
+          key: arp.discovery.json
+          history: 1h
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            -
+              type: JAVASCRIPT
+              parameters:
+                - |
+                  var data = JSON.parse(value);
+                  data.forEach(function(record, r_index) {
+                      var snmp_index = record['{#SNMPINDEX}'];
+                      var raw_mac = record['{#MAC}'];
+                      var index_parts = snmp_index.split('.');
+                      raw_mac = raw_mac.substr(0, 17);
+                      raw_mac = raw_mac.replace(/ /g, ':');
+                      var mac = raw_mac.toLowerCase();
+                      var ip = '';
+                      if (index_parts[1] == 1) { //IPV4
+                          ip = index_parts.slice(3, 7).join('.');
+                      }
+                      if (index_parts[1] == 2) { //IPV6
+                          var ip_part = '';
+                          var ip_parts = index_parts.slice(3);
+                          var compressed = false;
+                          var compressing = false;
+                          ip_parts.forEach(function(part, p_index) {
+                              var ip_byte = Number.parseInt(part).toString(16);
+                              if (ip_byte.length == 1) ip_byte = '0' + ip_byte;
+                              ip_part += ip_byte;
+                              if (ip_part.length == 4) {
+                                  ip_part = ip_part.replace(/^0000|^000|^00|^0/, '');
+                                  if (!compressed && ip_part == '') {
+                                      compressing = true;
+                                  }
+                                  if (!compressing && ip_part == '') ip_part = '0';
+                                  if (compressed || ip_part !== '') {
+                                      if (!compressed && compressing) {
+                                          ip += ':';
+                                          compressed = true;
+                                          compressing = false;
+                                      }
+                                      if (p_index !== 1) ip_part = ':' + ip_part;
+                                      ip += ip_part;
+                                  }
+                                  ip_part = '';
+                              } 
+                          });
+                      }
+                      data[r_index]['{#IP}'] = ip;
+                      data[r_index]['{#MAC}'] = mac;
+                  });
+                  return JSON.stringify(data);
+          tags:
+            -
+              tag: ARP
+      discovery_rules:
+        -
+          uuid: 517f02751b524658a4c505ad3996b7a6
+          name: 'ARP Discovery'
+          type: DEPENDENT
+          key: arp.discovery
+          delay: '0'
+          item_prototypes:
+            -
+              uuid: 8f42984ce1a84b209699e231ba07a9de
+              name: 'MAC: {#MAC}, IP: {#IP}'
+              type: DEPENDENT
+              key: 'arp.status[{#MAC}:{#IP}]'
+              delay: '0'
+              history: 7d
+              trends: 30d
+              valuemap:
+                name: 'ARP State'
+              preprocessing:
+                -
+                  type: MATCHES_REGEX
+                  parameters:
+                    - '{.SNMPINDEX}":"{#SNMPINDEX}","{.MAC}":"{#MAC}"'
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+                -
+                  type: JAVASCRIPT
+                  parameters:
+                    - |
+                      if (value == 0) return value;
+                      return 1;
+              master_item:
+                key: arp.discovery.json
+              tags:
+                -
+                  tag: ARP
+                -
+                  tag: IP
+                  value: '{#IP}'
+                -
+                  tag: MAC
+                  value: '{#MAC}'
+                -
+                  tag: Type
+                  value: Status
+          master_item:
+            key: arp.discovery.json
+      valuemaps:
+        -
+          uuid: 1364b8e394e74294a3c6107eef28d797
+          name: 'ARP State'
+          mappings:
+            -
+              value: '0'
+              newvalue: Stale
+            -
+              value: '1'
+              newvalue: Alive
     -
       uuid: 0ed25cacfaad433dbf26caee5e9849a0
       template: 'BA - MIB - Generic'
@@ -1270,7 +1397,7 @@ zabbix_export:
           item_prototypes:
             -
               uuid: 44672117f4544766855c1c106404e8c7
-              name: 'Interface ({#NAME}: {#ALIAS}) MAC: {#SNMPINDEX}'
+              name: 'Interface ({#NAME}: {#ALIAS}), MAC: {#SNMPINDEX}'
               type: DEPENDENT
               key: 'snmp.interfaces.mac.status[{#PORT}:{#SNMPINDEX}]'
               delay: '0'
@@ -1502,6 +1629,15 @@ zabbix_export:
               key: 'snmp.interfaces.vlan.pvid[{#SNMPINDEX}]'
               delay: 5m
               history: 7d
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: PVID
+                -
+                  tag: VLAN
       tags:
         -
           tag: Type
@@ -1515,6 +1651,8 @@ zabbix_export:
           name: 'BA - Generic - ICMP'
         -
           name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - ARP'
         -
           name: 'BA - MIB - Generic'
         -
@@ -1543,6 +1681,8 @@ zabbix_export:
           name: 'BA - Generic - ICMP'
         -
           name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - ARP'
         -
           name: 'BA - MIB - Generic'
         -
@@ -1591,6 +1731,8 @@ zabbix_export:
           name: 'BA - Generic - ICMP'
         -
           name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - ARP'
         -
           name: 'BA - MIB - Generic'
         -
