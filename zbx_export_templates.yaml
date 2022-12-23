@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2022-11-22T16:13:34Z'
+  date: '2022-12-23T19:08:21Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -17,6 +17,9 @@ zabbix_export:
     -
       uuid: 2128cf518279432187a98490d555a270
       name: BA/Profiles/Servers
+    -
+      uuid: 08afccc1647440e2bdf5025bd5f4b3e0
+      name: BA/SSH
   templates:
     -
       uuid: 1096884d9c9340b095f2b3473a20a7f5
@@ -1877,6 +1880,8 @@ zabbix_export:
           name: 'BA - MIB - Interfaces VLAN'
         -
           name: 'BA - MIB - MAC to IP - RFC1213'
+        -
+          name: 'BA - SSH - RouterOS Config'
       groups:
         -
           name: BA/Profiles/Networking
@@ -1930,6 +1935,33 @@ zabbix_export:
         -
           tag: Type
           value: Profile
+    -
+      uuid: ccb9478d71394cbf9ca818e33e887c22
+      template: 'BA - SSH - RouterOS Config'
+      name: 'BA - SSH - RouterOS Config'
+      groups:
+        -
+          name: BA/SSH
+      items:
+        -
+          uuid: 017e9deb230d40bd81450232f827b526
+          name: 'RouterOS Config'
+          type: SSH
+          key: 'ssh.run[export]'
+          delay: 1d
+          trends: '0'
+          value_type: TEXT
+          params: 'export show-sensitive'
+          username: '{$ROS_SSH_USER}'
+          password: '{$ROS_SSH_PASS}'
+          inventory_link: SOFTWARE_FULL
+          tags:
+            -
+              tag: Config
+      tags:
+        -
+          tag: Type
+          value: SSH
   graphs:
     -
       uuid: 4c4d6eca42594740977ac9df1727d1bd
