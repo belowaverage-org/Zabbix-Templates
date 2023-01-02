@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2022-12-23T19:08:21Z'
+  date: '2023-01-02T23:06:40Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -214,6 +214,443 @@ zabbix_export:
           macro: '{$INTER_FILTER_REGEX}'
           value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1$)'
           description: 'Filters via Name & Alias'
+    -
+      uuid: 996e61cf1dd84efe93ea42c66397176d
+      template: 'BA - MIB - Entity'
+      name: 'BA - MIB - Entity (ENTITY & ENTITY-STATE & ENTITY-SENSOR)'
+      groups:
+        -
+          name: BA/MIBs
+      discovery_rules:
+        -
+          uuid: c6d1b1f21d1b4c77a0e97a9db4d210de
+          name: 'Entity Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#NAME}, .1.3.6.1.2.1.47.1.1.1.1.7, {#MODEL}, .1.3.6.1.2.1.47.1.1.1.1.13, {#SERIAL}, .1.3.6.1.2.1.47.1.1.1.1.11, {#CLASS}, .1.3.6.1.2.1.47.1.1.1.1.5, {#SENSORTYPE}, .1.3.6.1.2.1.99.1.1.1.1, {#SENSORVALUE}, .1.3.6.1.2.1.99.1.1.1.4, {#ALARM}, .1.3.6.1.2.1.131.1.1.1.5]'
+          key: entity.discovery
+          delay: 1h
+          filter:
+            evaltype: OR
+            conditions:
+              -
+                macro: '{#CLASS}'
+                value: ^2|5|10$
+                operator: NOT_MATCHES_REGEX
+                formulaid: A
+              -
+                macro: '{#CLASS}'
+                operator: NOT_EXISTS
+                formulaid: B
+          item_prototypes:
+            -
+              uuid: bdd96b4040ef4985abc5c82e9738a33a
+              name: 'Entity ({#NAME}) Alarm'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.131.1.1.1.5.{#SNMPINDEX}'
+              key: 'entity.alarm[{#SNMPINDEX}]'
+              history: 7d
+              valuemap:
+                name: Alarm
+              tags:
+                -
+                  tag: Entity
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Alarm
+              trigger_prototypes:
+                -
+                  uuid: 28d8f5392b4f4a6099d0ee260d504be2
+                  expression: 'last(/BA - MIB - Entity/entity.alarm[{#SNMPINDEX}])<>0'
+                  name: 'Entity ({#NAME}) Alarm'
+                  priority: HIGH
+                  description: 'An alarm has been triggered!'
+                  tags:
+                    -
+                      tag: Entity
+                      value: '{#NAME}'
+                    -
+                      tag: Type
+                      value: Alarm
+            -
+              uuid: 2dcd7f640d80439b97e9b0c367465d77
+              name: 'Entity ({#NAME}) Class'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.5.{#SNMPINDEX}'
+              key: 'entity.class[{#SNMPINDEX}]'
+              delay: 1h
+              history: 7d
+              valuemap:
+                name: Class
+              tags:
+                -
+                  tag: Entity
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Class
+            -
+              uuid: 48fbdf1f81504698b8a40c6ae64aa453
+              name: 'Entity ({#NAME}) Description'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.2.{#SNMPINDEX}'
+              key: 'entity.desc[{#SNMPINDEX}]'
+              delay: 1h
+              history: 7d
+              trends: '0'
+              value_type: CHAR
+              tags:
+                -
+                  tag: Entity
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Description
+            -
+              uuid: 8ce3cfa23d134747945c774e0ad6e8f8
+              name: 'Entity ({#NAME}) Model'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.13.{#SNMPINDEX}'
+              key: 'entity.model[{#SNMPINDEX}]'
+              delay: 1h
+              history: 7d
+              trends: '0'
+              value_type: CHAR
+              tags:
+                -
+                  tag: Entity
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Model
+            -
+              uuid: f8806d92cf224591bff4b3ed9027e35d
+              name: 'Entity ({#NAME}) Sensor Type'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.99.1.1.1.1.{#SNMPINDEX}'
+              key: 'entity.sensor.type[{#SNMPINDEX}]'
+              delay: 1h
+              history: 7d
+              valuemap:
+                name: 'Sensor Type'
+              tags:
+                -
+                  tag: Entity
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Type
+            -
+              uuid: af38085e9c464cbb94a5fbf7629aa576
+              name: 'Entity ({#NAME}) Sensor Value'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.99.1.1.1.4.{#SNMPINDEX}'
+              key: 'entity.sensor.value[{#SNMPINDEX}]'
+              history: 7d
+              tags:
+                -
+                  tag: Entity
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Value
+            -
+              uuid: b362e9cc210a448f839040e71db6dd96
+              name: 'Entity ({#NAME}) Serial'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.11.{#SNMPINDEX}'
+              key: 'entity.serial[{#SNMPINDEX}]'
+              delay: 1h
+              history: 7d
+              trends: '0'
+              value_type: CHAR
+              tags:
+                -
+                  tag: Entity
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Serial
+          graph_prototypes:
+            -
+              uuid: 54db887b37754d2ab01476b2e2acdb48
+              name: 'Entity ({#NAME}) Sensor Value'
+              graph_items:
+                -
+                  color: 1A7C11
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Entity'
+                    key: 'entity.sensor.value[{#SNMPINDEX}]'
+          preprocessing:
+            -
+              type: JAVASCRIPT
+              parameters:
+                - |
+                  var data = JSON.parse(value);
+                  data.forEach(function(v, k) {
+                      if (data[k]['{#NAME}'] == undefined) {
+                          data[k]['{#NAME}'] = 'Unknown ' + k;
+                      }
+                  });
+                  return JSON.stringify(data);
+          overrides:
+            -
+              name: 'No Alarm'
+              step: '5'
+              filter:
+                conditions:
+                  -
+                    macro: '{#ALARM}'
+                    operator: NOT_EXISTS
+                    formulaid: A
+              operations:
+                -
+                  operationobject: ITEM_PROTOTYPE
+                  operator: LIKE
+                  value: Alarm
+                  discover: NO_DISCOVER
+                -
+                  operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Alarm
+                  discover: NO_DISCOVER
+            -
+              name: 'No Class'
+              step: '1'
+              filter:
+                conditions:
+                  -
+                    macro: '{#CLASS}'
+                    operator: NOT_EXISTS
+                    formulaid: A
+              operations:
+                -
+                  operationobject: ITEM_PROTOTYPE
+                  operator: LIKE
+                  value: Class
+                  discover: NO_DISCOVER
+            -
+              name: 'No Description'
+              step: '2'
+              filter:
+                evaltype: OR
+                conditions:
+                  -
+                    macro: '{#DESCRIPTION}'
+                    operator: NOT_EXISTS
+                    formulaid: A
+                  -
+                    macro: '{#DESCRIPTION}'
+                    value: .+
+                    operator: NOT_MATCHES_REGEX
+                    formulaid: B
+              operations:
+                -
+                  operationobject: ITEM_PROTOTYPE
+                  operator: LIKE
+                  value: Description
+                  discover: NO_DISCOVER
+            -
+              name: 'No Model'
+              step: '6'
+              filter:
+                evaltype: OR
+                conditions:
+                  -
+                    macro: '{#MODEL}'
+                    operator: NOT_EXISTS
+                    formulaid: A
+                  -
+                    macro: '{#MODEL}'
+                    value: .+
+                    operator: NOT_MATCHES_REGEX
+                    formulaid: B
+              operations:
+                -
+                  operationobject: ITEM_PROTOTYPE
+                  operator: REGEXP
+                  value: Model
+                  discover: NO_DISCOVER
+            -
+              name: 'No Sensor Type'
+              step: '3'
+              filter:
+                conditions:
+                  -
+                    macro: '{#SENSORTYPE}'
+                    operator: NOT_EXISTS
+                    formulaid: A
+              operations:
+                -
+                  operationobject: ITEM_PROTOTYPE
+                  operator: LIKE
+                  value: 'Sensor Type'
+                  discover: NO_DISCOVER
+            -
+              name: 'No Sensor Value'
+              step: '4'
+              filter:
+                conditions:
+                  -
+                    macro: '{#SENSORVALUE}'
+                    operator: NOT_EXISTS
+                    formulaid: A
+              operations:
+                -
+                  operationobject: ITEM_PROTOTYPE
+                  operator: LIKE
+                  value: 'Sensor Value'
+                  discover: NO_DISCOVER
+                -
+                  operationobject: GRAPH_PROTOTYPE
+                  operator: LIKE
+                  value: 'Sensor Value'
+                  discover: NO_DISCOVER
+            -
+              name: 'No Serial'
+              step: '7'
+              filter:
+                evaltype: OR
+                conditions:
+                  -
+                    macro: '{#SERIAL}'
+                    operator: NOT_EXISTS
+                    formulaid: A
+                  -
+                    macro: '{#SERIAL}'
+                    value: .+
+                    operator: NOT_MATCHES_REGEX
+                    formulaid: B
+              operations:
+                -
+                  operationobject: ITEM_PROTOTYPE
+                  operator: LIKE
+                  value: Serial
+                  discover: NO_DISCOVER
+      tags:
+        -
+          tag: Type
+          value: MIB
+      valuemaps:
+        -
+          uuid: 7caa4aac7c634155b5562ff764894989
+          name: Alarm
+          mappings:
+            -
+              value: '0'
+              newvalue: OK
+            -
+              value: '1'
+              newvalue: 'Under Repair'
+            -
+              value: '2'
+              newvalue: Critical
+            -
+              value: '3'
+              newvalue: Major
+            -
+              value: '4'
+              newvalue: Minor
+            -
+              value: '5'
+              newvalue: Warning
+            -
+              value: '6'
+              newvalue: Indeterminate
+        -
+          uuid: 2d1137ea13da40699b7a2fbdf087254e
+          name: Class
+          mappings:
+            -
+              value: '1'
+              newvalue: Other
+            -
+              value: '2'
+              newvalue: Unknown
+            -
+              value: '3'
+              newvalue: Chassis
+            -
+              value: '4'
+              newvalue: Backplane
+            -
+              value: '5'
+              newvalue: Container
+            -
+              value: '6'
+              newvalue: 'Power Supply'
+            -
+              value: '7'
+              newvalue: Fan
+            -
+              value: '8'
+              newvalue: Sensor
+            -
+              value: '9'
+              newvalue: Module
+            -
+              value: '10'
+              newvalue: Port
+            -
+              value: '11'
+              newvalue: Stack
+            -
+              value: '12'
+              newvalue: CPU
+        -
+          uuid: 3d5438f67c324a56b0e567e68a90a14a
+          name: 'Sensor Status'
+          mappings:
+            -
+              value: '1'
+              newvalue: OK
+            -
+              value: '2'
+              newvalue: Unavailable
+            -
+              value: '3'
+              newvalue: 'Non Operational'
+        -
+          uuid: abc18022ee8a440cb3d5b58ef645fd1c
+          name: 'Sensor Type'
+          mappings:
+            -
+              value: '1'
+              newvalue: Other
+            -
+              value: '2'
+              newvalue: Unknown
+            -
+              value: '3'
+              newvalue: 'Volts AC'
+            -
+              value: '4'
+              newvalue: 'Volts DC'
+            -
+              value: '5'
+              newvalue: Amps
+            -
+              value: '6'
+              newvalue: Watts
+            -
+              value: '7'
+              newvalue: Hertz
+            -
+              value: '8'
+              newvalue: Celsius
+            -
+              value: '9'
+              newvalue: 'Percent Relative Humidity'
+            -
+              value: '10'
+              newvalue: RPM
+            -
+              value: '11'
+              newvalue: 'Cubic Meters per Minute'
+            -
+              value: '12'
+              newvalue: Boolean
     -
       uuid: 0ed25cacfaad433dbf26caee5e9849a0
       template: 'BA - MIB - Generic'
@@ -1778,6 +2215,243 @@ zabbix_export:
               value: '1'
               newvalue: Active
     -
+      uuid: ad0d2cf3f7e84ff09f74ec148818c46d
+      template: 'BA - MIB - MikroTik'
+      name: 'BA - MIB - MikroTik (MIKROTIK)'
+      groups:
+        -
+          name: BA/MIBs
+      items:
+        -
+          uuid: dcdf53f894a043bf83bef95f341c33c8
+          name: 'RouterOS Board Name'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.14988.1.1.7.8.0
+          key: ros.boardname
+          delay: 12h
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: MODEL
+          tags:
+            -
+              tag: RouterOS
+            -
+              tag: Type
+              value: Model
+        -
+          uuid: 2422b180ee304cadb7b3848987545857
+          name: 'CPU Frequency'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.14988.1.1.3.14.0
+          key: ros.cpufreq
+          delay: 15s
+          history: 7d
+          units: Hz
+          preprocessing:
+            -
+              type: MULTIPLIER
+              parameters:
+                - '1000000'
+          tags:
+            -
+              tag: CPU
+            -
+              tag: Type
+              value: Frequency
+        -
+          uuid: 7d2ce0e43616493cbf1106fbe2a5063f
+          name: 'RouterOS Serial'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.14988.1.1.7.3.0
+          key: ros.serial
+          delay: 12h
+          trends: '0'
+          value_type: CHAR
+          inventory_link: SERIALNO_A
+          tags:
+            -
+              tag: RouterOS
+            -
+              tag: Type
+              value: Serial
+        -
+          uuid: d98aae57d9454c6a8836fab035873f83
+          name: 'RouterOS Version'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.14988.1.1.7.4.0
+          key: ros.version
+          delay: 6h
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: OS
+          tags:
+            -
+              tag: RouterOS
+            -
+              tag: Type
+              value: Version
+      discovery_rules:
+        -
+          uuid: a218d20f379642fd83b0472df43663e8
+          name: 'ROS Gauge'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#NAME}, .1.3.6.1.4.1.14988.1.1.3.100.1.2, {#UNIT}, .1.3.6.1.4.1.14988.1.1.3.100.1.4]'
+          key: ros.gauge.discovery
+          delay: 1h
+          item_prototypes:
+            -
+              uuid: efd1a5d94ceb4b098f839bb24c403889
+              name: 'Gauge ({#NAME}) {#UNIT}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.14988.1.1.3.100.1.3.{#SNMPINDEX}'
+              key: 'ros.gauge.value[{#SNMPINDEX}]'
+              delay: 15s
+              history: 7d
+              value_type: FLOAT
+              units: '{#UNIT}'
+              preprocessing:
+                -
+                  type: JAVASCRIPT
+                  parameters:
+                    - |
+                      if ('{#UNIT}' == 'Volts') return value / 10;
+                      return value;
+              tags:
+                -
+                  tag: Gauge
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: '{#UNIT}'
+          graph_prototypes:
+            -
+              uuid: b15abde9dac841bca795548194e9345e
+              name: 'Gauge ({#NAME}) {#UNIT}'
+              graph_items:
+                -
+                  drawtype: GRADIENT_LINE
+                  color: EF6C00
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - MikroTik'
+                    key: 'ros.gauge.value[{#SNMPINDEX}]'
+          preprocessing:
+            -
+              type: JAVASCRIPT
+              parameters:
+                - |
+                  var data = JSON.parse(value);
+                  data.forEach(function(v, k) {
+                      if (data[k]['{#UNIT}'] == 1) { data[k]['{#UNIT}'] = 'Celsius'; }
+                      if (data[k]['{#UNIT}'] == 2) { data[k]['{#UNIT}'] = 'RPM'; }
+                      if (data[k]['{#UNIT}'] == 3) { data[k]['{#UNIT}'] = 'Volts'; }
+                      if (data[k]['{#UNIT}'] == 4) { data[k]['{#UNIT}'] = 'Amps'; }
+                      if (data[k]['{#UNIT}'] == 5) { data[k]['{#UNIT}'] = 'Watts'; }
+                      if (data[k]['{#UNIT}'] == 6) { data[k]['{#UNIT}'] = 'Status'; }
+                  });
+                  return JSON.stringify(data);
+          overrides:
+            -
+              name: CPU
+              step: '1'
+              operations:
+                -
+                  operationobject: ITEM_PROTOTYPE
+                  operator: LIKE
+                  value: cpu
+                  tags:
+                    -
+                      tag: CPU
+      tags:
+        -
+          tag: Type
+          value: MIB
+      dashboards:
+        -
+          uuid: 64178c330b0846e59eebe2be6abb18be
+          name: RouterOS
+          pages:
+            -
+              widgets:
+                -
+                  type: ITEM
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - MikroTik'
+                        key: ros.boardname
+                -
+                  type: ITEM
+                  'y': '4'
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - MikroTik'
+                        key: ros.serial
+                -
+                  type: ITEM
+                  'y': '2'
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - MikroTik'
+                        key: ros.version
+                -
+                  type: GRAPH_PROTOTYPE
+                  'y': '6'
+                  width: '24'
+                  height: '7'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: columns
+                      value: '3'
+                    -
+                      type: INTEGER
+                      name: rows
+                      value: '2'
+                    -
+                      type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - MikroTik'
+                        name: 'Gauge ({#NAME}) {#UNIT}'
+                -
+                  type: GRAPH_CLASSIC
+                  x: '4'
+                  width: '20'
+                  height: '6'
+                  fields:
+                    -
+                      type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - MikroTik'
+                        name: 'CPU Frequency'
+    -
       uuid: f0572d351d6547c7a33ae487fab360e7
       template: 'BA - Profile - Aruba Switch'
       name: 'BA - Profile - Aruba Switch'
@@ -1786,6 +2460,8 @@ zabbix_export:
           name: 'BA - Generic - ICMP'
         -
           name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Entity'
         -
           name: 'BA - MIB - Generic'
         -
@@ -1817,6 +2493,8 @@ zabbix_export:
         -
           name: 'BA - Macro - Interfaces'
         -
+          name: 'BA - MIB - Entity'
+        -
           name: 'BA - MIB - Generic'
         -
           name: 'BA - MIB - Interfaces'
@@ -1838,6 +2516,8 @@ zabbix_export:
           name: 'BA - Generic - ICMP'
         -
           name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Entity'
         -
           name: 'BA - MIB - Generic'
         -
@@ -1869,7 +2549,11 @@ zabbix_export:
         -
           name: 'BA - Macro - Interfaces'
         -
+          name: 'BA - MIB - Entity'
+        -
           name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Host Resources'
         -
           name: 'BA - MIB - Interfaces'
         -
@@ -1881,7 +2565,9 @@ zabbix_export:
         -
           name: 'BA - MIB - MAC to IP - RFC1213'
         -
-          name: 'BA - SSH - RouterOS Config'
+          name: 'BA - MIB - MikroTik'
+        -
+          name: 'BA - SSH - MikroTik Config'
       groups:
         -
           name: BA/Profiles/Networking
@@ -1937,8 +2623,8 @@ zabbix_export:
           value: Profile
     -
       uuid: ccb9478d71394cbf9ca818e33e887c22
-      template: 'BA - SSH - RouterOS Config'
-      name: 'BA - SSH - RouterOS Config'
+      template: 'BA - SSH - MikroTik Config'
+      name: 'BA - SSH - MikroTik Config'
       groups:
         -
           name: BA/SSH
@@ -1963,6 +2649,17 @@ zabbix_export:
           tag: Type
           value: SSH
   graphs:
+    -
+      uuid: 621c306af3f44412a3e0a9d1988d6a3c
+      name: 'CPU Frequency'
+      graph_items:
+        -
+          drawtype: GRADIENT_LINE
+          color: 1976D2
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - MikroTik'
+            key: ros.cpufreq
     -
       uuid: 4c4d6eca42594740977ac9df1727d1bd
       name: 'ICMP Statistics'
