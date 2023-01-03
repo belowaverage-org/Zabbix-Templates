@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-02T23:06:40Z'
+  date: '2023-01-03T07:36:11Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -296,9 +296,14 @@ zabbix_export:
               snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.2.{#SNMPINDEX}'
               key: 'entity.desc[{#SNMPINDEX}]'
               delay: 1h
-              history: 7d
+              history: 365d
               trends: '0'
               value_type: CHAR
+              preprocessing:
+                -
+                  type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
               tags:
                 -
                   tag: Entity
@@ -313,9 +318,14 @@ zabbix_export:
               snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.13.{#SNMPINDEX}'
               key: 'entity.model[{#SNMPINDEX}]'
               delay: 1h
-              history: 7d
+              history: 365d
               trends: '0'
               value_type: CHAR
+              preprocessing:
+                -
+                  type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
               tags:
                 -
                   tag: Entity
@@ -361,9 +371,14 @@ zabbix_export:
               snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.11.{#SNMPINDEX}'
               key: 'entity.serial[{#SNMPINDEX}]'
               delay: 1h
-              history: 7d
+              history: 365d
               trends: '0'
               value_type: CHAR
+              preprocessing:
+                -
+                  type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
               tags:
                 -
                   tag: Entity
@@ -800,6 +815,26 @@ zabbix_export:
         -
           name: BA/MIBs
       items:
+        -
+          uuid: 06f324c51e5f4598907c5cb273b658b8
+          name: 'CPU Count'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#CPULOAD}, .1.3.6.1.2.1.25.3.3.1.2]'
+          key: snmp.hr.cpu.count
+          delay: 1h
+          history: 7d
+          value_type: FLOAT
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.*.[''{#CPULOAD}''].length()'
+          tags:
+            -
+              tag: CPU
+            -
+              tag: Type
+              value: Count
         -
           uuid: 9848e28bab61439aa0e341e228cc25e2
           name: 'CPU Utilization'
@@ -2452,6 +2487,211 @@ zabbix_export:
                         host: 'BA - MIB - MikroTik'
                         name: 'CPU Frequency'
     -
+      uuid: dbe9320a85944279b7d9a7a9e887c146
+      template: 'BA - MIB - vSphere VMs'
+      name: 'BA - MIB - vSphere VMs (VMWARE-VMINFO)'
+      groups:
+        -
+          name: BA/MIBs
+      items:
+        -
+          uuid: 059f8c28dd144f05b792288a14ee9951
+          name: 'CPUs Allocated'
+          type: CALCULATED
+          key: vsphere.cpus.allocated
+          delay: 1h
+          history: 7d
+          params: 'sum(last_foreach(//vsphere.vm.cpus[*]))'
+          tags:
+            -
+              tag: CPU
+            -
+              tag: Type
+              value: Count
+        -
+          uuid: befdbfd5a25d4e038bc2f53eedab5c98
+          name: 'CPU Subscription'
+          type: CALCULATED
+          key: vsphere.cpus.subscription
+          delay: 1h
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          params: last(//vsphere.cpus.allocated)/last(//snmp.hr.cpu.count)
+          preprocessing:
+            -
+              type: MULTIPLIER
+              parameters:
+                - '100'
+          tags:
+            -
+              tag: CPU
+            -
+              tag: Type
+              value: Usage
+          triggers:
+            -
+              uuid: f9883375c125492abab9ce4181caf353
+              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>300'
+              name: 'CPU Oversubscribed 300%'
+              priority: INFO
+              dependencies:
+                -
+                  name: 'CPU Oversubscribed 400%'
+                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>400'
+                -
+                  name: 'CPU Oversubscribed 500%'
+                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>500'
+              tags:
+                -
+                  tag: CPU
+                -
+                  tag: Type
+                  value: Usage
+            -
+              uuid: 885272fd23404a5b9fe53aef2b7de707
+              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>400'
+              name: 'CPU Oversubscribed 400%'
+              priority: WARNING
+              dependencies:
+                -
+                  name: 'CPU Oversubscribed 500%'
+                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>500'
+              tags:
+                -
+                  tag: CPU
+                -
+                  tag: Type
+                  value: Usage
+            -
+              uuid: 881639b9a7284eac98a5c31b649b4e6c
+              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>500'
+              name: 'CPU Oversubscribed 500%'
+              priority: AVERAGE
+              tags:
+                -
+                  tag: CPU
+                -
+                  tag: Type
+                  value: Usage
+      discovery_rules:
+        -
+          uuid: a6fd7567cc30408d9711e1bab1030c56
+          name: 'VM Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#NAME}, .1.3.6.1.4.1.6876.2.1.1.2]'
+          key: vsphere.vm.discovery
+          delay: 1h
+          item_prototypes:
+            -
+              uuid: 07a6e276f6cf485b8febeca4d71c9eaa
+              name: 'VM ({#NAME}) CPUs'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.9.{#SNMPINDEX}'
+              key: 'vsphere.vm.cpus[{#SNMPINDEX}]'
+              delay: 1h
+              history: 7d
+              tags:
+                -
+                  tag: CPU
+                -
+                  tag: Type
+                  value: Count
+                -
+                  tag: VM
+                  value: '{#NAME}'
+            -
+              uuid: 3f58ca558b094184ad0c7022480c2287
+              name: 'VM ({#NAME}) Guest OS'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.4.{#SNMPINDEX}'
+              key: 'vsphere.vm.guestos[{#SNMPINDEX}]'
+              delay: 1h
+              history: 365d
+              trends: '0'
+              value_type: CHAR
+              preprocessing:
+                -
+                  type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                -
+                  tag: Type
+                  value: 'Guest OS'
+                -
+                  tag: VM
+                  value: '{#NAME}'
+            -
+              uuid: bfbddf7840304b6183eda41be9e29098
+              name: 'VM ({#NAME}) Guest State'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.8.{#SNMPINDEX}'
+              key: 'vsphere.vm.gueststate[{#SNMPINDEX}]'
+              delay: 30s
+              history: 365d
+              trends: '0'
+              value_type: CHAR
+              preprocessing:
+                -
+                  type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                -
+                  tag: Type
+                  value: State
+                -
+                  tag: VM
+                  value: '{#NAME}'
+            -
+              uuid: fb84d9e71e484a9f8951ee113847eac0
+              name: 'VM ({#NAME}) Memory Size'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.5.{#SNMPINDEX}'
+              key: 'vsphere.vm.memsize[{#SNMPINDEX}]'
+              delay: 1h
+              history: 7d
+              units: B
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '1048576'
+              tags:
+                -
+                  tag: Type
+                  value: Size
+                -
+                  tag: VM
+                  value: '{#NAME}'
+            -
+              uuid: bd3e8bd3fd2e4123a7659b62bc4951ed
+              name: 'VM ({#NAME}) Power State'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.6.{#SNMPINDEX}'
+              key: 'vsphere.vm.state[{#SNMPINDEX}]'
+              delay: 30s
+              history: 365d
+              trends: '0'
+              value_type: CHAR
+              preprocessing:
+                -
+                  type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                -
+                  tag: Type
+                  value: State
+                -
+                  tag: VM
+                  value: '{#NAME}'
+      tags:
+        -
+          tag: Type
+          value: MIB
+    -
       uuid: f0572d351d6547c7a33ae487fab360e7
       template: 'BA - Profile - Aruba Switch'
       name: 'BA - Profile - Aruba Switch'
@@ -2593,6 +2833,32 @@ zabbix_export:
       groups:
         -
           name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
+    -
+      uuid: 00258b13162c4a3d9283a479b1a10f80
+      template: 'BA - Profile - vSphere'
+      name: 'BA - Profile - vSphere'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Entity'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Host Resources'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - MIB - vSphere VMs'
+      groups:
+        -
+          name: BA/Profiles/Servers
       tags:
         -
           tag: Type
