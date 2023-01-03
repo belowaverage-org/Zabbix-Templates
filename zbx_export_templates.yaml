@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-03T09:52:05Z'
+  date: '2023-01-03T12:49:04Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -830,7 +830,7 @@ zabbix_export:
               tag: Type
               value: Count
         -
-          uuid: 9848e28bab61439aa0e341e228cc25e2
+          uuid: 5025fa88f9a7452289629d2d127374e8
           name: 'CPU Utilization'
           type: CALCULATED
           key: snmp.hr.cpu.utilization
@@ -855,6 +855,22 @@ zabbix_export:
               tags:
                 -
                   tag: CPU
+        -
+          uuid: 9848e28bab61439aa0e341e228cc25e2
+          name: 'Memory Utilization'
+          type: CALCULATED
+          key: snmp.hr.memory.utilization
+          delay: 15s
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          params: 'sum(last_foreach(//snmp.hr.memory.used[*]))/sum(last_foreach(//snmp.hr.memory.size[*]))*100'
+          tags:
+            -
+              tag: Memory
+            -
+              tag: Type
+              value: Usage
       discovery_rules:
         -
           uuid: 0c403e28a6c4499a9ca25969557b655a
@@ -1016,10 +1032,10 @@ zabbix_export:
                     key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
         -
           uuid: 97d4e3dfa7e24575a508a1a02efefefe
-          name: 'Physical Memory Discovery'
+          name: 'Memory Discovery'
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#TYPE}, .1.3.6.1.2.1.25.2.3.1.2, {#AUNITS}, .1.3.6.1.2.1.25.2.3.1.4]'
-          key: snmp.hr.pmemory.discovery
+          key: snmp.hr.memory.discovery
           delay: 1h
           filter:
             conditions:
@@ -1031,10 +1047,10 @@ zabbix_export:
           item_prototypes:
             -
               uuid: d98fce5f76554b27b4bec73937cd52c1
-              name: 'Physical Memory Size'
+              name: 'Memory ({#SNMPINDEX}) Size'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
-              key: 'snmp.hr.pmemory.size[{#SNMPINDEX}]'
+              key: 'snmp.hr.memory.size[{#SNMPINDEX}]'
               delay: 30m
               history: 7d
               units: B
@@ -1046,15 +1062,16 @@ zabbix_export:
               tags:
                 -
                   tag: Memory
+                  value: '{#SNMPINDEX}'
                 -
                   tag: Type
                   value: Size
             -
               uuid: ff86e673f16f4254bd7e31b89f2b463d
-              name: 'Physical Memory Used'
+              name: 'Memory ({#SNMPINDEX}) Used'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
-              key: 'snmp.hr.pmemory.used[{#SNMPINDEX}]'
+              key: 'snmp.hr.memory.used[{#SNMPINDEX}]'
               delay: 30s
               history: 7d
               units: B
@@ -1066,50 +1083,21 @@ zabbix_export:
               tags:
                 -
                   tag: Memory
+                  value: '{#SNMPINDEX}'
                 -
                   tag: Type
                   value: Used
-            -
-              uuid: ca6d5b1417b6453c90b538d8cc3e2dd5
-              name: 'Physical Memory Utilization'
-              type: CALCULATED
-              key: 'snmp.hr.pmemory.utilization[{#SNMPINDEX}]'
-              delay: 30s
-              history: 7d
-              value_type: FLOAT
-              units: '%'
-              params: 'last(//snmp.hr.pmemory.used[{#SNMPINDEX}])/last(//snmp.hr.pmemory.size[{#SNMPINDEX}])'
-              preprocessing:
-                -
-                  type: MULTIPLIER
-                  parameters:
-                    - '100'
-              tags:
-                -
-                  tag: Memory
-                -
-                  tag: Type
-                  value: Usage
-              trigger_prototypes:
-                -
-                  uuid: 0ee6a2a7f5ca4c43b99cb7a003266b4f
-                  expression: 'last(/BA - MIB - Host Resources/snmp.hr.pmemory.utilization[{#SNMPINDEX}])>={$MEM_HIGH_AVG_PERC_WARN}'
-                  name: 'High Memory Usage'
-                  priority: HIGH
-                  tags:
-                    -
-                      tag: Memory
           graph_prototypes:
             -
               uuid: 627d5c0a60964b6da483b3b06f12e37b
-              name: 'Physical Memory'
+              name: 'Memory ({#SNMPINDEX})'
               graph_items:
                 -
                   color: BF00FF
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Host Resources'
-                    key: 'snmp.hr.pmemory.size[{#SNMPINDEX}]'
+                    key: 'snmp.hr.memory.size[{#SNMPINDEX}]'
                 -
                   sortorder: '1'
                   drawtype: GRADIENT_LINE
@@ -1117,16 +1105,7 @@ zabbix_export:
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Host Resources'
-                    key: 'snmp.hr.pmemory.used[{#SNMPINDEX}]'
-                -
-                  sortorder: '2'
-                  drawtype: DASHED_LINE
-                  color: '000000'
-                  yaxisside: RIGHT
-                  calc_fnc: ALL
-                  item:
-                    host: 'BA - MIB - Host Resources'
-                    key: 'snmp.hr.pmemory.utilization[{#SNMPINDEX}]'
+                    key: 'snmp.hr.memory.used[{#SNMPINDEX}]'
       tags:
         -
           tag: Type
@@ -1170,7 +1149,7 @@ zabbix_export:
                       name: graphid
                       value:
                         host: 'BA - MIB - Host Resources'
-                        name: 'Physical Memory'
+                        name: 'Memory ({#SNMPINDEX})'
                 -
                   type: GRAPH_CLASSIC
                   width: '9'
@@ -2978,7 +2957,7 @@ zabbix_export:
           calc_fnc: ALL
           item:
             host: 'BA - MIB - Host Resources'
-            key: snmp.hr.cpu.utilization
+            key: snmp.hr.memory.utilization
     -
       uuid: 621c306af3f44412a3e0a9d1988d6a3c
       name: 'CPU Frequency'
