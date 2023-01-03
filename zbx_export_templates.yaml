@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-03T07:36:11Z'
+  date: '2023-01-03T09:52:05Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -212,7 +212,7 @@ zabbix_export:
       macros:
         -
           macro: '{$INTER_FILTER_REGEX}'
-          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1$)'
+          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$)'
           description: 'Filters via Name & Alias'
     -
       uuid: 996e61cf1dd84efe93ea42c66397176d
@@ -818,17 +818,11 @@ zabbix_export:
         -
           uuid: 06f324c51e5f4598907c5cb273b658b8
           name: 'CPU Count'
-          type: SNMP_AGENT
-          snmp_oid: 'discovery[{#CPULOAD}, .1.3.6.1.2.1.25.3.3.1.2]'
+          type: CALCULATED
           key: snmp.hr.cpu.count
           delay: 1h
           history: 7d
-          value_type: FLOAT
-          preprocessing:
-            -
-              type: JSONPATH
-              parameters:
-                - '$.*.[''{#CPULOAD}''].length()'
+          params: 'sum(exists_foreach(//snmp.hr.cpu.utilization[*]))'
           tags:
             -
               tag: CPU
@@ -838,18 +832,13 @@ zabbix_export:
         -
           uuid: 9848e28bab61439aa0e341e228cc25e2
           name: 'CPU Utilization'
-          type: SNMP_AGENT
-          snmp_oid: 'discovery[{#CPULOAD}, .1.3.6.1.2.1.25.3.3.1.2]'
+          type: CALCULATED
           key: snmp.hr.cpu.utilization
-          delay: 30s
+          delay: 15s
           history: 7d
           value_type: FLOAT
           units: '%'
-          preprocessing:
-            -
-              type: JSONPATH
-              parameters:
-                - '$.*.[''{#CPULOAD}''].avg()'
+          params: 'avg(last_foreach(//snmp.hr.cpu.utilization[*]))'
           tags:
             -
               tag: CPU
@@ -867,6 +856,30 @@ zabbix_export:
                 -
                   tag: CPU
       discovery_rules:
+        -
+          uuid: 0c403e28a6c4499a9ca25969557b655a
+          name: 'Processor Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#USAGE}, .1.3.6.1.2.1.25.3.3.1.2]'
+          key: snmp.hr.cpu.discovery
+          delay: 1h
+          item_prototypes:
+            -
+              uuid: d7b4dc1bc39e46548aa5dcbcc9e42d9a
+              name: 'CPU ({#SNMPINDEX}) Utilization'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.3.3.1.2.{#SNMPINDEX}'
+              key: 'snmp.hr.cpu.utilization[{#SNMPINDEX}]'
+              delay: 15s
+              history: 7d
+              units: '%'
+              tags:
+                -
+                  tag: CPU
+                  value: '{#SNMPINDEX}'
+                -
+                  tag: Type
+                  value: Usage
         -
           uuid: b06ed58b63fe4b74b7028ec8eb23facc
           name: 'Fixed Disk Discovery'
@@ -1081,7 +1094,7 @@ zabbix_export:
                 -
                   uuid: 0ee6a2a7f5ca4c43b99cb7a003266b4f
                   expression: 'last(/BA - MIB - Host Resources/snmp.hr.pmemory.utilization[{#SNMPINDEX}])>={$MEM_HIGH_AVG_PERC_WARN}'
-                  name: 'High Memory Usage #{#SNMPINDEX}'
+                  name: 'High Memory Usage'
                   priority: HIGH
                   tags:
                     -
@@ -1089,24 +1102,26 @@ zabbix_export:
           graph_prototypes:
             -
               uuid: 627d5c0a60964b6da483b3b06f12e37b
-              name: 'Physical Memory #{#SNMPINDEX}'
+              name: 'Physical Memory'
               graph_items:
                 -
-                  color: 1A7C11
+                  color: BF00FF
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Host Resources'
                     key: 'snmp.hr.pmemory.size[{#SNMPINDEX}]'
                 -
                   sortorder: '1'
-                  color: F63100
+                  drawtype: GRADIENT_LINE
+                  color: 0080FF
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Host Resources'
                     key: 'snmp.hr.pmemory.used[{#SNMPINDEX}]'
                 -
                   sortorder: '2'
-                  color: 2774A4
+                  drawtype: DASHED_LINE
+                  color: '000000'
                   yaxisside: RIGHT
                   calc_fnc: ALL
                   item:
@@ -1155,22 +1170,18 @@ zabbix_export:
                       name: graphid
                       value:
                         host: 'BA - MIB - Host Resources'
-                        name: 'Physical Memory #{#SNMPINDEX}'
+                        name: 'Physical Memory'
                 -
                   type: GRAPH_CLASSIC
                   width: '9'
                   height: '6'
                   fields:
                     -
-                      type: INTEGER
-                      name: source_type
-                      value: '1'
-                    -
-                      type: ITEM
-                      name: itemid
+                      type: GRAPH
+                      name: graphid
                       value:
                         host: 'BA - MIB - Host Resources'
-                        key: snmp.hr.cpu.utilization
+                        name: CPU
                 -
                   type: GRAPH_PROTOTYPE
                   x: '9'
@@ -2574,6 +2585,20 @@ zabbix_export:
                 -
                   tag: Type
                   value: Usage
+        -
+          uuid: 55e4078646824cb18348e0194b551123
+          name: 'VM Count'
+          type: CALCULATED
+          key: vsphere.vm.count
+          delay: 1h
+          history: 7d
+          params: 'sum(exists_foreach(//vsphere.vm.state[*]))'
+          tags:
+            -
+              tag: Type
+              value: Count
+            -
+              tag: VM
       discovery_rules:
         -
           uuid: a6fd7567cc30408d9711e1bab1030c56
@@ -2780,6 +2805,28 @@ zabbix_export:
           tag: Type
           value: Profile
     -
+      uuid: cfc4c512c2c4421599b4703ddae48352
+      template: 'BA - Profile - Linux'
+      name: 'BA - Profile - Linux'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Host Resources'
+        -
+          name: 'BA - MIB - Interfaces'
+      groups:
+        -
+          name: BA/Profiles/Servers
+      tags:
+        -
+          tag: Type
+          value: Profile
+    -
       uuid: 2d6c963fca534c2eb56112e107ab2e9c
       template: 'BA - Profile - MikroTik'
       name: 'BA - Profile - MikroTik'
@@ -2800,8 +2847,6 @@ zabbix_export:
           name: 'BA - MIB - Interfaces LLDP'
         -
           name: 'BA - MIB - Interfaces MAC'
-        -
-          name: 'BA - MIB - Interfaces VLAN'
         -
           name: 'BA - MIB - MAC to IP - RFC1213'
         -
@@ -2915,6 +2960,25 @@ zabbix_export:
           tag: Type
           value: SSH
   graphs:
+    -
+      uuid: 12e77545f5a8427892619e4f55fc37e0
+      name: CPU
+      graph_items:
+        -
+          color: BF00FF
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - Host Resources'
+            key: snmp.hr.cpu.count
+        -
+          sortorder: '1'
+          drawtype: GRADIENT_LINE
+          color: 0288D1
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - Host Resources'
+            key: snmp.hr.cpu.utilization
     -
       uuid: 621c306af3f44412a3e0a9d1988d6a3c
       name: 'CPU Frequency'
