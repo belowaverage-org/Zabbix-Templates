@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-04T07:44:17Z'
+  date: '2023-01-04T10:22:25Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -1135,7 +1135,7 @@ zabbix_export:
           key: cpu.count
           delay: 1h
           history: 7d
-          params: 'sum(exists_foreach(//snmp.hr.cpu.utilization[*]))'
+          params: 'sum(exists_foreach(//snmp.hr.cpu.usage[*]))'
           tags:
             -
               tag: CPU
