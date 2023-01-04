@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-03T12:49:04Z'
+  date: '2023-01-04T07:44:17Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -199,6 +199,30 @@ zabbix_export:
               value: '1'
               newvalue: Up
     -
+      uuid: 02f18dcc823241fe9c718128522f1188
+      template: 'BA - Macro - Generic'
+      name: 'BA - Macro - Generic'
+      groups:
+        -
+          name: BA/Macros
+      tags:
+        -
+          tag: Type
+          value: Macro
+      macros:
+        -
+          macro: '{$WARN_CPU_USAGE}'
+          value: '90'
+          description: 'Percentage to trigger a CPU usage alert.'
+        -
+          macro: '{$WARN_MEM_USAGE}'
+          value: '90'
+          description: 'Percentage to trigger a memory usage alert.'
+        -
+          macro: '{$WARN_TEMP_C}'
+          value: '70'
+          description: 'Temp in Celsius to trigger an alert.'
+    -
       uuid: 2e06dea1d714489c8d284e35778039ce
       template: 'BA - Macro - Interfaces'
       name: 'BA - Macro - Interfaces'
@@ -214,6 +238,295 @@ zabbix_export:
           macro: '{$INTER_FILTER_REGEX}'
           value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$)'
           description: 'Filters via Name & Alias'
+    -
+      uuid: 49d106e4ab994d41b8533cccb7a04abf
+      template: 'BA - MIB - Aruba'
+      name: 'BA - MIB - Aruba (STATISTICS POWERSUPPLY FAN)'
+      groups:
+        -
+          name: BA/MIBs
+      items:
+        -
+          uuid: d21b1ba6ab874dedad8afac0dabf7328
+          name: 'CPU Usage'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.11.2.14.11.5.1.9.6.1.0
+          key: cpu.usage
+          delay: 15s
+          history: 7d
+          units: '%'
+          tags:
+            -
+              tag: CPU
+            -
+              tag: Type
+              value: Usage
+          triggers:
+            -
+              uuid: 6b1079669c50408998310050e7d208b4
+              expression: 'last(/BA - MIB - Aruba/cpu.usage)>={$WARN_CPU_USAGE}'
+              name: 'CPU Usage >= {$WARN_CPU_USAGE}%'
+              priority: AVERAGE
+              tags:
+                -
+                  tag: CPU
+                -
+                  tag: Type
+                  value: Usage
+        -
+          uuid: 2fa7b638fe4d4da8bef7ff8c58974a88
+          name: 'Memory Size'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SIZE}, .1.3.6.1.4.1.11.2.14.11.5.1.1.2.2.1.1.5]'
+          key: memory.size
+          delay: 1h
+          history: 7d
+          units: B
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.*.[''{#SIZE}''].sum()'
+          tags:
+            -
+              tag: Memory
+            -
+              tag: Type
+              value: Size
+        -
+          uuid: 525480a2f9a542f29cbc5a626c8e65bd
+          name: 'Memory Usage'
+          type: CALCULATED
+          key: memory.usage
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          params: last(//memory.used)/last(//memory.size)
+          preprocessing:
+            -
+              type: MULTIPLIER
+              parameters:
+                - '100'
+          tags:
+            -
+              tag: Memory
+            -
+              tag: Type
+              value: Usage
+          triggers:
+            -
+              uuid: af7039dacfbc4facbe0677c9b402d06e
+              expression: 'last(/BA - MIB - Aruba/memory.usage)>={$WARN_CPU_USAGE}'
+              name: 'Memory Usage >= {$WARN_MEM_USAGE}%'
+              priority: AVERAGE
+              tags:
+                -
+                  tag: Memory
+                -
+                  tag: Type
+                  value: Usage
+        -
+          uuid: eb706ca0daea468595ef2a0b6ca09275
+          name: 'Memory Used'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#FREE}, .1.3.6.1.4.1.11.2.14.11.5.1.1.2.2.1.1.6]'
+          key: memory.used
+          history: 7d
+          units: B
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - '$.*.[''{#FREE}''].sum()'
+          tags:
+            -
+              tag: Memory
+            -
+              tag: Type
+              value: Used
+      discovery_rules:
+        -
+          uuid: 02c13eb8b1d14ff4bbf1687ac279c71b
+          name: 'Aruba Fan Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#STATE}, .1.3.6.1.4.1.11.2.14.11.5.1.54.2.1.1.4]'
+          key: aruba.fan.discovery
+          delay: 1h
+          item_prototypes:
+            -
+              uuid: c1fd1186bed24c198b26b8d2cb0266b9
+              name: 'Aruba Fan ({#SNMPINDEX}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.11.2.14.11.5.1.54.2.1.1.4.{#SNMPINDEX}'
+              key: 'aruba.fan.status[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              valuemap:
+                name: 'Fan Status'
+              tags:
+                -
+                  tag: Fan
+                  value: '{#SNMPINDEX}'
+                -
+                  tag: Type
+                  value: Status
+              trigger_prototypes:
+                -
+                  uuid: 2623bf6494cd42fa8bc84c04e93b1291
+                  expression: 'last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=0 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=1 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=3 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=4 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=6'
+                  name: 'Aruba Fan ({#SNMPINDEX}) Issue'
+                  priority: AVERAGE
+                  tags:
+                    -
+                      tag: Fan
+                      value: '{#SNMPINDEX}'
+                    -
+                      tag: Type
+                      value: Status
+        -
+          uuid: ebf3d7bbf6bc407493285c95101d29fb
+          name: 'Aruba PSU Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#STATUS}, .1.3.6.1.4.1.11.2.14.11.5.1.55.1.1.1.2, {#TEMP}, .1.3.6.1.4.1.11.2.14.11.5.1.55.1.1.1.4]'
+          key: aruba.psu.discovery
+          delay: 1h
+          item_prototypes:
+            -
+              uuid: e5c62e89d091416d8f513ad15b5a4458
+              name: 'Aruba PSU ({#SNMPINDEX}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.11.2.14.11.5.1.55.1.1.1.2.{#SNMPINDEX}'
+              key: 'aruba.psu.status[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              valuemap:
+                name: 'PSU Status'
+              tags:
+                -
+                  tag: PSU
+                  value: '{#SNMPINDEX}'
+                -
+                  tag: Type
+                  value: Status
+              trigger_prototypes:
+                -
+                  uuid: e061727ff41e4d1da6d54acc47a88027
+                  expression: |
+                    last(/BA - MIB - Aruba/aruba.psu.status[{#SNMPINDEX}])=2 or
+                    last(/BA - MIB - Aruba/aruba.psu.status[{#SNMPINDEX}])=4 or
+                    last(/BA - MIB - Aruba/aruba.psu.status[{#SNMPINDEX}])=5 or
+                    last(/BA - MIB - Aruba/aruba.psu.status[{#SNMPINDEX}])=6
+                  name: 'Aruba PSU ({#SNMPINDEX}) Issue'
+                  priority: AVERAGE
+                  tags:
+                    -
+                      tag: PSU
+                      value: '{#SNMPINDEX}'
+                    -
+                      tag: Type
+                      value: Status
+            -
+              uuid: 7eb98047105a4bc1a84e4d9230ed9a54
+              name: 'Aruba PSU ({#SNMPINDEX}) Temperature'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.11.2.14.11.5.1.55.1.1.1.4.{#SNMPINDEX}'
+              key: 'aruba.psu.temp[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              units: Celsius
+              tags:
+                -
+                  tag: PSU
+                  value: '{#SNMPINDEX}'
+                -
+                  tag: Type
+                  value: Celsius
+              trigger_prototypes:
+                -
+                  uuid: a8d0b6bb5c5343a2a130dd8bc39a0f33
+                  expression: 'last(/BA - MIB - Aruba/aruba.psu.temp[{#SNMPINDEX}])>={$WARN_TEMP_C}'
+                  name: 'Aruba PSU ({#SNMPINDEX}) Temperature >= {$WARN_TEMP_C}C'
+                  priority: AVERAGE
+                  tags:
+                    -
+                      tag: PSU
+                      value: '{#SNMPINDEX}'
+                    -
+                      tag: Type
+                      value: Celsius
+          overrides:
+            -
+              name: 'No Temp'
+              step: '1'
+              filter:
+                conditions:
+                  -
+                    macro: '{#TEMP}'
+                    value: '0'
+                    formulaid: A
+              operations:
+                -
+                  operationobject: ITEM_PROTOTYPE
+                  operator: LIKE
+                  value: Tempurature
+                  discover: NO_DISCOVER
+                -
+                  operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Temperature
+                  discover: NO_DISCOVER
+      tags:
+        -
+          tag: Type
+          value: MIB
+      valuemaps:
+        -
+          uuid: 9b1fc8e853c74f7088adf58aba8ab698
+          name: 'Fan Status'
+          mappings:
+            -
+              value: '0'
+              newvalue: Failed
+            -
+              value: '1'
+              newvalue: Removed
+            -
+              value: '2'
+              newvalue: 'Off'
+            -
+              value: '3'
+              newvalue: 'Under Speed'
+            -
+              value: '4'
+              newvalue: 'Over Speed'
+            -
+              value: '5'
+              newvalue: OK
+            -
+              value: '6'
+              newvalue: Maxed
+        -
+          uuid: 83f6c58a912942d3b2b28f315efe79f0
+          name: 'PSU Status'
+          mappings:
+            -
+              value: '1'
+              newvalue: 'Not Present'
+            -
+              value: '2'
+              newvalue: 'Not Plugged'
+            -
+              value: '3'
+              newvalue: Powered
+            -
+              value: '4'
+              newvalue: Failed
+            -
+              value: '5'
+              newvalue: 'Permanent Failure'
+            -
+              value: '6'
+              newvalue: Maxed
     -
       uuid: 996e61cf1dd84efe93ea42c66397176d
       template: 'BA - MIB - Entity'
@@ -819,7 +1132,7 @@ zabbix_export:
           uuid: 06f324c51e5f4598907c5cb273b658b8
           name: 'CPU Count'
           type: CALCULATED
-          key: snmp.hr.cpu.count
+          key: cpu.count
           delay: 1h
           history: 7d
           params: 'sum(exists_foreach(//snmp.hr.cpu.utilization[*]))'
@@ -831,14 +1144,14 @@ zabbix_export:
               value: Count
         -
           uuid: 5025fa88f9a7452289629d2d127374e8
-          name: 'CPU Utilization'
+          name: 'CPU Usage'
           type: CALCULATED
-          key: snmp.hr.cpu.utilization
+          key: cpu.usage
           delay: 15s
           history: 7d
           value_type: FLOAT
           units: '%'
-          params: 'avg(last_foreach(//snmp.hr.cpu.utilization[*]))'
+          params: 'avg(last_foreach(//snmp.hr.cpu.usage[*]))'
           tags:
             -
               tag: CPU
@@ -847,19 +1160,21 @@ zabbix_export:
               value: Usage
           triggers:
             -
-              uuid: 9dd1e48ee61545ae8f930540b2ef2754
-              expression: 'avg(/BA - MIB - Host Resources/snmp.hr.cpu.utilization,{$CPU_HIGH_AVG_TIME_WARN})>={$CPU_HIGH_AVG_PERC_WARN}'
-              name: 'High CPU Utilization'
-              priority: WARNING
-              description: 'The CPU on this host has been over {$CPU_HIGH_AVG_PERC_WARN}% for over {$CPU_HIGH_AVG_TIME_WARN}.'
+              uuid: 54befd1674e64270b7bc9876c05d5204
+              expression: 'last(/BA - MIB - Host Resources/cpu.usage)>={$WARN_CPU_USAGE}'
+              name: 'CPU Usage >= {$WARN_CPU_USAGE}%'
+              priority: AVERAGE
               tags:
                 -
                   tag: CPU
+                -
+                  tag: Type
+                  value: Usage
         -
           uuid: 9848e28bab61439aa0e341e228cc25e2
-          name: 'Memory Utilization'
+          name: 'Memory Usage'
           type: CALCULATED
-          key: snmp.hr.memory.utilization
+          key: memory.usage
           delay: 15s
           history: 7d
           value_type: FLOAT
@@ -871,6 +1186,18 @@ zabbix_export:
             -
               tag: Type
               value: Usage
+          triggers:
+            -
+              uuid: a677c03f901c4659a6cf8145379883c0
+              expression: 'last(/BA - MIB - Host Resources/memory.usage)>={$WARN_MEM_USAGE}'
+              name: 'Memory Usage >= {$WARN_MEM_USAGE}%'
+              priority: AVERAGE
+              tags:
+                -
+                  tag: Memory
+                -
+                  tag: Type
+                  value: Usage
       discovery_rules:
         -
           uuid: 0c403e28a6c4499a9ca25969557b655a
@@ -882,10 +1209,10 @@ zabbix_export:
           item_prototypes:
             -
               uuid: d7b4dc1bc39e46548aa5dcbcc9e42d9a
-              name: 'CPU ({#SNMPINDEX}) Utilization'
+              name: 'CPU ({#SNMPINDEX}) Usage'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.3.3.1.2.{#SNMPINDEX}'
-              key: 'snmp.hr.cpu.utilization[{#SNMPINDEX}]'
+              key: 'snmp.hr.cpu.usage[{#SNMPINDEX}]'
               delay: 15s
               history: 7d
               units: '%'
@@ -933,31 +1260,10 @@ zabbix_export:
                   tag: Type
                   value: Size
             -
-              uuid: d12b45c4665144ab99bcc2b12ee4073d
-              name: 'Disk ({#DESC}) Used'
-              type: SNMP_AGENT
-              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
-              key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
-              delay: 5m
-              history: 7d
-              units: B
-              preprocessing:
-                -
-                  type: MULTIPLIER
-                  parameters:
-                    - '{#AUNITS}'
-              tags:
-                -
-                  tag: Disk
-                  value: '{#DESC}'
-                -
-                  tag: Type
-                  value: Used
-            -
               uuid: d9309c8752944c33ad352b0b23118259
-              name: 'Disk ({#DESC}) Utilization'
+              name: 'Disk ({#DESC}) Usage'
               type: CALCULATED
-              key: 'snmp.hr.fdisk.utilization[{#SNMPINDEX}]'
+              key: 'snmp.hr.fdisk.usage[{#SNMPINDEX}]'
               delay: 5m
               history: 7d
               value_type: FLOAT
@@ -978,9 +1284,30 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: 4e5aa0b34f4745ada32f998ac09fe99e
-                  expression: 'last(/BA - MIB - Host Resources/snmp.hr.fdisk.utilization[{#SNMPINDEX}])>={$DISK_HIGH_AVG_PERC_WARN}'
-                  name: 'High Disk Usage: {#DESC}'
+                  expression: 'last(/BA - MIB - Host Resources/snmp.hr.fdisk.usage[{#SNMPINDEX}])>={$DISK_HIGH_AVG_PERC_WARN}'
+                  name: 'Disk ({#DESC}) Usage >= {$DISK_HIGH_AVG_PERC_WARN}%'
                   priority: HIGH
+            -
+              uuid: d12b45c4665144ab99bcc2b12ee4073d
+              name: 'Disk ({#DESC}) Used'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
+              key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              units: B
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '{#AUNITS}'
+              tags:
+                -
+                  tag: Disk
+                  value: '{#DESC}'
+                -
+                  tag: Type
+                  value: Used
           graph_prototypes:
             -
               uuid: c257fe03d5424e8485a040c39e920cc0
@@ -1006,7 +1333,7 @@ zabbix_export:
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Host Resources'
-                    key: 'snmp.hr.fdisk.utilization[{#SNMPINDEX}]'
+                    key: 'snmp.hr.fdisk.usage[{#SNMPINDEX}]'
             -
               uuid: 80c9eb5bde2e4873af69913d1cc94a51
               name: 'Disk ({#DESC}) Usage'
@@ -2350,6 +2677,19 @@ zabbix_export:
                 -
                   tag: Type
                   value: '{#UNIT}'
+              trigger_prototypes:
+                -
+                  uuid: 8bbeacb4fa7b429aa0cc8c0e917c0991
+                  expression: 'last(/BA - MIB - MikroTik/ros.gauge.value[{#SNMPINDEX}])>={$WARN_TEMP_C}'
+                  name: 'Gauge ({#NAME}) {#UNIT} Temperature >= {$WARN_TEMP_C}C'
+                  priority: AVERAGE
+                  tags:
+                    -
+                      tag: Guage
+                      value: '{#NAME}'
+                    -
+                      tag: Type
+                      value: '{#UNIT}'
           graph_prototypes:
             -
               uuid: b15abde9dac841bca795548194e9345e
@@ -2389,6 +2729,22 @@ zabbix_export:
                   tags:
                     -
                       tag: CPU
+            -
+              name: 'Not Celsius'
+              step: '2'
+              filter:
+                conditions:
+                  -
+                    macro: '{#UNIT}'
+                    value: Celsius
+                    operator: NOT_MATCHES_REGEX
+                    formulaid: A
+              operations:
+                -
+                  operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Temperature
+                  discover: NO_DISCOVER
       tags:
         -
           tag: Type
@@ -2507,7 +2863,7 @@ zabbix_export:
           history: 7d
           value_type: FLOAT
           units: '%'
-          params: last(//vsphere.cpus.allocated)/last(//snmp.hr.cpu.count)
+          params: last(//vsphere.cpus.allocated)/last(//cpu.count)
           preprocessing:
             -
               type: MULTIPLIER
@@ -2518,7 +2874,7 @@ zabbix_export:
               tag: CPU
             -
               tag: Type
-              value: Usage
+              value: Subscription
           triggers:
             -
               uuid: f9883375c125492abab9ce4181caf353
@@ -2703,7 +3059,11 @@ zabbix_export:
         -
           name: 'BA - Generic - ICMP'
         -
+          name: 'BA - Macro - Generic'
+        -
           name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Aruba'
         -
           name: 'BA - MIB - Entity'
         -
@@ -2791,6 +3151,8 @@ zabbix_export:
         -
           name: 'BA - Generic - ICMP'
         -
+          name: 'BA - Macro - Generic'
+        -
           name: 'BA - Macro - Interfaces'
         -
           name: 'BA - MIB - Generic'
@@ -2812,6 +3174,8 @@ zabbix_export:
       templates:
         -
           name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
         -
           name: 'BA - Macro - Interfaces'
         -
@@ -2869,6 +3233,8 @@ zabbix_export:
         -
           name: 'BA - Generic - ICMP'
         -
+          name: 'BA - Macro - Generic'
+        -
           name: 'BA - Macro - Interfaces'
         -
           name: 'BA - MIB - Entity'
@@ -2894,6 +3260,8 @@ zabbix_export:
       templates:
         -
           name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
         -
           name: 'BA - Macro - Interfaces'
         -
@@ -2948,7 +3316,7 @@ zabbix_export:
           calc_fnc: ALL
           item:
             host: 'BA - MIB - Host Resources'
-            key: snmp.hr.cpu.count
+            key: cpu.count
         -
           sortorder: '1'
           drawtype: GRADIENT_LINE
@@ -2957,7 +3325,7 @@ zabbix_export:
           calc_fnc: ALL
           item:
             host: 'BA - MIB - Host Resources'
-            key: snmp.hr.memory.utilization
+            key: memory.usage
     -
       uuid: 621c306af3f44412a3e0a9d1988d6a3c
       name: 'CPU Frequency'
