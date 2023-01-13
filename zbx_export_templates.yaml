@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-13T18:31:29Z'
+  date: '2023-01-13T18:45:28Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -467,6 +467,10 @@ zabbix_export:
                     macro: '{#TEMP}'
                     value: '0'
                     formulaid: A
+                  -
+                    macro: '{#TEMP}'
+                    value: '254'
+                    formulaid: B
               operations:
                 -
                   operationobject: ITEM_PROTOTYPE
