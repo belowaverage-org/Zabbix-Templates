@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-13T14:54:11Z'
+  date: '2023-01-13T16:08:02Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -2043,8 +2043,16 @@ zabbix_export:
                           if (portResult.length > {$UPLINK_LIMIT}) return;
                           if (address['{#ADDR}'] == undefined) return;
                           if (address['{#PORT}'] == port['{#SNMPINDEX}']) {
+                              var newAddrParts = [];
+                              var addr = address['{#ADDR}'].toLowerCase();
+                              var addrParts = addr.split(':');
+                              addrParts.forEach(function(v) {
+                                  if (v.length == 1) v = '0' + v;
+                                  newAddrParts.push(v);
+                              });
+                              var newAddr = newAddrParts.join(':');
                               var obj = {
-                                  '{#SNMPINDEX}': address['{#ADDR}'].toLowerCase(),
+                                  '{#SNMPINDEX}': newAddr,
                                   '{#PORT}': port['{#SNMPINDEX}'],
                                   '{#NAME}': port['{#NAME}'],
                                   '{#ALIAS}': port['{#ALIAS}']
@@ -2348,7 +2356,14 @@ zabbix_export:
                       var index_parts = snmp_index.split('.');
                       raw_mac = raw_mac.substr(0, 17);
                       raw_mac = raw_mac.replace(/ /g, ':');
-                      var mac = raw_mac.toLowerCase();
+                      var newAddrParts = [];
+                      var addr = raw_mac.toLowerCase();
+                      var addrParts = addr.split(':');
+                      addrParts.forEach(function(v) {
+                          if (v.length == 1) v = '0' + v;
+                          newAddrParts.push(v);
+                      });
+                      var mac = newAddrParts.join(':');
                       var ip = '';
                       if (index_parts[1] == 1) { //IPV4
                           ip = index_parts.slice(3, 7).join('.');
