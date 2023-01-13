@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-13T18:05:34Z'
+  date: '2023-01-13T18:31:29Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -2510,7 +2510,14 @@ zabbix_export:
                 - |
                   var data = JSON.parse(value);
                   data.forEach(function(v, k) {
-                      data[k]['{#MAC}'] = v['{#MAC}'].substring(0, 17).replace(/\s/g, ':').toLowerCase();
+                      var newAddrParts = [];
+                      var addr = v['{#MAC}'].substring(0, 17).replace(/\s/g, ':').toLowerCase();
+                      var addrParts = addr.split(':');
+                      addrParts.forEach(function(v) {
+                          if (v.length == 1) v = '0' + v;
+                          newAddrParts.push(v);
+                      });
+                      data[k]['{#MAC}'] = newAddrParts.join(':');
                   });
                   return JSON.stringify(data);
           tags:
