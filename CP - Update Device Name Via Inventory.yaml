@@ -1,0 +1,79 @@
+zabbix_export:
+  version: '6.2'
+  date: '2023-01-13T17:58:35Z'
+  template_groups:
+    -
+      uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    -
+      uuid: a63b4d7270ab4e44a4618cc7b23e7049
+      template: 'CP - Update Device Name Via Inventory'
+      name: 'CP - Update Device Name Via Inventory'
+      groups:
+        -
+          name: Templates
+      items:
+        -
+          uuid: 9bb21d98410441d2b53177ca5f1a34a9
+          name: 'Update Visible Name via Inventory'
+          type: SCRIPT
+          key: update.via.inventory
+          delay: 6h
+          history: 7d
+          trends: '0'
+          value_type: TEXT
+          params: |
+            var params = JSON.parse(value);
+            var wr = new HttpRequest();
+            wr.addHeader('Content-Type: application/json-rpc');
+            var raw_resp = wr.post(params.api, JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "host.get",
+                "params": {
+                    "selectInventory": [ "name" ],
+                    "filter": {
+                        "host": [ params.host ]
+                    }
+                },
+                "id": 1,
+                "auth": params.key
+            }));
+            var response = JSON.parse(raw_resp);
+            var result = wr.post(params.api, JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "host.update",
+                "params": {
+                    "hostid": response.result[0].hostid,
+                    "name": response.result[0].inventory.name + ' (' + params.host + ')'
+                },
+                "id": 1,
+                "auth": params.key
+            }));
+            return result;
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          timeout: 30s
+          parameters:
+            -
+              name: key
+              value: '{$ZABSELFKEY}'
+            -
+              name: api
+              value: '{$ZABSELFAPI}'
+            -
+              name: host
+              value: '{HOST.HOST}'
+          triggers:
+            -
+              uuid: cf94790245f74d69803a9680c0032f02
+              expression: 'find(/CP - Update Device Name Via Inventory/update.via.inventory,,"regexp","^.*Host with the same visible name.*$")=1'
+              name: 'Visible Name Duplicate'
+              priority: INFO
+              description: |
+                This device name matches another device with a different IP.
+                
+                Please ensure that the device names are unique.
