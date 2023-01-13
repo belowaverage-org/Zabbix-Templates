@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-13T16:08:02Z'
+  date: '2023-01-13T18:05:34Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -11,6 +11,9 @@ zabbix_export:
     -
       uuid: 3fdb37c563464c49b24b75703e0038ed
       name: BA/MIBs
+    -
+      uuid: d323af8072864defab6d6e380742fb4d
+      name: BA/Procedures
     -
       uuid: a9ae9cbb57864537879e36c074d112ca
       name: BA/Profiles/Networking
@@ -3079,6 +3082,81 @@ zabbix_export:
           tag: Type
           value: MIB
     -
+      uuid: a63b4d7270ab4e44a4618cc7b23e7049
+      template: 'BA - Procedure - Update Name'
+      name: 'BA - Procedure - Update Name'
+      groups:
+        -
+          name: BA/Procedures
+      items:
+        -
+          uuid: 9bb21d98410441d2b53177ca5f1a34a9
+          name: 'Update Visible Name via Inventory'
+          type: SCRIPT
+          key: update.via.inventory
+          delay: 6h
+          history: 7d
+          trends: '0'
+          value_type: TEXT
+          params: |
+            var params = JSON.parse(value);
+            var wr = new HttpRequest();
+            wr.addHeader('Content-Type: application/json-rpc');
+            var raw_resp = wr.post(params.api, JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "host.get",
+                "params": {
+                    "selectInventory": [ "name" ],
+                    "filter": {
+                        "host": [ params.host ]
+                    }
+                },
+                "id": 1,
+                "auth": params.key
+            }));
+            var response = JSON.parse(raw_resp);
+            var result = wr.post(params.api, JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "host.update",
+                "params": {
+                    "hostid": response.result[0].hostid,
+                    "name": response.result[0].inventory.name + ' (' + params.host + ')'
+                },
+                "id": 1,
+                "auth": params.key
+            }));
+            return result;
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          timeout: 30s
+          parameters:
+            -
+              name: key
+              value: '{$ZABSELFKEY}'
+            -
+              name: api
+              value: '{$ZABSELFAPI}'
+            -
+              name: host
+              value: '{HOST.HOST}'
+          triggers:
+            -
+              uuid: cf94790245f74d69803a9680c0032f02
+              expression: 'find(/BA - Procedure - Update Name/update.via.inventory,,"regexp","^.*Host with the same visible name.*$")=1'
+              name: 'Visible Name Duplicate'
+              priority: INFO
+              description: |
+                This device name matches another device with a different IP.
+                
+                Please ensure that the device names are unique.
+      tags:
+        -
+          tag: Type
+          value: Procedure
+    -
       uuid: f0572d351d6547c7a33ae487fab360e7
       template: 'BA - Profile - Aruba Switch'
       name: 'BA - Profile - Aruba Switch'
@@ -3107,6 +3185,8 @@ zabbix_export:
           name: 'BA - MIB - Interfaces VLAN'
         -
           name: 'BA - MIB - MAC to IP - IP'
+        -
+          name: 'BA - Procedure - Update Name'
       groups:
         -
           name: BA/Profiles/Networking
@@ -3131,6 +3211,8 @@ zabbix_export:
           name: 'BA - MIB - Interfaces'
         -
           name: 'BA - MIB - MAC to IP - RFC1213'
+        -
+          name: 'BA - Procedure - Update Name'
       groups:
         -
           name: BA/Profiles/Networking
@@ -3163,6 +3245,8 @@ zabbix_export:
           name: 'BA - MIB - Interfaces VLAN'
         -
           name: 'BA - MIB - MAC to IP - IP'
+        -
+          name: 'BA - Procedure - Update Name'
       groups:
         -
           name: BA/Profiles/Networking
@@ -3187,6 +3271,8 @@ zabbix_export:
           name: 'BA - MIB - Host Resources'
         -
           name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - Procedure - Update Name'
       groups:
         -
           name: BA/Profiles/Servers
@@ -3222,6 +3308,8 @@ zabbix_export:
         -
           name: 'BA - MIB - MikroTik'
         -
+          name: 'BA - Procedure - Update Name'
+        -
           name: 'BA - SSH - MikroTik Config'
       groups:
         -
@@ -3245,6 +3333,8 @@ zabbix_export:
           name: 'BA - MIB - Interfaces'
         -
           name: 'BA - MIB - MAC to IP - RFC1213'
+        -
+          name: 'BA - Procedure - Update Name'
       groups:
         -
           name: BA/Profiles/Networking
@@ -3273,6 +3363,8 @@ zabbix_export:
           name: 'BA - MIB - Interfaces'
         -
           name: 'BA - MIB - vSphere VMs'
+        -
+          name: 'BA - Procedure - Update Name'
       groups:
         -
           name: BA/Profiles/Servers
@@ -3299,6 +3391,8 @@ zabbix_export:
           name: 'BA - MIB - Interfaces'
         -
           name: 'BA - MIB - MAC to IP - RFC1213'
+        -
+          name: 'BA - Procedure - Update Name'
       groups:
         -
           name: BA/Profiles/Servers
