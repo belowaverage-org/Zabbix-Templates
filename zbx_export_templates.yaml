@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-04T10:22:25Z'
+  date: '2023-01-13T14:29:34Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -2036,10 +2036,12 @@ zabbix_export:
                   var addressReg = /("{#ADDR}":"..)( )(..)( )(..)( )(..)( )(..)( )(..)( )/g;
                   value = value.replace(addressReg, '$1:$3:$5:$7:$9:$11');
                   var jvalue = JSON.parse(value);
-                  jvalue.forEach(function(address) {
-                      if (address['{#ADDR}'] == undefined) return;
-                      jvalue.forEach(function(port) {
-                          if (port['{#ALIAS}'] == undefined) return;
+                  jvalue.forEach(function(port) {
+                      if (port['{#ALIAS}'] == undefined) return;
+                      var portResult = [];
+                      jvalue.forEach(function(address) {
+                          if (portResult.length > {$UPLINK_LIMIT}) return;
+                          if (address['{#ADDR}'] == undefined) return;
                           if (address['{#PORT}'] == port['{#SNMPINDEX}']) {
                               var obj = {
                                   '{#SNMPINDEX}': address['{#ADDR}'].toLowerCase(),
@@ -2047,9 +2049,10 @@ zabbix_export:
                                   '{#NAME}': port['{#NAME}'],
                                   '{#ALIAS}': port['{#ALIAS}']
                               };
-                              result.push(obj);
+                              portResult.push(obj);
                           }
                       });
+                      if (portResult.length > 0 && portResult.length <= {$UPLINK_LIMIT}) result.push(portResult);
                   });
                   return JSON.stringify(result);
       discovery_rules:
@@ -2101,6 +2104,11 @@ zabbix_export:
         -
           tag: Type
           value: MIB
+      macros:
+        -
+          macro: '{$UPLINK_LIMIT}'
+          value: '10'
+          description: 'The max addresses that can be on a port before the port is considered an uplink and therefore not scanned.'
       valuemaps:
         -
           uuid: 4832488ec33a470b8f7ee84221ceb82b
