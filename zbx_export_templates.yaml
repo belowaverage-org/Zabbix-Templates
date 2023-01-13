@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-13T18:45:28Z'
+  date: '2023-01-13T18:48:51Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -267,8 +267,8 @@ zabbix_export:
           triggers:
             -
               uuid: 6b1079669c50408998310050e7d208b4
-              expression: 'last(/BA - MIB - Aruba/cpu.usage)>={$WARN_CPU_USAGE}'
-              name: 'CPU Usage >= {$WARN_CPU_USAGE}%'
+              expression: 'avg(/BA - MIB - Aruba/cpu.usage,15m)>=90'
+              name: 'CPU Usage >= {$WARN_CPU_USAGE}% for 15 minutes'
               priority: AVERAGE
               tags:
                 -
