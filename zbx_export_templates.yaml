@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-13T18:48:51Z'
+  date: '2023-01-14T05:25:47Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -3457,7 +3457,7 @@ zabbix_export:
           calc_fnc: ALL
           item:
             host: 'BA - MIB - Host Resources'
-            key: memory.usage
+            key: cpu.usage
     -
       uuid: 621c306af3f44412a3e0a9d1988d6a3c
       name: 'CPU Frequency'
