@@ -255,7 +255,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: .1.3.6.1.4.1.11.2.14.11.5.1.9.6.1.0
           key: cpu.usage
-          delay: 15s
+          delay: 1m
           history: 7d
           units: '%'
           tags:
@@ -354,7 +354,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#STATE}, .1.3.6.1.4.1.11.2.14.11.5.1.54.2.1.1.4]'
           key: aruba.fan.discovery
-          delay: 1h
+          delay: 12h
           item_prototypes:
             -
               uuid: c1fd1186bed24c198b26b8d2cb0266b9
@@ -362,7 +362,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.11.2.14.11.5.1.54.2.1.1.4.{#SNMPINDEX}'
               key: 'aruba.fan.status[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 1h
               history: 7d
               valuemap:
                 name: 'Fan Status'
@@ -392,7 +392,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#STATUS}, .1.3.6.1.4.1.11.2.14.11.5.1.55.1.1.1.2, {#TEMP}, .1.3.6.1.4.1.11.2.14.11.5.1.55.1.1.1.4]'
           key: aruba.psu.discovery
-          delay: 1h
+          delay: 12h
           item_prototypes:
             -
               uuid: e5c62e89d091416d8f513ad15b5a4458
@@ -400,7 +400,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.11.2.14.11.5.1.55.1.1.1.2.{#SNMPINDEX}'
               key: 'aruba.psu.status[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 1h
               history: 7d
               valuemap:
                 name: 'PSU Status'
@@ -434,7 +434,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.11.2.14.11.5.1.55.1.1.1.4.{#SNMPINDEX}'
               key: 'aruba.psu.temp[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 30m
               history: 7d
               units: Celsius
               tags:
@@ -548,7 +548,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#NAME}, .1.3.6.1.2.1.47.1.1.1.1.7, {#MODEL}, .1.3.6.1.2.1.47.1.1.1.1.13, {#SERIAL}, .1.3.6.1.2.1.47.1.1.1.1.11, {#CLASS}, .1.3.6.1.2.1.47.1.1.1.1.5, {#SENSORTYPE}, .1.3.6.1.2.1.99.1.1.1.1, {#SENSORVALUE}, .1.3.6.1.2.1.99.1.1.1.4, {#ALARM}, .1.3.6.1.2.1.131.1.1.1.5]'
           key: entity.discovery
-          delay: 1h
+          delay: 12h
           filter:
             evaltype: OR
             conditions:
@@ -598,7 +598,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.5.{#SNMPINDEX}'
               key: 'entity.class[{#SNMPINDEX}]'
-              delay: 1h
+              delay: 12h
               history: 7d
               valuemap:
                 name: Class
@@ -615,7 +615,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.2.{#SNMPINDEX}'
               key: 'entity.desc[{#SNMPINDEX}]'
-              delay: 1h
+              delay: 12h
               history: 365d
               trends: '0'
               value_type: CHAR
@@ -637,7 +637,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.13.{#SNMPINDEX}'
               key: 'entity.model[{#SNMPINDEX}]'
-              delay: 1h
+              delay: 12h
               history: 365d
               trends: '0'
               value_type: CHAR
@@ -659,7 +659,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.99.1.1.1.1.{#SNMPINDEX}'
               key: 'entity.sensor.type[{#SNMPINDEX}]'
-              delay: 1h
+              delay: 12h
               history: 7d
               valuemap:
                 name: 'Sensor Type'
@@ -690,7 +690,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.11.{#SNMPINDEX}'
               key: 'entity.serial[{#SNMPINDEX}]'
-              delay: 1h
+              delay: 12h
               history: 365d
               trends: '0'
               value_type: CHAR
@@ -1000,7 +1000,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: .1.3.6.1.2.1.1.1.0
           key: snmp.description
-          delay: 1h
+          delay: 12h
           history: 365d
           trends: '0'
           value_type: CHAR
@@ -1022,7 +1022,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: .1.3.6.1.2.1.1.6.0
           key: snmp.location
-          delay: 1h
+          delay: 12h
           history: 365d
           trends: '0'
           value_type: CHAR
@@ -1044,7 +1044,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: .1.3.6.1.2.1.1.5.0
           key: snmp.name
-          delay: 1h
+          delay: 12h
           history: 365d
           trends: '0'
           value_type: CHAR
@@ -1077,7 +1077,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: .1.3.6.1.2.1.1.2.0
           key: snmp.objectid
-          delay: 1h
+          delay: 12h
           history: 365d
           trends: '0'
           value_type: CHAR
@@ -1140,7 +1140,7 @@ zabbix_export:
           name: 'CPU Count'
           type: CALCULATED
           key: cpu.count
-          delay: 1h
+          delay: 6h
           history: 7d
           params: 'sum(exists_foreach(//snmp.hr.cpu.usage[*]))'
           tags:
@@ -1154,7 +1154,7 @@ zabbix_export:
           name: 'CPU Usage'
           type: CALCULATED
           key: cpu.usage
-          delay: 15s
+          delay: 1m
           history: 7d
           value_type: FLOAT
           units: '%'
@@ -1182,7 +1182,7 @@ zabbix_export:
           name: 'Memory Usage'
           type: CALCULATED
           key: memory.usage
-          delay: 15s
+          delay: 1m
           history: 7d
           value_type: FLOAT
           units: '%'
@@ -1212,7 +1212,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#USAGE}, .1.3.6.1.2.1.25.3.3.1.2]'
           key: snmp.hr.cpu.discovery
-          delay: 1h
+          delay: 6h
           item_prototypes:
             -
               uuid: d7b4dc1bc39e46548aa5dcbcc9e42d9a
@@ -1220,7 +1220,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.3.3.1.2.{#SNMPINDEX}'
               key: 'snmp.hr.cpu.usage[{#SNMPINDEX}]'
-              delay: 15s
+              delay: 1m
               history: 7d
               units: '%'
               tags:
@@ -1236,7 +1236,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#TYPE}, .1.3.6.1.2.1.25.2.3.1.2, {#DESC}, .1.3.6.1.2.1.25.2.3.1.3, {#AUNITS}, .1.3.6.1.2.1.25.2.3.1.4]'
           key: snmp.hr.fdisk.discovery
-          delay: 1h
+          delay: 6h
           filter:
             conditions:
               -
@@ -1251,7 +1251,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
               key: 'snmp.hr.fdisk.size[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 6h
               history: 7d
               units: B
               preprocessing:
@@ -1271,7 +1271,7 @@ zabbix_export:
               name: 'Disk ({#DESC}) Usage'
               type: CALCULATED
               key: 'snmp.hr.fdisk.usage[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 1h
               history: 7d
               value_type: FLOAT
               units: '%'
@@ -1300,7 +1300,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
               key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 1h
               history: 7d
               units: B
               preprocessing:
@@ -1370,7 +1370,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#TYPE}, .1.3.6.1.2.1.25.2.3.1.2, {#AUNITS}, .1.3.6.1.2.1.25.2.3.1.4]'
           key: snmp.hr.memory.discovery
-          delay: 1h
+          delay: 6h
           filter:
             conditions:
               -
@@ -1385,7 +1385,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
               key: 'snmp.hr.memory.size[{#SNMPINDEX}]'
-              delay: 30m
+              delay: 1h
               history: 7d
               units: B
               preprocessing:
@@ -1406,7 +1406,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
               key: 'snmp.hr.memory.used[{#SNMPINDEX}]'
-              delay: 30s
+              delay: 1m
               history: 7d
               units: B
               preprocessing:
@@ -1549,7 +1549,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18, {#OSTATUS}, .1.3.6.1.2.1.2.2.1.8, {#ASTATUS}, .1.3.6.1.2.1.2.2.1.7]'
           key: snmp.interfaces.discovery
-          delay: 1h
+          delay: 6h
           filter:
             conditions:
               -
@@ -1580,7 +1580,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.14.{#SNMPINDEX}'
               key: 'snmp.interfaces.in.errors[{#SNMPINDEX}]'
-              delay: 15s
+              delay: 1m
               history: 7d
               units: bps
               preprocessing:
@@ -1604,7 +1604,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) In Usage'
               type: CALCULATED
               key: 'snmp.interfaces.in.usage[{#SNMPINDEX}]'
-              delay: 15s
+              delay: 1m
               history: 7d
               value_type: FLOAT
               units: '%'
@@ -1633,7 +1633,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.10.{#SNMPINDEX}'
               key: 'snmp.interfaces.in[{#SNMPINDEX}]'
-              delay: 15s
+              delay: 1m
               history: 7d
               units: bps
               preprocessing:
@@ -1658,7 +1658,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.8.{#SNMPINDEX}'
               key: 'snmp.interfaces.operstatus[{#SNMPINDEX}]'
-              delay: 15s
+              delay: 1m
               history: 7d
               valuemap:
                 name: 'Operational Status'
@@ -1685,7 +1685,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.20.{#SNMPINDEX}'
               key: 'snmp.interfaces.out.errors[{#SNMPINDEX}]'
-              delay: 15s
+              delay: 1m
               history: 7d
               units: bps
               preprocessing:
@@ -1709,7 +1709,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Out Usage'
               type: CALCULATED
               key: 'snmp.interfaces.out.usage[{#SNMPINDEX}]'
-              delay: 15s
+              delay: 1m
               history: 7d
               value_type: FLOAT
               units: '%'
@@ -1738,7 +1738,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.16.{#SNMPINDEX}'
               key: 'snmp.interfaces.out[{#SNMPINDEX}]'
-              delay: 15s
+              delay: 1m
               history: 7d
               units: bps
               preprocessing:
@@ -1763,7 +1763,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.31.1.1.1.15.{#SNMPINDEX}'
               key: 'snmp.interfaces.speed[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 10m
               history: 7d
               units: bps
               preprocessing:
@@ -1903,7 +1903,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#LLDP}, .1.0.8802.1.1.2.1.4.1.1.4, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
           key: snmp.interfaces.lldp.discovery
-          delay: 1h
+          delay: 6h
           filter:
             conditions:
               -
@@ -1929,7 +1929,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.0.8802.1.1.2.1.4.1.1.10.{#SNMPINDEX}'
               key: 'snmp.interfaces.lldp.desc[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 30m
               history: 365d
               trends: '0'
               value_type: CHAR
@@ -1953,7 +1953,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.0.8802.1.1.2.1.4.1.1.9.{#SNMPINDEX}'
               key: 'snmp.interfaces.lldp.host[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 30m
               history: 365d
               trends: '0'
               value_type: CHAR
@@ -1977,7 +1977,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.0.8802.1.1.2.1.4.1.1.8.{#SNMPINDEX}'
               key: 'snmp.interfaces.lldp.port[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 30m
               history: 365d
               trends: '0'
               value_type: CHAR
@@ -2153,7 +2153,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#POEENAB}, .1.3.6.1.2.1.105.1.1.1.3, {#IFINDEX}, .1.3.6.1.2.1.17.1.4.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18, {#ASTATUS}, .1.3.6.1.2.1.2.2.1.7]'
           key: snmp.interfaces.poe.discovery
-          delay: 1h
+          delay: 6h
           filter:
             conditions:
               -
@@ -2179,7 +2179,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.105.1.1.1.3.{#SNMPINDEX}'
               key: 'snmp.interfaces.poe.astatus[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 30m
               history: 7d
               valuemap:
                 name: 'POE Admin'
@@ -2198,7 +2198,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.105.1.1.1.6.{#SNMPINDEX}'
               key: 'snmp.interfaces.poe.dstatus[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 1m
               history: 7d
               valuemap:
                 name: 'POE Status'
@@ -2289,7 +2289,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#VLAN}, .1.3.6.1.2.1.17.7.1.4.5.1.1, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18, {#ASTATUS}, .1.3.6.1.2.1.2.2.1.7]'
           key: snmp.interfaces.vlan.discovery
-          delay: 1h
+          delay: 6h
           filter:
             conditions:
               -
@@ -2319,7 +2319,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.17.7.1.4.5.1.1.{#SNMPINDEX}'
               key: 'snmp.interfaces.vlan.pvid[{#SNMPINDEX}]'
-              delay: 5m
+              delay: 1h
               history: 7d
               tags:
                 -
@@ -2638,7 +2638,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: .1.3.6.1.4.1.14988.1.1.3.14.0
           key: ros.cpufreq
-          delay: 15s
+          delay: 1m
           history: 7d
           units: Hz
           preprocessing:
@@ -2692,7 +2692,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#NAME}, .1.3.6.1.4.1.14988.1.1.3.100.1.2, {#UNIT}, .1.3.6.1.4.1.14988.1.1.3.100.1.4]'
           key: ros.gauge.discovery
-          delay: 1h
+          delay: 12h
           item_prototypes:
             -
               uuid: efd1a5d94ceb4b098f839bb24c403889
@@ -2700,7 +2700,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.14988.1.1.3.100.1.3.{#SNMPINDEX}'
               key: 'ros.gauge.value[{#SNMPINDEX}]'
-              delay: 15s
+              delay: 1m
               history: 7d
               value_type: FLOAT
               units: '{#UNIT}'
@@ -3029,7 +3029,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.8.{#SNMPINDEX}'
               key: 'vsphere.vm.gueststate[{#SNMPINDEX}]'
-              delay: 30s
+              delay: 1m
               history: 365d
               trends: '0'
               value_type: CHAR
@@ -3051,7 +3051,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.5.{#SNMPINDEX}'
               key: 'vsphere.vm.memsize[{#SNMPINDEX}]'
-              delay: 1h
+              delay: 6h
               history: 7d
               units: B
               preprocessing:
@@ -3072,7 +3072,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.6.{#SNMPINDEX}'
               key: 'vsphere.vm.state[{#SNMPINDEX}]'
-              delay: 30s
+              delay: 1m
               history: 365d
               trends: '0'
               value_type: CHAR
@@ -3105,7 +3105,7 @@ zabbix_export:
           name: 'Update Visible Name via Inventory'
           type: SCRIPT
           key: update.via.inventory
-          delay: 6h
+          delay: 12h
           history: 7d
           trends: '0'
           value_type: TEXT
