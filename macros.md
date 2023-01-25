@@ -12,6 +12,9 @@ Global Macros:
 * {$ARUBA_SSH_PASS}
   * Aruba SSH Password
     * BA - SSH - Aruba Config
+* {$SSH_SHIM_URL}
+  * URL to SSH Shim Instance
+    * BA - SSH - Aruba *
 * {$SNMP_COMMUNITY}
   * SNMP Community String
     * BA - MIB - *
