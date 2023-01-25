@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-25T07:01:51Z'
+  date: '2023-01-25T18:48:55Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -3435,6 +3435,20 @@ zabbix_export:
           tags:
             -
               tag: Config
+          triggers:
+            -
+              uuid: 2fe56d78b3254bbb9535028f50f83ca9
+              expression: 'nodata(/BA - SSH - Aruba Config/ssh.config,1)=1'
+              name: 'Config failed to backup'
+              priority: WARNING
+              description: 'Check that the SSH user can login to back the configuration up.'
+              dependencies:
+                -
+                  name: 'ICMP Ping Down'
+                  expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+              tags:
+                -
+                  tag: Config
       tags:
         -
           tag: Type
