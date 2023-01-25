@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-14T05:25:47Z'
+  date: '2023-01-25T07:01:51Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -255,7 +255,6 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: .1.3.6.1.4.1.11.2.14.11.5.1.9.6.1.0
           key: cpu.usage
-          delay: 1m
           history: 7d
           units: '%'
           tags:
@@ -1154,7 +1153,6 @@ zabbix_export:
           name: 'CPU Usage'
           type: CALCULATED
           key: cpu.usage
-          delay: 1m
           history: 7d
           value_type: FLOAT
           units: '%'
@@ -1182,7 +1180,6 @@ zabbix_export:
           name: 'Memory Usage'
           type: CALCULATED
           key: memory.usage
-          delay: 1m
           history: 7d
           value_type: FLOAT
           units: '%'
@@ -1220,7 +1217,6 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.3.3.1.2.{#SNMPINDEX}'
               key: 'snmp.hr.cpu.usage[{#SNMPINDEX}]'
-              delay: 1m
               history: 7d
               units: '%'
               tags:
@@ -1406,7 +1402,6 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
               key: 'snmp.hr.memory.used[{#SNMPINDEX}]'
-              delay: 1m
               history: 7d
               units: B
               preprocessing:
@@ -1580,7 +1575,6 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.14.{#SNMPINDEX}'
               key: 'snmp.interfaces.in.errors[{#SNMPINDEX}]'
-              delay: 1m
               history: 7d
               units: bps
               preprocessing:
@@ -1604,7 +1598,6 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) In Usage'
               type: CALCULATED
               key: 'snmp.interfaces.in.usage[{#SNMPINDEX}]'
-              delay: 1m
               history: 7d
               value_type: FLOAT
               units: '%'
@@ -1633,7 +1626,6 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.10.{#SNMPINDEX}'
               key: 'snmp.interfaces.in[{#SNMPINDEX}]'
-              delay: 1m
               history: 7d
               units: bps
               preprocessing:
@@ -1658,7 +1650,6 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.8.{#SNMPINDEX}'
               key: 'snmp.interfaces.operstatus[{#SNMPINDEX}]'
-              delay: 1m
               history: 7d
               valuemap:
                 name: 'Operational Status'
@@ -1685,7 +1676,6 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.20.{#SNMPINDEX}'
               key: 'snmp.interfaces.out.errors[{#SNMPINDEX}]'
-              delay: 1m
               history: 7d
               units: bps
               preprocessing:
@@ -1709,7 +1699,6 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Out Usage'
               type: CALCULATED
               key: 'snmp.interfaces.out.usage[{#SNMPINDEX}]'
-              delay: 1m
               history: 7d
               value_type: FLOAT
               units: '%'
@@ -1738,7 +1727,6 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.16.{#SNMPINDEX}'
               key: 'snmp.interfaces.out[{#SNMPINDEX}]'
-              delay: 1m
               history: 7d
               units: bps
               preprocessing:
@@ -2198,7 +2186,6 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.105.1.1.1.6.{#SNMPINDEX}'
               key: 'snmp.interfaces.poe.dstatus[{#SNMPINDEX}]'
-              delay: 1m
               history: 7d
               valuemap:
                 name: 'POE Status'
@@ -2638,7 +2625,6 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: .1.3.6.1.4.1.14988.1.1.3.14.0
           key: ros.cpufreq
-          delay: 1m
           history: 7d
           units: Hz
           preprocessing:
@@ -2700,7 +2686,6 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.14988.1.1.3.100.1.3.{#SNMPINDEX}'
               key: 'ros.gauge.value[{#SNMPINDEX}]'
-              delay: 1m
               history: 7d
               value_type: FLOAT
               units: '{#UNIT}'
@@ -3029,7 +3014,6 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.8.{#SNMPINDEX}'
               key: 'vsphere.vm.gueststate[{#SNMPINDEX}]'
-              delay: 1m
               history: 365d
               trends: '0'
               value_type: CHAR
@@ -3072,7 +3056,6 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.6.{#SNMPINDEX}'
               key: 'vsphere.vm.state[{#SNMPINDEX}]'
-              delay: 1m
               history: 365d
               trends: '0'
               value_type: CHAR
@@ -3198,6 +3181,8 @@ zabbix_export:
           name: 'BA - MIB - MAC to IP - IP'
         -
           name: 'BA - Procedure - Update Name'
+        -
+          name: 'BA - SSH - Aruba Config'
       groups:
         -
           name: BA/Profiles/Networking
@@ -3411,6 +3396,49 @@ zabbix_export:
         -
           tag: Type
           value: Profile
+    -
+      uuid: ed7b2d0bb3bc487f85dd64fe636c783e
+      template: 'BA - SSH - Aruba Config'
+      name: 'BA - SSH - Aruba Config'
+      groups:
+        -
+          name: BA/SSH
+      items:
+        -
+          uuid: 4cdfa361733045b8820676671cb01643
+          name: 'Aruba Config'
+          type: HTTP_AGENT
+          key: ssh.config
+          delay: 6h
+          trends: '0'
+          value_type: TEXT
+          inventory_link: SOFTWARE_FULL
+          preprocessing:
+            -
+              type: REGEX
+              parameters:
+                - '[\s\S]*Running configuration:\R\R([\s\S]*)\R\R'
+                - \1
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          timeout: 10s
+          url: '{$SSH_SHIM_URL}'
+          posts: |
+            hostname={HOST.HOST}&username={$ARUBA_SSH_USER}&password={$ARUBA_SSH_PASS}&commands=
+            no page
+            show run
+            @@@
+            {"Expect":"@@@"}
+          request_method: POST
+          tags:
+            -
+              tag: Config
+      tags:
+        -
+          tag: Type
+          value: SSH
     -
       uuid: ccb9478d71394cbf9ca818e33e887c22
       template: 'BA - SSH - MikroTik Config'
