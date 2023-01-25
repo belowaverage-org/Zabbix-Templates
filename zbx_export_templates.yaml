@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-25T18:51:28Z'
+  date: '2023-01-25T19:54:43Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -244,7 +244,7 @@ zabbix_export:
     -
       uuid: 49d106e4ab994d41b8533cccb7a04abf
       template: 'BA - MIB - Aruba'
-      name: 'BA - MIB - Aruba (STATISTICS POWERSUPPLY FAN)'
+      name: 'BA - MIB - Aruba (STATISTICS POWERSUPPLY FAN HP-ICF-CONFIG)'
       groups:
         -
           name: BA/MIBs
@@ -346,6 +346,44 @@ zabbix_export:
             -
               tag: Type
               value: Used
+        -
+          uuid: 5e4b2dafd1994d47b8604d26a2d75af9
+          name: 'Running Config SHA'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.11.2.14.11.5.1.136.4.1.2.0
+          key: shmp.aruba.config.sha.running
+          delay: 15m
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            -
+              tag: Type
+              value: SHA
+        -
+          uuid: 9c9386c0f5c04abd99c9b6ebc5cc2508
+          name: 'Startup Config SHA'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.11.2.14.11.5.1.136.4.1.3.0
+          key: shmp.aruba.config.sha.startup
+          delay: 15m
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          preprocessing:
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            -
+              tag: Type
+              value: SHA
       discovery_rules:
         -
           uuid: 02c13eb8b1d14ff4bbf1687ac279c71b
@@ -3480,6 +3518,17 @@ zabbix_export:
         -
           tag: Type
           value: SSH
+  triggers:
+    -
+      uuid: 0cb2f24a7f724fad988e17ed41f374ee
+      expression: 'last(/BA - MIB - Aruba/shmp.aruba.config.sha.startup)<>last(/BA - MIB - Aruba/shmp.aruba.config.sha.running)'
+      name: 'Config not saved'
+      priority: WARNING
+      description: 'The startup config does not match the running config. Please save the running config to flash.'
+      tags:
+        -
+          tag: Type
+          value: SHA
   graphs:
     -
       uuid: 12e77545f5a8427892619e4f55fc37e0
