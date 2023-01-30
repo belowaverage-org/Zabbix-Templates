@@ -24,3 +24,12 @@ Global Macros:
 * {$ZABSELFKEY}
   * API Key
     * BA - Procedure - Update Name
+* {$ONVIF_SHIM_URL}
+  * URL to ONVIF Shim Instance
+    * BA - ONVIF - Avigilon
+* {$AVIG_CAM_USERNAME}
+  * Avigilon ONVIF Username
+    * BA - ONVIF - Avigilon
+* {$AVIG_CAM_PASSWORD}
+  * Avigilon ONVIF Password
+    * BA - ONVIF - Avigilon
