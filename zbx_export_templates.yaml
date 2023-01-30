@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-30T12:15:00Z'
+  date: '2023-01-30T12:25:53Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -515,7 +515,7 @@ zabbix_export:
                 -
                   operationobject: ITEM_PROTOTYPE
                   operator: LIKE
-                  value: Tempurature
+                  value: Temperature
                   discover: NO_DISCOVER
                 -
                   operationobject: TRIGGER_PROTOTYPE
