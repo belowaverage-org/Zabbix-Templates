@@ -1,10 +1,13 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-30T12:25:53Z'
+  date: '2023-01-30T13:38:37Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
       name: BA/Generic
+    -
+      uuid: 8fdb1680986b48c781ac1ea2a485a917
+      name: BA/HTTP
     -
       uuid: ca9da747aeb34dbcbaacd78655243f3e
       name: BA/Macros
@@ -12,11 +15,17 @@ zabbix_export:
       uuid: 3fdb37c563464c49b24b75703e0038ed
       name: BA/MIBs
     -
+      uuid: 709a337c872146989712a383cb393fa8
+      name: BA/ONVIF
+    -
       uuid: d323af8072864defab6d6e380742fb4d
       name: BA/Procedures
     -
       uuid: b384f4b048b0408a9adfeae61f5574ae
       name: BA/Profiles
+    -
+      uuid: 83b7b6180c974b1680cca7fa1fbac757
+      name: BA/Profiles/Cameras
     -
       uuid: a9ae9cbb57864537879e36c074d112ca
       name: BA/Profiles/Networking
@@ -204,6 +213,210 @@ zabbix_export:
             -
               value: '1'
               newvalue: Up
+    -
+      uuid: f4d0ecadd0e647d3bf034ea2af2cf2b9
+      template: 'BA - HTTP - Axis'
+      name: 'BA - HTTP - Axis'
+      groups:
+        -
+          name: BA/HTTP
+      items:
+        -
+          uuid: d2a61ecc1d0f40c2b51e92acc2321e0d
+          name: 'Device Firmware Version'
+          type: DEPENDENT
+          key: camera.firmware.version
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: OS
+          preprocessing:
+            -
+              type: REGEX
+              parameters:
+                - 'root.Properties.Firmware.Version="(.*)"'
+                - \1
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.parameters
+          tags:
+            -
+              tag: Type
+              value: Firmware
+        -
+          uuid: b55cd1f3182b449c95525eaf00cac1c8
+          name: 'Device Model'
+          type: DEPENDENT
+          key: camera.model
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: MODEL
+          preprocessing:
+            -
+              type: REGEX
+              parameters:
+                - 'root.Brand.ProdNbr="(.*)"'
+                - \1
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.parameters
+          tags:
+            -
+              tag: Type
+              value: Model
+        -
+          uuid: d9a3aac2a16745529f93a65b78f0c274
+          name: 'Device Name'
+          type: DEPENDENT
+          key: camera.name
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: NAME
+          preprocessing:
+            -
+              type: REGEX
+              parameters:
+                - 'root.ImageSource.I0.Name="(.*)"'
+                - \1
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.parameters
+          tags:
+            -
+              tag: Type
+              value: Name
+        -
+          uuid: 95ddd29e014c4505b55c8fb1cd604c0b
+          name: 'Device MAC'
+          type: DEPENDENT
+          key: camera.net.mac
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: MACADDRESS_A
+          preprocessing:
+            -
+              type: REGEX
+              parameters:
+                - 'root.Network.eth0.MACAddress="(.*)"'
+                - \1
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.parameters
+          tags:
+            -
+              tag: Type
+              value: MAC
+        -
+          uuid: ec385938d1354e08876f86565f5d7ccf
+          name: 'Device Parameters'
+          type: HTTP_AGENT
+          key: camera.parameters
+          delay: 15m
+          history: 1h
+          trends: '0'
+          value_type: TEXT
+          authtype: DIGEST
+          username: '{$AXIS_CAM_USERNAME}'
+          password: '{$AXIS_CAM_PASSWORD}'
+          timeout: 30s
+          url: 'http://{HOST.IP}/axis-cgi/admin/paramlist.cgi'
+          tags:
+            -
+              tag: Type
+              value: HTTP
+          triggers:
+            -
+              uuid: d3e13913f3cc4d7381e6be130c70ca79
+              expression: 'nodata(/BA - HTTP - Axis/camera.parameters,60m)=1'
+              name: 'No camera data available'
+              priority: WARNING
+              description: 'Please check the password on the device. It should be set to: {$CAM_PASSWORD}'
+              dependencies:
+                -
+                  name: 'ICMP High Loss'
+                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
+                -
+                  name: 'ICMP Ping Down'
+                  expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+              tags:
+                -
+                  tag: Type
+                  value: HTTP
+        -
+          uuid: ab21bc5de5734e6e8aa6f20a243fa019
+          name: 'Device Sensor'
+          type: DEPENDENT
+          key: camera.sensor
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: TYPE
+          preprocessing:
+            -
+              type: REGEX
+              parameters:
+                - 'root.Image.I0.Appearance.Resolution="(.*)"'
+                - \1
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.parameters
+          tags:
+            -
+              tag: Type
+              value: Sensor
+        -
+          uuid: 1e7e44b7fcb34b32abd25100f9748166
+          name: 'Device Serial'
+          type: DEPENDENT
+          key: camera.serial
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: SERIALNO_A
+          preprocessing:
+            -
+              type: REGEX
+              parameters:
+                - 'root.Properties.System.SerialNumber="(.*)"'
+                - \1
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.parameters
+          tags:
+            -
+              tag: Type
+              value: Serial
+      tags:
+        -
+          tag: Type
+          value: HTTP
     -
       uuid: 02f18dcc823241fe9c718128522f1188
       template: 'BA - Macro - Generic'
@@ -3117,6 +3330,575 @@ zabbix_export:
           tag: Type
           value: MIB
     -
+      uuid: c6bf4572df0a4cc28ced8aed23cec940
+      template: 'BA - ONVIF - Avigilon'
+      name: 'BA - ONVIF - Avigilon'
+      groups:
+        -
+          name: BA/ONVIF
+      items:
+        -
+          uuid: 9c5b4a272bb44a8983ff14bda4c749aa
+          name: 'Device Firmware Version'
+          type: DEPENDENT
+          key: camera.firmware.version
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: OS
+          preprocessing:
+            -
+              type: REGEX
+              parameters:
+                - 'onvif://www.onvif.org/avigilon/firmware/version/(.*?)"'
+                - \1
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.scopes
+          tags:
+            -
+              tag: Type
+              value: Firmware
+        -
+          uuid: 62c9ab8714064b7f91eddae1ca247b10
+          name: 'Device Info'
+          type: HTTP_AGENT
+          key: camera.info
+          delay: 1h
+          history: 3h
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            -
+              type: XML_TO_JSON
+              parameters:
+                - ''
+          timeout: 30s
+          url: '{$ONVIF_SHIM_URL}/{HOST.CONN}'
+          query_fields:
+            -
+              name: user
+              value: '{$AVIG_CAM_USERNAME}'
+            -
+              name: pass
+              value: '{$AVIG_CAM_PASSWORD}'
+          posts: '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tds="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><soap:Body><tds:GetDeviceInformation /></soap:Body></soap:Envelope>'
+          request_method: POST
+          tags:
+            -
+              tag: Type
+              value: ONVIF
+        -
+          uuid: a901ebe015ec41578b6f7265970a7efd
+          name: 'Device Media'
+          type: HTTP_AGENT
+          key: camera.media
+          delay: 1h
+          history: 3h
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            -
+              type: XML_TO_JSON
+              parameters:
+                - ''
+          timeout: 30s
+          url: '{$ONVIF_SHIM_URL}/{HOST.CONN}'
+          query_fields:
+            -
+              name: user
+              value: '{$AVIG_CAM_USERNAME}'
+            -
+              name: pass
+              value: '{$AVIG_CAM_PASSWORD}'
+            -
+              name: path
+              value: /onvif/media_service
+          posts: '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:trt="http://www.onvif.org/ver10/media/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><soap:Body><trt:GetVideoSources /></soap:Body></soap:Envelope>'
+          request_method: POST
+          tags:
+            -
+              tag: Type
+              value: ONVIF
+        -
+          uuid: cd309dfaf45646d681098c866f2ac499
+          name: 'Device Model'
+          type: DEPENDENT
+          key: camera.model
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: MODEL
+          preprocessing:
+            -
+              type: REGEX
+              parameters:
+                - 'onvif://www.onvif.org/hardware/(.*?)"'
+                - \1
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.scopes
+          tags:
+            -
+              tag: Type
+              value: Model
+        -
+          uuid: cbb50b55e58e43799b3619025ea4a604
+          name: 'Device Name'
+          type: DEPENDENT
+          key: camera.name
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: NAME
+          preprocessing:
+            -
+              type: REGEX
+              parameters:
+                - 'onvif://www.onvif.org/name/(.*?)"'
+                - \1
+            -
+              type: STR_REPLACE
+              parameters:
+                - acc/
+                - ''
+            -
+              type: STR_REPLACE
+              parameters:
+                - '%20'
+                - ' '
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.scopes
+          tags:
+            -
+              tag: Type
+              value: Name
+        -
+          uuid: c569bead71ff46c9990ec6ca6ee6238b
+          name: 'Device MAC'
+          type: DEPENDENT
+          key: camera.net.mac
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: MACADDRESS_A
+          preprocessing:
+            -
+              type: REGEX
+              parameters:
+                - 'onvif://www.onvif.org/avigilon/mac/(.{17})'
+                - \1
+            -
+              type: STR_REPLACE
+              parameters:
+                - '-'
+                - ':'
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.scopes
+          tags:
+            -
+              tag: Type
+              value: MAC
+        -
+          uuid: 87a53d70753c474bbb21303663af837f
+          name: 'Device Scopes'
+          type: HTTP_AGENT
+          key: camera.scopes
+          delay: 15m
+          history: 1h
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            -
+              type: XML_TO_JSON
+              parameters:
+                - ''
+          timeout: 30s
+          url: '{$ONVIF_SHIM_URL}/{HOST.CONN}'
+          query_fields:
+            -
+              name: user
+              value: '{$AVIG_CAM_USERNAME}'
+            -
+              name: pass
+              value: '{$AVIG_CAM_PASSWORD}'
+          posts: '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tds="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><soap:Body><tds:GetScopes /><tds:GetDeviceInformation /></soap:Body></soap:Envelope>'
+          request_method: POST
+          tags:
+            -
+              tag: Type
+              value: ONVIF
+          triggers:
+            -
+              uuid: 894908c06a4f42738dd16f954756d551
+              expression: 'nodata(/BA - ONVIF - Avigilon/camera.scopes,60m)=1'
+              name: 'No camera data available'
+              priority: WARNING
+              description: 'Please check the password on the device. It should be set to: {$CAM_PASSWORD}'
+              dependencies:
+                -
+                  name: 'ICMP High Loss'
+                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
+                -
+                  name: 'ICMP Ping Down'
+                  expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+              tags:
+                -
+                  tag: Type
+                  value: ONVIF
+        -
+          uuid: 3eb186a618c14079a2f8d7bc6f5a3f3f
+          name: 'Device Sensor'
+          type: DEPENDENT
+          key: camera.sensor
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: TYPE
+          preprocessing:
+            -
+              type: JAVASCRIPT
+              parameters:
+                - |
+                  var result = '';
+                  var data = JSON.parse(value);
+                  var source = data.Envelope.Body.GetVideoSourcesResponse.VideoSources;
+                  if (data.Envelope.Body.GetVideoSourcesResponse.VideoSources[0] != undefined) { 
+                      source = data.Envelope.Body.GetVideoSourcesResponse.VideoSources[0]; 
+                  }
+                  result += source.Resolution.Width;
+                  result += 'x';
+                  result += source.Resolution.Height;
+                  return result;
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.media
+          tags:
+            -
+              tag: Type
+              value: Sensor
+        -
+          uuid: c469663ea4ea4ad69f8b05bfc4b6e2bb
+          name: 'Device Serial'
+          type: DEPENDENT
+          key: camera.serial
+          delay: '0'
+          history: 7d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: SERIALNO_A
+          preprocessing:
+            -
+              type: JSONPATH
+              parameters:
+                - $.Envelope.Body.GetDeviceInformationResponse.SerialNumber
+            -
+              type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          master_item:
+            key: camera.info
+          tags:
+            -
+              tag: Type
+              value: Serial
+      tags:
+        -
+          tag: Type
+          value: ONVIF
+      dashboards:
+        -
+          uuid: 520e80c0f687421cb23e6c0f3df2ed13
+          name: Avigilon
+          pages:
+            -
+              widgets:
+                -
+                  type: ITEM
+                  x: '4'
+                  'y': '2'
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: decimal_size
+                      value: '10'
+                    -
+                      type: INTEGER
+                      name: value_bold
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: units_bold
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: value_size
+                      value: '30'
+                    -
+                      type: INTEGER
+                      name: units_size
+                      value: '10'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ONVIF - Avigilon'
+                        key: camera.firmware.version
+                -
+                  type: ITEM
+                  'y': '2'
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: decimal_size
+                      value: '10'
+                    -
+                      type: INTEGER
+                      name: value_size
+                      value: '30'
+                    -
+                      type: INTEGER
+                      name: value_bold
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: units_size
+                      value: '10'
+                    -
+                      type: INTEGER
+                      name: units_bold
+                      value: '0'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ONVIF - Avigilon'
+                        key: camera.net.mac
+                -
+                  type: ITEM
+                  width: '12'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: decimal_size
+                      value: '10'
+                    -
+                      type: INTEGER
+                      name: value_size
+                      value: '35'
+                    -
+                      type: INTEGER
+                      name: units_size
+                      value: '10'
+                    -
+                      type: INTEGER
+                      name: units_bold
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: INTEGER
+                      name: desc_v_pos
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: desc_size
+                      value: '30'
+                    -
+                      type: STRING
+                      name: description
+                      value: 'Avigilon Camera'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ONVIF - Avigilon'
+                        key: camera.name
+                -
+                  type: ITEM
+                  x: '8'
+                  'y': '2'
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: decimal_size
+                      value: '10'
+                    -
+                      type: INTEGER
+                      name: value_size
+                      value: '30'
+                    -
+                      type: INTEGER
+                      name: value_bold
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: units_size
+                      value: '10'
+                    -
+                      type: INTEGER
+                      name: units_bold
+                      value: '0'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ONVIF - Avigilon'
+                        key: camera.model
+                -
+                  type: ITEM
+                  'y': '4'
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: decimal_size
+                      value: '10'
+                    -
+                      type: INTEGER
+                      name: value_size
+                      value: '30'
+                    -
+                      type: INTEGER
+                      name: value_bold
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: units_size
+                      value: '10'
+                    -
+                      type: INTEGER
+                      name: units_bold
+                      value: '0'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ONVIF - Avigilon'
+                        key: camera.sensor
+                -
+                  type: ITEM
+                  x: '4'
+                  'y': '4'
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    -
+                      type: INTEGER
+                      name: decimal_size
+                      value: '10'
+                    -
+                      type: INTEGER
+                      name: value_size
+                      value: '30'
+                    -
+                      type: INTEGER
+                      name: value_bold
+                      value: '0'
+                    -
+                      type: INTEGER
+                      name: units_size
+                      value: '10'
+                    -
+                      type: INTEGER
+                      name: units_bold
+                      value: '0'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ONVIF - Avigilon'
+                        key: camera.serial
+                -
+                  type: ITEM
+                  x: '8'
+                  'y': '4'
+                  width: '4'
+                -
+                  type: GRAPH_CLASSIC
+                  x: '12'
+                  width: '12'
+                  height: '6'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: source_type
+                      value: '1'
+    -
       uuid: a63b4d7270ab4e44a4618cc7b23e7049
       template: 'BA - Procedure - Update Name'
       name: 'BA - Procedure - Update Name'
@@ -3191,6 +3973,10 @@ zabbix_export:
                 This device name matches another device with a different IP.
                 
                 Please ensure that the device names are unique.
+              tags:
+                -
+                  tag: Type
+                  value: Procedure
       tags:
         -
           tag: Type
@@ -3231,6 +4017,42 @@ zabbix_export:
       groups:
         -
           name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
+    -
+      uuid: 32d4adb424bf414683487c8d6414bc72
+      template: 'BA - Profile - Avigilon'
+      name: 'BA - Profile - Avigilon'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - ONVIF - Avigilon'
+        -
+          name: 'BA - Procedure - Update Name'
+      groups:
+        -
+          name: BA/Profiles/Cameras
+      tags:
+        -
+          tag: Type
+          value: Profile
+    -
+      uuid: dd62fc36b98043b98668524c168b3787
+      template: 'BA - Profile - Axis'
+      name: 'BA - Profile - Axis'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - HTTP - Axis'
+        -
+          name: 'BA - Procedure - Update Name'
+      groups:
+        -
+          name: BA/Profiles/Cameras
       tags:
         -
           tag: Type
