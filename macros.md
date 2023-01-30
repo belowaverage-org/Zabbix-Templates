@@ -33,3 +33,9 @@ Global Macros:
 * {$AVIG_CAM_PASSWORD}
   * Avigilon ONVIF Password
     * BA - ONVIF - Avigilon
+* {$AXIS_CAM_USERNAME}
+  * Axis HTTP Username
+    * BA - HTTP - Axis
+* {$AXIS_CAM_PASSWORD}
+  * Axis HTTP Password
+    * BA - HTTP - Axis
