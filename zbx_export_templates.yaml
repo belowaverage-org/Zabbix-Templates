@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-01-25T19:54:43Z'
+  date: '2023-01-30T09:33:34Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -14,6 +14,9 @@ zabbix_export:
     -
       uuid: d323af8072864defab6d6e380742fb4d
       name: BA/Procedures
+    -
+      uuid: b384f4b048b0408a9adfeae61f5574ae
+      name: BA/Profiles
     -
       uuid: a9ae9cbb57864537879e36c074d112ca
       name: BA/Profiles/Networking
@@ -239,7 +242,7 @@ zabbix_export:
       macros:
         -
           macro: '{$INTER_FILTER_REGEX}'
-          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$)'
+          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$|br|tif|lo|wifi|wlan|eth\d\d?!|dhcp)'
           description: 'Filters via Name & Alias'
     -
       uuid: 49d106e4ab994d41b8533cccb7a04abf
@@ -3174,6 +3177,10 @@ zabbix_export:
             -
               name: host
               value: '{HOST.HOST}'
+          tags:
+            -
+              tag: Type
+              value: Procedure
           triggers:
             -
               uuid: cf94790245f74d69803a9680c0032f02
@@ -3372,6 +3379,28 @@ zabbix_export:
       groups:
         -
           name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
+    -
+      uuid: 59825d81f28447858af5e9f1425cb800
+      template: 'BA - Profile - Ruckus'
+      name: 'BA - Profile - Ruckus'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - Procedure - Update Name'
+      groups:
+        -
+          name: BA/Profiles
       tags:
         -
           tag: Type
