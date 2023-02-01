@@ -4719,7 +4719,7 @@ zabbix_export:
           triggers:
             -
               uuid: 2fe56d78b3254bbb9535028f50f83ca9
-              expression: 'nodata(/BA - SSH - Aruba Config/ssh.config,1d)=1'
+              expression: 'nodata(/BA - SSH - Aruba Config/ssh.config,3d)=1'
               name: 'Config failed to backup'
               priority: WARNING
               description: 'Check that the SSH user can login to back the configuration up.'
