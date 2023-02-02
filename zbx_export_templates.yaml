@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-02-01T08:14:20Z'
+  date: '2023-02-02T02:43:21Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -1817,7 +1817,7 @@ zabbix_export:
           triggers:
             -
               uuid: 8a90f354f7d8437ebcc6b624f6116407
-              expression: 'last(/BA - MIB - iLO/ilo.bios.status) <> 2'
+              expression: 'last(/BA - MIB - iLO/ilo.bios.status)>=3'
               name: 'BIOS Status'
               priority: HIGH
               tags:
@@ -1827,6 +1827,56 @@ zabbix_export:
                   tag: Type
                   value: Status
       discovery_rules:
+        -
+          uuid: 259907ba7ffb434db9ab561e915ef699
+          name: 'Fan Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#INDEX}, .1.3.6.1.4.1.232.6.2.6.7.1.2, {#PRESENT}, .1.3.6.1.4.1.232.6.2.6.7.1.4]'
+          key: ilo.fan.discovery
+          delay: 1h
+          filter:
+            conditions:
+              -
+                macro: '{#PRESENT}'
+                value: '3'
+                formulaid: A
+          item_prototypes:
+            -
+              uuid: cb685095094047d09132ff16f3cdc909
+              name: 'Fan ({#INDEX}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.6.2.6.7.1.9.{#SNMPINDEX}'
+              key: 'ilo.fan.status[{#SNMPINDEX}]'
+              delay: 15m
+              history: 7d
+              trends: 90d
+              valuemap:
+                name: Condition
+              preprocessing:
+                -
+                  type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                -
+                  tag: Fan
+                  value: '{#INDEX}'
+                -
+                  tag: Type
+                  value: Status
+              trigger_prototypes:
+                -
+                  uuid: c0ea2d1cbf594b8e9386b99bb74cef7c
+                  expression: 'last(/BA - MIB - iLO/ilo.fan.status[{#SNMPINDEX}])>=3'
+                  name: 'Fan ({#INDEX}) Status'
+                  priority: AVERAGE
+                  tags:
+                    -
+                      tag: Fan
+                      value: '{#INDEX}'
+                    -
+                      tag: Type
+                      value: Status
         -
           uuid: 0e2ce50fc37a42339ecce8ff57b64aff
           name: 'Memory Discovery'
@@ -1898,7 +1948,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.232.6.2.9.3.1.4.{#SNMPINDEX}'
               key: 'ilo.psu.status[{#SNMPINDEX}]'
-              delay: 15m
+              delay: 5m
               history: 7d
               trends: 90d
               valuemap:
@@ -1918,7 +1968,7 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: 67085e3c3e4a430d939dfefbb43a9a1a
-                  expression: 'last(/BA - MIB - iLO/ilo.psu.status[{#SNMPINDEX}])<>2'
+                  expression: 'last(/BA - MIB - iLO/ilo.psu.status[{#SNMPINDEX}])>=3'
                   name: 'Power Supply ({#BAY}) Status'
                   priority: HIGH
                   tags:
@@ -2008,7 +2058,7 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: 74e231598873468e8b3657365506fa40
-                  expression: 'last(/BA - MIB - iLO/ilo.temp.status[{#SNMPINDEX}])<>2'
+                  expression: 'last(/BA - MIB - iLO/ilo.temp.status[{#SNMPINDEX}])>=3'
                   name: 'Temperature ({#LOCALE}) Status'
                   priority: HIGH
                   tags:
