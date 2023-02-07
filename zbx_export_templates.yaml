@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-02-02T02:43:21Z'
+  date: '2023-02-07T19:44:40Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -63,7 +63,7 @@ zabbix_export:
             -
               uuid: 77f9ed9ba5d44b938fd34d222cd5c502
               expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
-              name: 'ICMP Ping Down'
+              name: 'Device offline'
               priority: HIGH
               tags:
                 -
@@ -86,11 +86,11 @@ zabbix_export:
             -
               uuid: 7e3ebb73a3e4415a8f69c2ddb2d40edb
               expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
-              name: 'ICMP High Loss'
+              name: 'ICMP Loss >= {$HIGH_LOSS_WARN}%'
               priority: WARNING
               dependencies:
                 -
-                  name: 'ICMP Ping Down'
+                  name: 'Device offline'
                   expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
               tags:
                 -
@@ -118,11 +118,11 @@ zabbix_export:
             -
               uuid: 0b6fa791e1cc4993bd779488cc08fe64
               expression: 'last(/BA - Generic - ICMP/icmppingsec)>={$HIGH_LATENCY_WARN}'
-              name: 'ICMP High Latency'
+              name: 'ICMP Latency >= {$HIGH_LATENCY_WARN}'
               priority: INFO
               dependencies:
                 -
-                  name: 'ICMP Ping Down'
+                  name: 'Device offline'
                   expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
               tags:
                 -
@@ -347,16 +347,16 @@ zabbix_export:
             -
               uuid: d3e13913f3cc4d7381e6be130c70ca79
               expression: 'nodata(/BA - HTTP - Axis/camera.parameters,60m)=1'
-              name: 'No camera data available'
+              name: 'Could not retrieve device parameters via HTTP'
               priority: WARNING
               description: 'Please check the password on the device. It should be set to: {$CAM_PASSWORD}'
               dependencies:
                 -
-                  name: 'ICMP High Loss'
-                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
-                -
-                  name: 'ICMP Ping Down'
+                  name: 'Device offline'
                   expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+                -
+                  name: 'ICMP Loss >= {$HIGH_LOSS_WARN}%'
+                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
               tags:
                 -
                   tag: Type
@@ -483,7 +483,7 @@ zabbix_export:
             -
               uuid: 6b1079669c50408998310050e7d208b4
               expression: 'avg(/BA - MIB - Aruba/cpu.usage,15m)>=90'
-              name: 'CPU Usage >= {$WARN_CPU_USAGE}% for 15 minutes'
+              name: 'CPU Usage >= {$WARN_CPU_USAGE}% for 15m'
               priority: AVERAGE
               tags:
                 -
@@ -630,7 +630,7 @@ zabbix_export:
                 -
                   uuid: 2623bf6494cd42fa8bc84c04e93b1291
                   expression: 'last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=0 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=1 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=3 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=4 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=6'
-                  name: 'Aruba Fan ({#SNMPINDEX}) Issue'
+                  name: 'Aruba Fan ({#SNMPINDEX}) Status Fault'
                   priority: AVERAGE
                   tags:
                     -
@@ -672,7 +672,7 @@ zabbix_export:
                     last(/BA - MIB - Aruba/aruba.psu.status[{#SNMPINDEX}])=4 or
                     last(/BA - MIB - Aruba/aruba.psu.status[{#SNMPINDEX}])=5 or
                     last(/BA - MIB - Aruba/aruba.psu.status[{#SNMPINDEX}])=6
-                  name: 'Aruba PSU ({#SNMPINDEX}) Issue'
+                  name: 'Aruba PSU ({#SNMPINDEX}) Status Fault'
                   priority: AVERAGE
                   tags:
                     -
@@ -835,7 +835,7 @@ zabbix_export:
                 -
                   uuid: 28d8f5392b4f4a6099d0ee260d504be2
                   expression: 'last(/BA - MIB - Entity/entity.alarm[{#SNMPINDEX}])<>0'
-                  name: 'Entity ({#NAME}) Alarm'
+                  name: 'Entity ({#NAME}) Alarm Fault'
                   priority: HIGH
                   description: 'An alarm has been triggered!'
                   tags:
@@ -1318,7 +1318,7 @@ zabbix_export:
               uuid: b02a2f213a7b4df28c734ddd3e4415da
               expression: 'change(/BA - MIB - Generic/snmp.name)=1'
               recovery_mode: NONE
-              name: 'SNMP Name Changed'
+              name: 'Device name changed'
               priority: INFO
               manual_close: 'YES'
               tags:
@@ -1370,7 +1370,7 @@ zabbix_export:
               uuid: ed77aa0f513b454d90a231185baef9be
               expression: 'last(/BA - MIB - Generic/snmp.uptime,#1)<last(/BA - MIB - Generic/snmp.uptime,#2)'
               recovery_mode: NONE
-              name: 'SNMP Device Rebooted'
+              name: 'Device rebooted'
               priority: INFO
               manual_close: 'YES'
               tags:
@@ -1818,7 +1818,7 @@ zabbix_export:
             -
               uuid: 8a90f354f7d8437ebcc6b624f6116407
               expression: 'last(/BA - MIB - iLO/ilo.bios.status)>=3'
-              name: 'BIOS Status'
+              name: 'BIOS Status Fault'
               priority: HIGH
               tags:
                 -
@@ -1868,7 +1868,7 @@ zabbix_export:
                 -
                   uuid: c0ea2d1cbf594b8e9386b99bb74cef7c
                   expression: 'last(/BA - MIB - iLO/ilo.fan.status[{#SNMPINDEX}])>=3'
-                  name: 'Fan ({#INDEX}) Status'
+                  name: 'Fan ({#INDEX}) Status Fault'
                   priority: AVERAGE
                   tags:
                     -
@@ -1925,7 +1925,7 @@ zabbix_export:
                     last(/BA - MIB - iLO/ilo.memory.status[{#SNMPINDEX}])=13 or
                     last(/BA - MIB - iLO/ilo.memory.status[{#SNMPINDEX}])=14 or
                     last(/BA - MIB - iLO/ilo.memory.status[{#SNMPINDEX}])=15
-                  name: 'Memory Module ({#LOCATION}) Status'
+                  name: 'Memory Module ({#LOCATION}) Status Fault'
                   priority: HIGH
                   tags:
                     -
@@ -1969,7 +1969,7 @@ zabbix_export:
                 -
                   uuid: 67085e3c3e4a430d939dfefbb43a9a1a
                   expression: 'last(/BA - MIB - iLO/ilo.psu.status[{#SNMPINDEX}])>=3'
-                  name: 'Power Supply ({#BAY}) Status'
+                  name: 'Power Supply ({#BAY}) Status Fault'
                   priority: HIGH
                   tags:
                     -
@@ -2059,7 +2059,7 @@ zabbix_export:
                 -
                   uuid: 74e231598873468e8b3657365506fa40
                   expression: 'last(/BA - MIB - iLO/ilo.temp.status[{#SNMPINDEX}])>=3'
-                  name: 'Temperature ({#LOCALE}) Status'
+                  name: 'Temperature ({#LOCALE}) Status Fault'
                   priority: HIGH
                   tags:
                     -
@@ -2338,12 +2338,15 @@ zabbix_export:
                 -
                   uuid: 5436374b9ed946e79cb2bf75e02f30e4
                   expression: 'changecount(/BA - MIB - Interfaces/snmp.interfaces.operstatus[{#SNMPINDEX}],{$INTER_FLAP_WARN_TIME},"dec")>={$INTER_FLAP_WARN_COUNT}'
-                  name: 'High Flap on Interface: {#NAME}: {#ALIAS}'
+                  name: 'Interface ({#NAME}: {#ALIAS}) Flapped >= {$INTER_FLAP_WARN_COUNT}x Within {$INTER_FLAP_WARN_TIME}'
                   priority: WARNING
                   tags:
                     -
                       tag: Interface
                       value: '{#NAME}'
+                    -
+                      tag: Type
+                      value: Status
             -
               uuid: 8767d44b389a4d39bfa7cdd9bef3e19d
               name: 'Interface ({#NAME}: {#ALIAS}) Out Errors'
@@ -2444,21 +2447,27 @@ zabbix_export:
             -
               uuid: 62ed56a4a893446fa8515de4852ca5fa
               expression: 'sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#SNMPINDEX}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#SNMPINDEX}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN}'
-              name: 'Errors on Interface: {#NAME}: {#ALIAS}'
+              name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN}'
               priority: WARNING
               tags:
                 -
                   tag: Interface
                   value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Errors
             -
               uuid: b429247383cd421db1f0e4471e286c98
               expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.in.usage[{#SNMPINDEX}])>={$INTER_USAGE_WARN} or last(/BA - MIB - Interfaces/snmp.interfaces.out.usage[{#SNMPINDEX}])>={$INTER_USAGE_WARN}'
-              name: 'High Usage on Interface: {#NAME}: {#ALIAS}'
+              name: 'Interface ({#NAME}: {#ALIAS}) Usage >= %{$INTER_USAGE_WARN}'
               priority: WARNING
               tags:
                 -
                   tag: Interface
                   value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Usage
           graph_prototypes:
             -
               uuid: 777a7a1a8c8d49aea746670c7dacd759
@@ -2876,11 +2885,17 @@ zabbix_export:
                 -
                   uuid: c0a0fe136b29476a883a005dddc2a666
                   expression: 'last(/BA - MIB - Interfaces POE/snmp.interfaces.poe.dstatus[{#SNMPINDEX}])=4 or last(/BA - MIB - Interfaces POE/snmp.interfaces.poe.dstatus[{#SNMPINDEX}])=6'
-                  name: 'POE Fault on Interface: {#NAME}: {#ALIAS}'
+                  name: 'Interface ({#NAME}: {#ALIAS}) POE Detection Fault'
                   priority: WARNING
                   tags:
                     -
+                      tag: Interface
+                      value: '{#NAME}'
+                    -
                       tag: POE
+                    -
+                      tag: Type
+                      value: Status
           preprocessing:
             -
               type: JAVASCRIPT
@@ -3578,16 +3593,16 @@ zabbix_export:
           triggers:
             -
               uuid: f9883375c125492abab9ce4181caf353
-              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>300'
-              name: 'CPU Oversubscribed 300%'
+              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=300'
+              name: 'CPU Subscription >= 300%'
               priority: INFO
               dependencies:
                 -
-                  name: 'CPU Oversubscribed 400%'
-                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>400'
+                  name: 'CPU Subscription >= 400%'
+                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=400'
                 -
-                  name: 'CPU Oversubscribed 500%'
-                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>500'
+                  name: 'CPU Subscription >= 500%'
+                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
               tags:
                 -
                   tag: CPU
@@ -3596,13 +3611,13 @@ zabbix_export:
                   value: Usage
             -
               uuid: 885272fd23404a5b9fe53aef2b7de707
-              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>400'
-              name: 'CPU Oversubscribed 400%'
+              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=400'
+              name: 'CPU Subscription >= 400%'
               priority: WARNING
               dependencies:
                 -
-                  name: 'CPU Oversubscribed 500%'
-                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>500'
+                  name: 'CPU Subscription >= 500%'
+                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
               tags:
                 -
                   tag: CPU
@@ -3611,8 +3626,8 @@ zabbix_export:
                   value: Usage
             -
               uuid: 881639b9a7284eac98a5c31b649b4e6c
-              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>500'
-              name: 'CPU Oversubscribed 500%'
+              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
+              name: 'CPU Subscription >= 500%'
               priority: AVERAGE
               tags:
                 -
@@ -3970,16 +3985,16 @@ zabbix_export:
             -
               uuid: 894908c06a4f42738dd16f954756d551
               expression: 'nodata(/BA - ONVIF - Avigilon/camera.scopes,60m)=1'
-              name: 'No camera data available'
+              name: 'Could not retrieve device parameters via ONVIF'
               priority: WARNING
               description: 'Please check the password on the device. It should be set to: {$CAM_PASSWORD}'
               dependencies:
                 -
-                  name: 'ICMP High Loss'
-                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
-                -
-                  name: 'ICMP Ping Down'
+                  name: 'Device offline'
                   expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+                -
+                  name: 'ICMP Loss >= {$HIGH_LOSS_WARN}%'
+                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
               tags:
                 -
                   tag: Type
@@ -4387,7 +4402,7 @@ zabbix_export:
             -
               uuid: cf94790245f74d69803a9680c0032f02
               expression: 'find(/BA - Procedure - Update Name/update.via.inventory,,"regexp","^.*Host with the same visible name.*$")=1'
-              name: 'Visible Name Duplicate'
+              name: 'Device name not unique'
               priority: INFO
               description: |
                 This device name matches another device with a different IP.
@@ -4770,12 +4785,12 @@ zabbix_export:
             -
               uuid: 2fe56d78b3254bbb9535028f50f83ca9
               expression: 'nodata(/BA - SSH - Aruba Config/ssh.config,3d)=1'
-              name: 'Config failed to backup'
+              name: 'Could not retrieve configuration via SSH'
               priority: WARNING
               description: 'Check that the SSH user can login to back the configuration up.'
               dependencies:
                 -
-                  name: 'ICMP Ping Down'
+                  name: 'Device offline'
                   expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
               tags:
                 -
@@ -4815,7 +4830,7 @@ zabbix_export:
     -
       uuid: 0cb2f24a7f724fad988e17ed41f374ee
       expression: 'last(/BA - MIB - Aruba/snmp.aruba.config.sha.startup)<>last(/BA - MIB - Aruba/snmp.aruba.config.sha.running)'
-      name: 'Config not saved'
+      name: 'Configuration not saved'
       priority: WARNING
       description: 'The startup config does not match the running config. Please save the running config to flash.'
       tags:
