@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-02-07T19:44:40Z'
+  date: '2023-02-08T19:15:55Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -85,8 +85,8 @@ zabbix_export:
           triggers:
             -
               uuid: 7e3ebb73a3e4415a8f69c2ddb2d40edb
-              expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
-              name: 'ICMP Loss >= {$HIGH_LOSS_WARN}%'
+              expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$ICMP_HIGH_LOSS_WARN}'
+              name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
               priority: WARNING
               dependencies:
                 -
@@ -117,8 +117,8 @@ zabbix_export:
           triggers:
             -
               uuid: 0b6fa791e1cc4993bd779488cc08fe64
-              expression: 'last(/BA - Generic - ICMP/icmppingsec)>={$HIGH_LATENCY_WARN}'
-              name: 'ICMP Latency >= {$HIGH_LATENCY_WARN}'
+              expression: 'last(/BA - Generic - ICMP/icmppingsec)>={$ICMP_HIGH_LATENCY_WARN}'
+              name: 'ICMP Latency >= {$ICMP_HIGH_LATENCY_WARN}'
               priority: INFO
               dependencies:
                 -
@@ -131,15 +131,6 @@ zabbix_export:
         -
           tag: Type
           value: Generic
-      macros:
-        -
-          macro: '{$HIGH_LATENCY_WARN}'
-          value: '500'
-          description: 'In MS'
-        -
-          macro: '{$HIGH_LOSS_WARN}'
-          value: '50'
-          description: 'In %'
       dashboards:
         -
           uuid: fd7f3696289d4db0a96b6e8a9b22bd76
@@ -349,14 +340,14 @@ zabbix_export:
               expression: 'nodata(/BA - HTTP - Axis/camera.parameters,60m)=1'
               name: 'Could not retrieve device parameters via HTTP'
               priority: WARNING
-              description: 'Please check the password on the device. It should be set to: {$CAM_PASSWORD}'
+              description: 'Please check the password on the device.'
               dependencies:
                 -
                   name: 'Device offline'
                   expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
                 -
-                  name: 'ICMP Loss >= {$HIGH_LOSS_WARN}%'
-                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
+                  name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
+                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$ICMP_HIGH_LOSS_WARN}'
               tags:
                 -
                   tag: Type
@@ -430,15 +421,31 @@ zabbix_export:
           value: Macro
       macros:
         -
-          macro: '{$WARN_CPU_USAGE}'
+          macro: '{$CPU_HIGH_AVG_TIME_WARN}'
+          value: 15m
+          description: 'Amount of time the percentage must be over to alert.'
+        -
+          macro: '{$CPU_USAGE_WARN}'
           value: '90'
           description: 'Percentage to trigger a CPU usage alert.'
         -
-          macro: '{$WARN_MEM_USAGE}'
+          macro: '{$DISK_HIGH_AVG_PERC_WARN}'
+          value: '95'
+          description: 'Disk space usage warn threshold.'
+        -
+          macro: '{$ICMP_HIGH_LATENCY_WARN}'
+          value: '500'
+          description: 'Ping time in MS'
+        -
+          macro: '{$ICMP_HIGH_LOSS_WARN}'
+          value: '50'
+          description: 'Percentage of ICMP loss to warn.'
+        -
+          macro: '{$MEM_USAGE_WARN}'
           value: '90'
           description: 'Percentage to trigger a memory usage alert.'
         -
-          macro: '{$WARN_TEMP_C}'
+          macro: '{$TEMP_C_WARN}'
           value: '70'
           description: 'Temp in Celsius to trigger an alert.'
     -
@@ -454,9 +461,33 @@ zabbix_export:
           value: Macro
       macros:
         -
+          macro: '{$INTER_ERROR_WARN}'
+          value: '50'
+          description: 'The count of errors allowed on an interface.'
+        -
+          macro: '{$INTER_ERROR_WARN_TIME}'
+          value: 5m
+          description: 'The timeframe for counting errors.'
+        -
           macro: '{$INTER_FILTER_REGEX}'
           value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$|br|tif|lo|wifi|wlan|eth\d\d?!|dhcp)'
           description: 'Filters via Name & Alias'
+        -
+          macro: '{$INTER_FLAP_WARN_COUNT}'
+          value: '3'
+          description: 'The count of flaps allowed on an interface.'
+        -
+          macro: '{$INTER_FLAP_WARN_TIME}'
+          value: 30m
+          description: 'The timeframe for counting interface flaps.'
+        -
+          macro: '{$INTER_UPLINK_LIMIT}'
+          value: '10'
+          description: 'Limit on MACs that can be discovered before an interface is considered an uplink.'
+        -
+          macro: '{$INTER_USAGE_WARN}'
+          value: '90'
+          description: 'The usage threshold on an interface in percent.'
     -
       uuid: 49d106e4ab994d41b8533cccb7a04abf
       template: 'BA - MIB - Aruba'
@@ -482,8 +513,8 @@ zabbix_export:
           triggers:
             -
               uuid: 6b1079669c50408998310050e7d208b4
-              expression: 'avg(/BA - MIB - Aruba/cpu.usage,15m)>=90'
-              name: 'CPU Usage >= {$WARN_CPU_USAGE}% for 15m'
+              expression: 'avg(/BA - MIB - Aruba/cpu.usage,{$CPU_HIGH_AVG_TIME_WARN})>={$CPU_USAGE_WARN}'
+              name: 'CPU Usage >= {$CPU_USAGE_WARN}% for {$CPU_HIGH_AVG_TIME_WARN}'
               priority: AVERAGE
               tags:
                 -
@@ -534,8 +565,8 @@ zabbix_export:
           triggers:
             -
               uuid: af7039dacfbc4facbe0677c9b402d06e
-              expression: 'last(/BA - MIB - Aruba/memory.usage)>={$WARN_CPU_USAGE}'
-              name: 'Memory Usage >= {$WARN_MEM_USAGE}%'
+              expression: 'last(/BA - MIB - Aruba/memory.usage)>={$CPU_USAGE_WARN}'
+              name: 'Memory Usage >= {$MEM_USAGE_WARN}%'
               priority: AVERAGE
               tags:
                 -
@@ -700,8 +731,8 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: a8d0b6bb5c5343a2a130dd8bc39a0f33
-                  expression: 'last(/BA - MIB - Aruba/aruba.psu.temp[{#SNMPINDEX}])>={$WARN_TEMP_C}'
-                  name: 'Aruba PSU ({#SNMPINDEX}) Temperature >= {$WARN_TEMP_C}C'
+                  expression: 'last(/BA - MIB - Aruba/aruba.psu.temp[{#SNMPINDEX}])>={$TEMP_C_WARN}'
+                  name: 'Aruba PSU ({#SNMPINDEX}) Temperature >= {$TEMP_C_WARN}C'
                   priority: AVERAGE
                   tags:
                     -
@@ -1420,8 +1451,8 @@ zabbix_export:
           triggers:
             -
               uuid: 54befd1674e64270b7bc9876c05d5204
-              expression: 'last(/BA - MIB - Host Resources/cpu.usage)>={$WARN_CPU_USAGE}'
-              name: 'CPU Usage >= {$WARN_CPU_USAGE}%'
+              expression: 'avg(/BA - MIB - Host Resources/cpu.usage,{$CPU_USAGE_WARN})>={$CPU_USAGE_WARN}'
+              name: 'CPU Usage >= {$CPU_USAGE_WARN}% for {$CPU_HIGH_AVG_TIME_WARN}'
               priority: AVERAGE
               tags:
                 -
@@ -1447,8 +1478,8 @@ zabbix_export:
           triggers:
             -
               uuid: a677c03f901c4659a6cf8145379883c0
-              expression: 'last(/BA - MIB - Host Resources/memory.usage)>={$WARN_MEM_USAGE}'
-              name: 'Memory Usage >= {$WARN_MEM_USAGE}%'
+              expression: 'last(/BA - MIB - Host Resources/memory.usage)>={$MEM_USAGE_WARN}'
+              name: 'Memory Usage >= {$MEM_USAGE_WARN}%'
               priority: AVERAGE
               tags:
                 -
@@ -1693,23 +1724,6 @@ zabbix_export:
         -
           tag: Type
           value: MIB
-      macros:
-        -
-          macro: '{$CPU_HIGH_AVG_PERC_WARN}'
-          value: '90'
-          description: 'Percentage to warn.'
-        -
-          macro: '{$CPU_HIGH_AVG_TIME_WARN}'
-          value: 30m
-          description: 'Timespan to average.'
-        -
-          macro: '{$DISK_HIGH_AVG_PERC_WARN}'
-          value: '90'
-          description: 'Percentage to warn.'
-        -
-          macro: '{$MEM_HIGH_AVG_PERC_WARN}'
-          value: '90'
-          description: 'Percentage to warn.'
       dashboards:
         -
           uuid: 230ad7e9ab814c76a271c4d937cb0e4f
@@ -2459,7 +2473,7 @@ zabbix_export:
             -
               uuid: b429247383cd421db1f0e4471e286c98
               expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.in.usage[{#SNMPINDEX}])>={$INTER_USAGE_WARN} or last(/BA - MIB - Interfaces/snmp.interfaces.out.usage[{#SNMPINDEX}])>={$INTER_USAGE_WARN}'
-              name: 'Interface ({#NAME}: {#ALIAS}) Usage >= %{$INTER_USAGE_WARN}'
+              name: 'Interface ({#NAME}: {#ALIAS}) Usage >= {$INTER_USAGE_WARN}%'
               priority: WARNING
               tags:
                 -
@@ -2504,26 +2518,6 @@ zabbix_export:
         -
           tag: Type
           value: MIB
-      macros:
-        -
-          macro: '{$INTER_ERROR_WARN}'
-          value: '100'
-          description: '# of bps to warn in the last 5 minutes.'
-        -
-          macro: '{$INTER_ERROR_WARN_TIME}'
-          value: 5m
-        -
-          macro: '{$INTER_FLAP_WARN_COUNT}'
-          value: '3'
-          description: 'Flaps to trigger a warning.'
-        -
-          macro: '{$INTER_FLAP_WARN_TIME}'
-          value: 30m
-          description: 'Duration to count flaps.'
-        -
-          macro: '{$INTER_USAGE_WARN}'
-          value: '95'
-          description: '%'
       dashboards:
         -
           uuid: 9f66f49a16914a42b4731103a16d816f
@@ -2718,7 +2712,7 @@ zabbix_export:
                       if (port['{#ALIAS}'] == undefined) return;
                       var portResult = [];
                       jvalue.forEach(function(address) {
-                          if (portResult.length > {$UPLINK_LIMIT}) return;
+                          if (portResult.length > {$INTER_UPLINK_LIMIT}) return;
                           if (address['{#ADDR}'] == undefined) return;
                           if (address['{#PORT}'] == port['{#SNMPINDEX}']) {
                               var newAddrParts = [];
@@ -2738,7 +2732,7 @@ zabbix_export:
                               portResult.push(obj);
                           }
                       });
-                      if (portResult.length > 0 && portResult.length <= {$UPLINK_LIMIT}) {
+                      if (portResult.length > 0 && portResult.length <= {$INTER_UPLINK_LIMIT}) {
                           portResult.forEach(function(item) {
                               result.push(item);
                           });
@@ -2794,11 +2788,6 @@ zabbix_export:
         -
           tag: Type
           value: MIB
-      macros:
-        -
-          macro: '{$UPLINK_LIMIT}'
-          value: '10'
-          description: 'The max addresses that can be on a port before the port is considered an uplink and therefore not scanned.'
       valuemaps:
         -
           uuid: 4832488ec33a470b8f7ee84221ceb82b
@@ -3395,8 +3384,8 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: 8bbeacb4fa7b429aa0cc8c0e917c0991
-                  expression: 'last(/BA - MIB - MikroTik/ros.gauge.value[{#SNMPINDEX}])>={$WARN_TEMP_C}'
-                  name: 'Gauge ({#NAME}) {#UNIT} Temperature >= {$WARN_TEMP_C}C'
+                  expression: 'last(/BA - MIB - MikroTik/ros.gauge.value[{#SNMPINDEX}])>={$TEMP_C_WARN}'
+                  name: 'Gauge ({#NAME}) {#UNIT} Temperature >= {$TEMP_C_WARN}C'
                   priority: AVERAGE
                   tags:
                     -
@@ -3987,14 +3976,14 @@ zabbix_export:
               expression: 'nodata(/BA - ONVIF - Avigilon/camera.scopes,60m)=1'
               name: 'Could not retrieve device parameters via ONVIF'
               priority: WARNING
-              description: 'Please check the password on the device. It should be set to: {$CAM_PASSWORD}'
+              description: 'Please check the password on the device.'
               dependencies:
                 -
                   name: 'Device offline'
                   expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
                 -
-                  name: 'ICMP Loss >= {$HIGH_LOSS_WARN}%'
-                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$HIGH_LOSS_WARN}'
+                  name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
+                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$ICMP_HIGH_LOSS_WARN}'
               tags:
                 -
                   tag: Type
@@ -4464,6 +4453,8 @@ zabbix_export:
         -
           name: 'BA - Generic - ICMP'
         -
+          name: 'BA - Macro - Generic'
+        -
           name: 'BA - ONVIF - Avigilon'
         -
           name: 'BA - Procedure - Update Name'
@@ -4484,6 +4475,8 @@ zabbix_export:
         -
           name: 'BA - HTTP - Axis'
         -
+          name: 'BA - Macro - Generic'
+        -
           name: 'BA - Procedure - Update Name'
       groups:
         -
@@ -4499,6 +4492,8 @@ zabbix_export:
       templates:
         -
           name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
         -
           name: 'BA - Macro - Interfaces'
         -
@@ -4525,6 +4520,8 @@ zabbix_export:
       templates:
         -
           name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
         -
           name: 'BA - Macro - Interfaces'
         -
@@ -4646,6 +4643,8 @@ zabbix_export:
         -
           name: 'BA - Generic - ICMP'
         -
+          name: 'BA - Macro - Generic'
+        -
           name: 'BA - Macro - Interfaces'
         -
           name: 'BA - MIB - Generic'
@@ -4669,6 +4668,8 @@ zabbix_export:
       templates:
         -
           name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
         -
           name: 'BA - Macro - Interfaces'
         -
