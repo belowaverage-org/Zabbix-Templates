@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-03-13T14:40:18Z'
+  date: '2023-03-13T14:48:34Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -1513,7 +1513,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - Generic/snmp.uptime,#1)<last(/BA - MIB - Generic/snmp.uptime,#2)'
               recovery_mode: NONE
               name: 'Device rebooted'
-              priority: INFO
+              priority: AVERAGE
               manual_close: 'YES'
               tags:
                 -
