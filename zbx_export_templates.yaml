@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-03-13T14:48:34Z'
+  date: '2023-03-13T15:32:16Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -442,7 +442,7 @@ zabbix_export:
           description: 'Percentage of ICMP loss to warn.'
         -
           macro: '{$LOOP_PROTECT_TIMER}'
-          value: '5'
+          value: '300'
           description: 'What the loop protect timer should be set too in seconds.'
         -
           macro: '{$MEM_USAGE_WARN}'
@@ -2731,7 +2731,7 @@ zabbix_export:
                   uuid: 60f25051805144acbd7e015fda7f7e7c
                   expression: 'last(/BA - MIB - Interfaces - Aruba/snmp.interfaces.aruba.loopdetected.status[{#SNMPINDEX}])=1'
                   name: 'Interface ({#NAME}: {#ALIAS}) Loop Detected'
-                  priority: HIGH
+                  priority: AVERAGE
                   description: 'A loop has been detected on this port!'
                   tags:
                     -
