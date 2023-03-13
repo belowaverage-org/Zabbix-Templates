@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-03-13T16:38:04Z'
+  date: '2023-03-13T16:47:00Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -445,9 +445,9 @@ zabbix_export:
           value: '300'
           description: 'What the loop protect timer should be set too in seconds.'
         -
-          macro: '{$LOOP_PROTECT_TIMER_DOUBLE}'
-          value: '600'
-          description: 'What the loop protect timer should be set too in seconds times two.'
+          macro: '{$LOOP_PROTECT_TIMER_WARN}'
+          value: '1800'
+          description: 'Loop protect detect interval. How many seconds since the last loop should trigger an alert?'
         -
           macro: '{$MEM_USAGE_WARN}'
           value: '90'
@@ -2731,9 +2731,9 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: 3add992e000848a29c0808061e524b72
-                  expression: 'changecount(/BA - MIB - Interfaces - Aruba/snmp.interfaces.aruba.loopdetected.status[{#SNMPINDEX}],{$LOOP_PROTECT_TIMER_DOUBLE},"inc")>0'
+                  expression: 'changecount(/BA - MIB - Interfaces - Aruba/snmp.interfaces.aruba.loopdetected.status[{#SNMPINDEX}],{$LOOP_PROTECT_TIMER_WARN},"inc")>0'
                   name: 'Interface ({#NAME}: {#ALIAS}) Loop Detected'
-                  priority: AVERAGE
+                  priority: HIGH
                   description: 'A loop has been detected on this port!'
                   tags:
                     -
@@ -2748,17 +2748,6 @@ zabbix_export:
         -
           tag: Type
           value: MIB
-      valuemaps:
-        -
-          uuid: e2de721ce9284480becb8755327cfbe0
-          name: 'Loop Detected'
-          mappings:
-            -
-              value: '1'
-              newvalue: 'Yes'
-            -
-              value: '2'
-              newvalue: 'No'
     -
       uuid: e610e67b64ae4a89b9838318c002d244
       template: 'BA - MIB - Interfaces LLDP'
