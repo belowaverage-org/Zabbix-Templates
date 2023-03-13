@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-03-13T12:14:51Z'
+  date: '2023-03-13T14:40:18Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -441,6 +441,10 @@ zabbix_export:
           value: '50'
           description: 'Percentage of ICMP loss to warn.'
         -
+          macro: '{$LOOP_PROTECT_TIMER}'
+          value: '5'
+          description: 'What the loop protect timer should be set too in seconds.'
+        -
           macro: '{$MEM_USAGE_WARN}'
           value: '90'
           description: 'Percentage to trigger a memory usage alert.'
@@ -491,7 +495,7 @@ zabbix_export:
     -
       uuid: 49d106e4ab994d41b8533cccb7a04abf
       template: 'BA - MIB - Aruba'
-      name: 'BA - MIB - Aruba (STATISTICS POWERSUPPLY FAN HP-ICF-CONFIG)'
+      name: 'BA - MIB - Aruba (STATISTICS POWERSUPPLY FAN HP-ICF-CONFIG HP-ICF-BRIDGE)'
       groups:
         -
           name: BA/MIBs
@@ -658,7 +662,7 @@ zabbix_export:
             -
               uuid: ace8b81ed191423eb5c11ef7dcb577c4
               expression: 'last(/BA - MIB - Aruba/snmp.aruba.loopprotect.status)=2'
-              name: 'Loop Protect Disabled'
+              name: 'Loop Protect disabled'
               priority: INFO
               tags:
                 -
@@ -667,6 +671,36 @@ zabbix_export:
                 -
                   tag: Type
                   value: Status
+        -
+          uuid: 7d4f92aaf4d24a6d9897fe7a55b4e91b
+          name: 'Loop Protect Timer'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.11.2.14.11.5.1.12.1.5.1.3.0
+          key: snmp.aruba.loopprotect.timer
+          delay: 1h
+          history: 7d
+          units: seconds
+          tags:
+            -
+              tag: Config
+              value: 'Loop Protect'
+            -
+              tag: Type
+              value: Seconds
+          triggers:
+            -
+              uuid: b4e904ee82e5466bbf04d14ae07954ef
+              expression: 'last(/BA - MIB - Aruba/snmp.aruba.loopprotect.timer)<>{$LOOP_PROTECT_TIMER}'
+              name: 'Loop Protect Timer not set to {$LOOP_PROTECT_TIMER}s'
+              priority: INFO
+              description: 'Loop Protect Timer is not set to {$LOOP_PROTECT_TIMER} seconds.'
+              tags:
+                -
+                  tag: Config
+                  value: 'Loop Protect'
+                -
+                  tag: Type
+                  value: Seconds
         -
           uuid: 98e32926ace9445b9694a8b13559a1a1
           name: 'Spanning Tree Status'
@@ -689,7 +723,7 @@ zabbix_export:
             -
               uuid: c138a27225a84c9a9e7115c542fa80d6
               expression: 'last(/BA - MIB - Aruba/snmp.aruba.rstp.status)=1'
-              name: 'Spanning Tree Enabled'
+              name: 'Spanning Tree enabled'
               priority: INFO
               tags:
                 -
@@ -1909,7 +1943,7 @@ zabbix_export:
             -
               uuid: 8a90f354f7d8437ebcc6b624f6116407
               expression: 'last(/BA - MIB - iLO/ilo.bios.status)>=3'
-              name: 'BIOS Status Fault'
+              name: 'BIOS Status fault'
               priority: HIGH
               tags:
                 -
