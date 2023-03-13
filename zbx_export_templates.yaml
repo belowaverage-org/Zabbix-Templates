@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-03-13T15:32:16Z'
+  date: '2023-03-13T16:28:03Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -2710,13 +2710,11 @@ zabbix_export:
           item_prototypes:
             -
               uuid: 6f074bb7eaf6440b9f60faae0eba55cb
-              name: 'Interface ({#NAME}: {#ALIAS}) Loop Detected'
+              name: 'Interface ({#NAME}: {#ALIAS}) Loop Detection Count'
               type: SNMP_AGENT
-              snmp_oid: '.1.3.6.1.4.1.11.2.14.11.5.1.12.1.5.2.1.1.2.{#SNMPINDEX}'
+              snmp_oid: '.1.3.6.1.4.1.11.2.14.11.5.1.12.1.5.2.1.1.4.{#SNMPINDEX}'
               key: 'snmp.interfaces.aruba.loopdetected.status[{#SNMPINDEX}]'
               history: 7d
-              valuemap:
-                name: 'Loop Detected'
               tags:
                 -
                   tag: Interface
@@ -2725,11 +2723,11 @@ zabbix_export:
                   tag: 'Loop Detected'
                 -
                   tag: Type
-                  value: Status
+                  value: Count
               trigger_prototypes:
                 -
-                  uuid: 60f25051805144acbd7e015fda7f7e7c
-                  expression: 'last(/BA - MIB - Interfaces - Aruba/snmp.interfaces.aruba.loopdetected.status[{#SNMPINDEX}])=1'
+                  uuid: 3add992e000848a29c0808061e524b72
+                  expression: 'changecount(/BA - MIB - Interfaces - Aruba/snmp.interfaces.aruba.loopdetected.status[{#SNMPINDEX}],{$LOOP_PROTECT_TIMER},"inc")>0'
                   name: 'Interface ({#NAME}: {#ALIAS}) Loop Detected'
                   priority: AVERAGE
                   description: 'A loop has been detected on this port!'
