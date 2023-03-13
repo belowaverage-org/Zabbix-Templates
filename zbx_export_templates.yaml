@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-03-06T19:51:28Z'
+  date: '2023-03-13T12:14:51Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -2647,6 +2647,7 @@ zabbix_export:
           key: snmp.interfaces.loopprotect.discovery
           delay: 6h
           filter:
+            evaltype: AND
             conditions:
               -
                 macro: '{#ALIAS}'
@@ -2657,16 +2658,20 @@ zabbix_export:
                 macro: '{#NAME}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: C
+                formulaid: D
               -
                 macro: '{#NAME}'
                 value: '^(Vl|Bl|Nu).*$'
                 operator: NOT_MATCHES_REGEX
-                formulaid: D
+                formulaid: E
+              -
+                macro: '{#ENABLED}'
+                operator: EXISTS
+                formulaid: B
               -
                 macro: '{#ENABLED}'
                 value: '1'
-                formulaid: B
+                formulaid: C
           lifetime: 1d
           item_prototypes:
             -
