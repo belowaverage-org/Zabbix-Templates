@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-03-13T16:47:00Z'
+  date: '2023-03-14T14:40:31Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -478,7 +478,7 @@ zabbix_export:
           description: 'The timeframe for counting errors.'
         -
           macro: '{$INTER_FILTER_REGEX}'
-          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$|br|tif|lo|wifi|wlan|eth\d\d?!|dhcp)'
+          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$|br|tif|lo|wifi|wlan|eth\d\d?!|dhcp|VLAN)'
           description: 'Filters via Name & Alias'
         -
           macro: '{$INTER_FLAP_WARN_COUNT}'
