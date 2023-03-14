@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.2'
-  date: '2023-03-14T14:40:31Z'
+  date: '2023-03-14T19:50:40Z'
   template_groups:
     -
       uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
@@ -453,6 +453,10 @@ zabbix_export:
           value: '90'
           description: 'Percentage to trigger a memory usage alert.'
         -
+          macro: '{$SOFTWARE_VERSION_STRINGS}'
+          value: (16\.11\.0010|KA\.16\.04\.0026)
+          description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
+        -
           macro: '{$TEMP_C_WARN}'
           value: '70'
           description: 'Temp in Celsius to trigger an alert.'
@@ -639,6 +643,37 @@ zabbix_export:
             -
               tag: Type
               value: SHA
+        -
+          uuid: 3c14903dbe254135bd2c2d29f5c7a650
+          name: 'Flash Version'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.11.2.14.11.5.1.59.1.3.1.4.1
+          key: snmp.aruba.flash.version
+          delay: 1d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: OS_SHORT
+          tags:
+            -
+              tag: Software
+              value: Flash
+            -
+              tag: Type
+              value: Version
+          triggers:
+            -
+              uuid: c3fe47015dbf41609e4f6b5fec1af2d1
+              expression: 'find(/BA - MIB - Aruba/snmp.aruba.flash.version,,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
+              name: 'Flash version out of date'
+              priority: INFO
+              description: 'Please update the software on this device.'
+              tags:
+                -
+                  tag: Software
+                  value: Flash
+                -
+                  tag: Type
+                  value: Version
         -
           uuid: 393faa601d5d4bc8bb6c0b3e5f41b39b
           name: 'Loop Protect Status'
