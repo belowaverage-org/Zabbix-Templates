@@ -909,6 +909,130 @@ zabbix_export:
         -
           tag: Type
           value: MIB
+      dashboards:
+        -
+          uuid: 5a74a2692f494cf1ae093a9fc4141824
+          name: Aruba
+          pages:
+            -
+              widgets:
+                -
+                  type: graph
+                  width: '11'
+                  height: '5'
+                  fields:
+                    -
+                      type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Aruba'
+                        name: 'CPU Usage'
+                -
+                  type: graph
+                  'y': '5'
+                  width: '11'
+                  height: '5'
+                  fields:
+                    -
+                      type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Aruba'
+                        name: 'Memory Usage'
+                -
+                  type: item
+                  x: '11'
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Aruba'
+                        key: snmp.aruba.flash.version
+                -
+                  type: item
+                  x: '11'
+                  'y': '2'
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Aruba'
+                        key: snmp.aruba.rstp.status
+                -
+                  type: item
+                  x: '11'
+                  'y': '4'
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Aruba'
+                        key: snmp.aruba.loopprotect.status
+                -
+                  type: item
+                  x: '11'
+                  'y': '6'
+                  width: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Aruba'
+                        key: snmp.aruba.loopprotect.timer
+                -
+                  type: item
+                  x: '15'
+                  width: '9'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Aruba'
+                        key: snmp.aruba.config.sha.running
+                -
+                  type: item
+                  x: '15'
+                  'y': '2'
+                  width: '9'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Aruba'
+                        key: snmp.aruba.config.sha.startup
       valuemaps:
         -
           uuid: 9b1fc8e853c74f7088adf58aba8ab698
@@ -4548,21 +4672,6 @@ zabbix_export:
                       value:
                         host: 'BA - ONVIF - Avigilon'
                         key: camera.serial
-                -
-                  type: item
-                  x: '8'
-                  'y': '4'
-                  width: '4'
-                -
-                  type: graph
-                  x: '12'
-                  width: '12'
-                  height: '6'
-                  fields:
-                    -
-                      type: INTEGER
-                      name: source_type
-                      value: '1'
     -
       uuid: a63b4d7270ab4e44a4618cc7b23e7049
       template: 'BA - Procedure - Update Name'
@@ -5113,6 +5222,17 @@ zabbix_export:
             host: 'BA - MIB - MikroTik'
             key: ros.cpufreq
     -
+      uuid: 9cdb0e17c038481daca833f565fc1536
+      name: 'CPU Usage'
+      graph_items:
+        -
+          drawtype: GRADIENT_LINE
+          color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - Aruba'
+            key: cpu.usage
+    -
       uuid: 4c4d6eca42594740977ac9df1727d1bd
       name: 'ICMP Statistics'
       graph_items:
@@ -5130,3 +5250,22 @@ zabbix_export:
           item:
             host: 'BA - Generic - ICMP'
             key: icmppingloss
+    -
+      uuid: 20263e09ac454893b1c06d8167076df2
+      name: 'Memory Usage'
+      graph_items:
+        -
+          drawtype: GRADIENT_LINE
+          color: 00FFFF
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - Aruba'
+            key: memory.usage
+        -
+          sortorder: '1'
+          color: FF8000
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - Aruba'
+            key: memory.used
