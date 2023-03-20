@@ -1797,6 +1797,10 @@ zabbix_export:
                 macro: '{#TYPE}'
                 value: iso.3.6.1.2.1.25.2.1.4
                 formulaid: A
+              -
+                macro: '{#TYPE}'
+                value: 'HOST-RESOURCES-TYPES::hrStorageFixedDisk'
+                formulaid: B
           lifetime: 1d
           item_prototypes:
             -
@@ -1810,9 +1814,14 @@ zabbix_export:
               units: B
               preprocessing:
                 -
-                  type: MULTIPLIER
+                  type: JAVASCRIPT
                   parameters:
-                    - '{#AUNITS}'
+                    - |
+                      value = parseInt(value)
+                      if (value < 0) {
+                          value = value + (2147483648 * 2);
+                      }
+                      return value * {#AUNITS};
               tags:
                 -
                   tag: Disk
@@ -1859,9 +1868,14 @@ zabbix_export:
               units: B
               preprocessing:
                 -
-                  type: MULTIPLIER
+                  type: JAVASCRIPT
                   parameters:
-                    - '{#AUNITS}'
+                    - |
+                      value = parseInt(value)
+                      if (value < 0) {
+                          value = value + (2147483648 * 2);
+                      }
+                      return value * {#AUNITS};
               tags:
                 -
                   tag: Disk
@@ -1931,6 +1945,10 @@ zabbix_export:
                 macro: '{#TYPE}'
                 value: iso.3.6.1.2.1.25.2.1.2
                 formulaid: A
+              -
+                macro: '{#TYPE}'
+                value: 'HOST-RESOURCES-TYPES::hrStorageRam'
+                formulaid: B
           lifetime: 1d
           item_prototypes:
             -
