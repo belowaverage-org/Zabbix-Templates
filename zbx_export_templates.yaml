@@ -44,34 +44,10 @@ zabbix_export:
           name: BA/Generic
       items:
         -
-          uuid: 157c0a57578f4b6fa626c497c413b7ff
-          name: 'ICMP Ping'
-          type: SIMPLE
-          key: icmpping
-          delay: 10s
-          history: 7d
-          valuemap:
-            name: 'Ping Status'
-          tags:
-            -
-              tag: ICMP
-            -
-              tag: Type
-              value: Status
-          triggers:
-            -
-              uuid: 77f9ed9ba5d44b938fd34d222cd5c502
-              expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
-              name: 'Device offline'
-              priority: HIGH
-              tags:
-                -
-                  tag: ICMP
-        -
           uuid: 925ec895069249bca0ec0472a970d21a
           name: 'ICMP Loss'
           type: SIMPLE
-          key: icmppingloss
+          key: 'icmppingloss[{HOST.HOST}]'
           history: 7d
           value_type: FLOAT
           units: '%'
@@ -84,13 +60,13 @@ zabbix_export:
           triggers:
             -
               uuid: 7e3ebb73a3e4415a8f69c2ddb2d40edb
-              expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$ICMP_HIGH_LOSS_WARN}'
+              expression: 'last(/BA - Generic - ICMP/icmppingloss[{HOST.HOST}])>={$ICMP_HIGH_LOSS_WARN}'
               name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
               priority: WARNING
               dependencies:
                 -
                   name: 'Device offline'
-                  expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+                  expression: 'avg(/BA - Generic - ICMP/icmpping[{HOST.HOST}],#2)=0'
               tags:
                 -
                   tag: ICMP
@@ -98,7 +74,7 @@ zabbix_export:
           uuid: 8b397b5e4de74806b3d4814da8ca7497
           name: 'ICMP Latency'
           type: SIMPLE
-          key: icmppingsec
+          key: 'icmppingsec[{HOST.HOST}]'
           history: 7d
           value_type: FLOAT
           units: ms
@@ -116,13 +92,37 @@ zabbix_export:
           triggers:
             -
               uuid: 0b6fa791e1cc4993bd779488cc08fe64
-              expression: 'last(/BA - Generic - ICMP/icmppingsec)>={$ICMP_HIGH_LATENCY_WARN}'
+              expression: 'last(/BA - Generic - ICMP/icmppingsec[{HOST.HOST}])>={$ICMP_HIGH_LATENCY_WARN}'
               name: 'ICMP Latency >= {$ICMP_HIGH_LATENCY_WARN}'
               priority: INFO
               dependencies:
                 -
                   name: 'Device offline'
-                  expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+                  expression: 'avg(/BA - Generic - ICMP/icmpping[{HOST.HOST}],#2)=0'
+              tags:
+                -
+                  tag: ICMP
+        -
+          uuid: 157c0a57578f4b6fa626c497c413b7ff
+          name: 'ICMP Ping'
+          type: SIMPLE
+          key: 'icmpping[{HOST.HOST}]'
+          delay: 10s
+          history: 7d
+          valuemap:
+            name: 'Ping Status'
+          tags:
+            -
+              tag: ICMP
+            -
+              tag: Type
+              value: Status
+          triggers:
+            -
+              uuid: 77f9ed9ba5d44b938fd34d222cd5c502
+              expression: 'avg(/BA - Generic - ICMP/icmpping[{HOST.HOST}],#2)=0'
+              name: 'Device offline'
+              priority: HIGH
               tags:
                 -
                   tag: ICMP
@@ -174,7 +174,7 @@ zabbix_export:
                       name: itemid
                       value:
                         host: 'BA - Generic - ICMP'
-                        key: icmpping
+                        key: 'icmpping[{HOST.HOST}]'
                 -
                   type: graph
                   x: '4'
@@ -343,10 +343,10 @@ zabbix_export:
               dependencies:
                 -
                   name: 'Device offline'
-                  expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+                  expression: 'avg(/BA - Generic - ICMP/icmpping[{HOST.HOST}],#2)=0'
                 -
                   name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
-                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$ICMP_HIGH_LOSS_WARN}'
+                  expression: 'last(/BA - Generic - ICMP/icmppingloss[{HOST.HOST}])>={$ICMP_HIGH_LOSS_WARN}'
               tags:
                 -
                   tag: Type
@@ -4374,10 +4374,10 @@ zabbix_export:
               dependencies:
                 -
                   name: 'Device offline'
-                  expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+                  expression: 'avg(/BA - Generic - ICMP/icmpping[{HOST.HOST}],#2)=0'
                 -
                   name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
-                  expression: 'last(/BA - Generic - ICMP/icmppingloss)>={$ICMP_HIGH_LOSS_WARN}'
+                  expression: 'last(/BA - Generic - ICMP/icmppingloss[{HOST.HOST}])>={$ICMP_HIGH_LOSS_WARN}'
               tags:
                 -
                   tag: Type
@@ -5173,7 +5173,7 @@ zabbix_export:
               dependencies:
                 -
                   name: 'Device offline'
-                  expression: 'avg(/BA - Generic - ICMP/icmpping,#2)=0'
+                  expression: 'avg(/BA - Generic - ICMP/icmpping[{HOST.HOST}],#2)=0'
               tags:
                 -
                   tag: Config
@@ -5270,7 +5270,7 @@ zabbix_export:
           calc_fnc: ALL
           item:
             host: 'BA - Generic - ICMP'
-            key: icmppingsec
+            key: 'icmppingsec[{HOST.HOST}]'
         -
           sortorder: '1'
           color: F63100
@@ -5278,7 +5278,7 @@ zabbix_export:
           calc_fnc: ALL
           item:
             host: 'BA - Generic - ICMP'
-            key: icmppingloss
+            key: 'icmppingloss[{HOST.HOST}]'
     -
       uuid: 20263e09ac454893b1c06d8167076df2
       name: 'Memory Usage'
