@@ -453,7 +453,7 @@ zabbix_export:
           description: 'Percentage to trigger a memory usage alert.'
         -
           macro: '{$SOFTWARE_VERSION_STRINGS}'
-          value: (16\.11\.0010|KA\.16\.04\.0026)
+          value: (16\.11\.0010|KA\.16\.04\.0026|WB\.16\.10\.0023)
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
         -
           macro: '{$TEMP_C_WARN}'
@@ -489,7 +489,7 @@ zabbix_export:
           description: 'The count of flaps allowed on an interface.'
         -
           macro: '{$INTER_FLAP_WARN_TIME}'
-          value: 30m
+          value: 60m
           description: 'The timeframe for counting interface flaps.'
         -
           macro: '{$INTER_UPLINK_LIMIT}'
