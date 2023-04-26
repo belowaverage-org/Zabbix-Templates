@@ -1296,6 +1296,10 @@ zabbix_export:
                     macro: '{#ALARM}'
                     operator: NOT_EXISTS
                     formulaid: A
+                  -
+                    macro: '{#ALARM}'
+                    value: ^$
+                    formulaid: B
               operations:
                 -
                   operationobject: ITEM_PROTOTYPE
@@ -4784,6 +4788,38 @@ zabbix_export:
         -
           tag: Type
           value: Procedure
+    -
+      uuid: 901df0e8cba24e74890e3e629e965b9a
+      template: 'BA - Profile - Aruba CX Switch'
+      name: 'BA - Profile - Aruba CX Switch'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Entity'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - MIB - Interfaces MAC'
+        -
+          name: 'BA - MIB - Interfaces POE'
+        -
+          name: 'BA - MIB - MAC to IP - IP'
+        -
+          name: 'BA - Procedure - Update Name'
+      groups:
+        -
+          name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
     -
       uuid: f0572d351d6547c7a33ae487fab360e7
       template: 'BA - Profile - Aruba Switch'
