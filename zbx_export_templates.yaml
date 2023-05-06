@@ -467,11 +467,11 @@ zabbix_export:
       macros:
         -
           macro: '{$INTER_ERROR_WARN}'
-          value: '50'
+          value: '1'
           description: 'The count of errors allowed on an interface.'
         -
           macro: '{$INTER_ERROR_WARN_TIME}'
-          value: 5m
+          value: 1h
           description: 'The timeframe for counting errors.'
         -
           macro: '{$INTER_FILTER_REGEX}'
@@ -2554,7 +2554,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.14.{#SNMPINDEX}'
               key: 'snmp.interfaces.in.errors[{#SNMPINDEX}]'
-              delay: 15m
+              delay: 5m
               history: 7d
               units: bps
               preprocessing:
@@ -2660,7 +2660,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.20.{#SNMPINDEX}'
               key: 'snmp.interfaces.out.errors[{#SNMPINDEX}]'
-              delay: 15m
+              delay: 5m
               history: 7d
               units: bps
               preprocessing:
@@ -2755,7 +2755,7 @@ zabbix_export:
             -
               uuid: 62ed56a4a893446fa8515de4852ca5fa
               expression: 'sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#SNMPINDEX}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#SNMPINDEX}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN}'
-              name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN}'
+              name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME}'
               priority: WARNING
               tags:
                 -
