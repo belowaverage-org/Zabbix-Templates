@@ -20,8 +20,14 @@ zabbix_export:
       uuid: d323af8072864defab6d6e380742fb4d
       name: BA/Procedures
     -
+      uuid: b384f4b048b0408a9adfeae61f5574ae
+      name: BA/Profiles
+    -
       uuid: 83b7b6180c974b1680cca7fa1fbac757
       name: BA/Profiles/Cameras
+    -
+      uuid: a9ae9cbb57864537879e36c074d112ca
+      name: BA/Profiles/Networking
     -
       uuid: 2128cf518279432187a98490d555a270
       name: BA/Profiles/Servers
@@ -4783,6 +4789,80 @@ zabbix_export:
           tag: Type
           value: Procedure
     -
+      uuid: 901df0e8cba24e74890e3e629e965b9a
+      template: 'BA - Profile - Aruba CX Switch'
+      name: 'BA - Profile - Aruba CX Switch'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Entity'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - MIB - Interfaces MAC'
+        -
+          name: 'BA - MIB - Interfaces POE'
+        -
+          name: 'BA - MIB - MAC to IP - IP'
+        -
+          name: 'BA - Procedure - Update Name'
+      groups:
+        -
+          name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
+    -
+      uuid: f0572d351d6547c7a33ae487fab360e7
+      template: 'BA - Profile - Aruba Switch'
+      name: 'BA - Profile - Aruba Switch'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Aruba'
+        -
+          name: 'BA - MIB - Entity'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - MIB - Interfaces - Aruba'
+        -
+          name: 'BA - MIB - Interfaces LLDP'
+        -
+          name: 'BA - MIB - Interfaces MAC'
+        -
+          name: 'BA - MIB - Interfaces POE'
+        -
+          name: 'BA - MIB - Interfaces VLAN'
+        -
+          name: 'BA - MIB - MAC to IP - IP'
+        -
+          name: 'BA - Procedure - Update Name'
+        -
+          name: 'BA - SSH - Aruba Config'
+      groups:
+        -
+          name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
+    -
       uuid: 32d4adb424bf414683487c8d6414bc72
       template: 'BA - Profile - Avigilon'
       name: 'BA - Profile - Avigilon'
@@ -4828,6 +4908,70 @@ zabbix_export:
         -
           tag: Type
           value: Surveillance
+    -
+      uuid: c14d11008b524874a40ab65d935d01cf
+      template: 'BA - Profile - Cisco IOS Switch'
+      name: 'BA - Profile - Cisco IOS Switch'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Entity'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - MIB - MAC to IP - RFC1213'
+        -
+          name: 'BA - Procedure - Update Name'
+      groups:
+        -
+          name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
+    -
+      uuid: edfde163545d4f058f26a5ace12614f0
+      template: 'BA - Profile - Cisco Small Business Switch'
+      name: 'BA - Profile - Cisco Small Business Switch'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Entity'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - MIB - Interfaces LLDP'
+        -
+          name: 'BA - MIB - Interfaces MAC'
+        -
+          name: 'BA - MIB - Interfaces POE'
+        -
+          name: 'BA - MIB - Interfaces VLAN'
+        -
+          name: 'BA - MIB - MAC to IP - IP'
+        -
+          name: 'BA - Procedure - Update Name'
+      groups:
+        -
+          name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
     -
       uuid: 6e39e8aa1a0848f3b2454a082094ecde
       template: 'BA - Profile - iLO'
@@ -4882,6 +5026,94 @@ zabbix_export:
         -
           tag: Type
           value: Servers
+    -
+      uuid: 2d6c963fca534c2eb56112e107ab2e9c
+      template: 'BA - Profile - MikroTik'
+      name: 'BA - Profile - MikroTik'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Entity'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Host Resources'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - MIB - Interfaces LLDP'
+        -
+          name: 'BA - MIB - Interfaces MAC'
+        -
+          name: 'BA - MIB - MAC to IP - RFC1213'
+        -
+          name: 'BA - MIB - MikroTik'
+        -
+          name: 'BA - Procedure - Update Name'
+        -
+          name: 'BA - SSH - MikroTik Config'
+      groups:
+        -
+          name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
+    -
+      uuid: c3286d6562bd4c1bad679f800b371f9f
+      template: 'BA - Profile - pfSense'
+      name: 'BA - Profile - pfSense'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - MIB - MAC to IP - RFC1213'
+        -
+          name: 'BA - Procedure - Update Name'
+      groups:
+        -
+          name: BA/Profiles/Networking
+      tags:
+        -
+          tag: Type
+          value: Profile
+    -
+      uuid: 59825d81f28447858af5e9f1425cb800
+      template: 'BA - Profile - Ruckus'
+      name: 'BA - Profile - Ruckus'
+      templates:
+        -
+          name: 'BA - Generic - ICMP'
+        -
+          name: 'BA - Macro - Generic'
+        -
+          name: 'BA - Macro - Interfaces'
+        -
+          name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Interfaces'
+        -
+          name: 'BA - Procedure - Update Name'
+      groups:
+        -
+          name: BA/Profiles
+      tags:
+        -
+          tag: Type
+          value: Profile
     -
       uuid: 00258b13162c4a3d9283a479b1a10f80
       template: 'BA - Profile - vSphere'
