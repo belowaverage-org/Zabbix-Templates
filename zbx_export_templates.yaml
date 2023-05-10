@@ -4988,6 +4988,8 @@ zabbix_export:
         -
           name: 'BA - MIB - Interfaces'
         -
+          name: 'BA - MIB - Interfaces LLDP'
+        -
           name: 'BA - MIB - Interfaces MAC'
         -
           name: 'BA - MIB - Interfaces POE'
