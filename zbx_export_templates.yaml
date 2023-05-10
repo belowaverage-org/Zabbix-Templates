@@ -481,7 +481,7 @@ zabbix_export:
           description: 'The timeframe for counting errors.'
         -
           macro: '{$INTER_FILTER_REGEX}'
-          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$|br|tif|lo|wifi|wlan|eth\d\d?!|dhcp|VLAN)'
+          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$|br|tif|lo|wifi|wlan|eth\d\d?!|dhcp|VLAN|Po)'
           description: 'Filters via Name & Alias'
         -
           macro: '{$INTER_FLAP_WARN_COUNT}'
@@ -492,8 +492,12 @@ zabbix_export:
           value: 60m
           description: 'The timeframe for counting interface flaps.'
         -
+          macro: '{$INTER_UPLINK_IMPOSTER_WARN}'
+          value: '^Uplink.*$'
+          description: 'An interface description must contain this regex expression to be considered a legitiment uplink.'
+        -
           macro: '{$INTER_UPLINK_LIMIT}'
-          value: '10'
+          value: '3'
           description: 'Limit on MACs that can be discovered before an interface is considered an uplink.'
         -
           macro: '{$INTER_USAGE_WARN}'
@@ -2911,7 +2915,7 @@ zabbix_export:
                   tag: Interface
                   value: '{#NAME}'
                 -
-                  tag: 'Loop Detected'
+                  tag: 'Loop Detection'
                 -
                   tag: Type
                   value: Count
@@ -3083,6 +3087,45 @@ zabbix_export:
           name: BA/MIBs
       items:
         -
+          uuid: fc899d89f8354984b896bbad38c158ac
+          name: 'Interfaces Discovery MAC Count'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#PORT}, .1.3.6.1.2.1.17.4.3.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
+          key: snmp.interfaces.mac.count.discovery.json
+          delay: 15m
+          history: 1h
+          trends: '0'
+          value_type: TEXT
+          preprocessing:
+            -
+              type: JAVASCRIPT
+              parameters:
+                - |
+                  var data = JSON.parse(value);
+                  var ports = {};
+                  var results = [];
+                  data.forEach(function(macs) {
+                      if (macs['{#PORT}'] == undefined) return;
+                      if (ports[macs['{#PORT}']] == undefined) {
+                          ports[macs['{#PORT}']] = 1;
+                      } else {
+                          ports[macs['{#PORT}']] += 1;
+                      }
+                  });
+                  data.forEach(function(interfaces) {
+                          if (interfaces['{#NAME}'] == undefined) return;
+                          interfaces['{#MACS}'] = ports[interfaces['{#SNMPINDEX}']];
+                          if (interfaces['{#MACS}'] == undefined) interfaces['{#MACS}'] = 0;
+                          results.push(interfaces);
+                      });
+                  return JSON.stringify(results);
+          tags:
+            -
+              tag: 'MAC Count'
+            -
+              tag: Type
+              value: Discovery
+        -
           uuid: 9ebe2ba0750e44d6aba6d54dba1504b4
           name: 'Interfaces Discovery MAC'
           type: SNMP_AGENT
@@ -3132,7 +3175,113 @@ zabbix_export:
                       }
                   });
                   return JSON.stringify(result);
+          tags:
+            -
+              tag: MAC
+            -
+              tag: Type
+              value: Discovery
       discovery_rules:
+        -
+          uuid: b2841a94cb24434798eb25f1bae1be56
+          name: 'Interfaces Discovery MAC Count'
+          type: DEPENDENT
+          key: snmp.interfaces.mac.count.discovery
+          delay: '0'
+          filter:
+            conditions:
+              -
+                macro: '{#ALIAS}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+                formulaid: A
+              -
+                macro: '{#NAME}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+                formulaid: B
+          lifetime: 1h
+          item_prototypes:
+            -
+              uuid: ea1e8ad01fa44b9c9432becb0580604c
+              name: 'Interface ({#NAME}: {#ALIAS}) MAC Count'
+              type: DEPENDENT
+              key: 'snmp.interfaces.mac.count[{#SNMPINDEX}]'
+              delay: '0'
+              history: 7d
+              preprocessing:
+                -
+                  type: JAVASCRIPT
+                  parameters:
+                    - 'return {#MACS};'
+              master_item:
+                key: snmp.interfaces.mac.count.discovery.json
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Count
+              trigger_prototypes:
+                -
+                  uuid: be035349a1014591bba25f5f703b1d5e
+                  expression: 'last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.count[{#SNMPINDEX}])>={$INTER_UPLINK_LIMIT}'
+                  name: 'Interface ({#NAME}: {#ALIAS}) MAC Count >= {$INTER_UPLINK_LIMIT}'
+                  priority: WARNING
+                  description: 'An un-managed device has been detected on this port.'
+                  tags:
+                    -
+                      tag: Interface
+                      value: '{#NAME}'
+                    -
+                      tag: Type
+                      value: Count
+            -
+              uuid: 62187cc596264fe4938e8dd2cdc358ba
+              name: 'Interface ({#NAME}: {#ALIAS}) Uplink Status'
+              type: DEPENDENT
+              key: 'snmp.interfaces.mac.uplinkstatus[{#SNMPINDEX}]'
+              delay: '0'
+              history: 7d
+              valuemap:
+                name: 'Uplink Status'
+              preprocessing:
+                -
+                  type: JAVASCRIPT
+                  parameters:
+                    - |
+                      if ({#MACS} >= {$INTER_UPLINK_LIMIT}) {
+                          return 1;
+                      }
+                      return 0;
+              master_item:
+                key: snmp.interfaces.mac.count.discovery.json
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Status
+          master_item:
+            key: snmp.interfaces.mac.count.discovery.json
+          overrides:
+            -
+              name: 'No MAC Count Alarm'
+              step: '1'
+              filter:
+                conditions:
+                  -
+                    macro: '{#ALIAS}'
+                    value: '{$INTER_UPLINK_IMPOSTER_WARN}'
+                    formulaid: A
+              operations:
+                -
+                  operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: 'MAC Count >='
+                  discover: NO_DISCOVER
         -
           uuid: 5bcb64d2d3f54e908235d4610981cddd
           name: 'Interfaces Discovery MAC'
@@ -3192,6 +3341,16 @@ zabbix_export:
             -
               value: '1'
               newvalue: Active
+        -
+          uuid: f7f237d11e6648cbad93b136ccf62d2a
+          name: 'Uplink Status'
+          mappings:
+            -
+              value: '0'
+              newvalue: 'False'
+            -
+              value: '1'
+              newvalue: 'True'
     -
       uuid: c96e74b51406426fa9678cb3e36e305f
       template: 'BA - MIB - Interfaces POE'
@@ -3469,6 +3628,9 @@ zabbix_export:
           tags:
             -
               tag: 'MAC to IP'
+            -
+              tag: Type
+              value: Discovery
       discovery_rules:
         -
           uuid: 517f02751b524658a4c505ad3996b7a6
@@ -3587,6 +3749,9 @@ zabbix_export:
           tags:
             -
               tag: 'MAC to IP'
+            -
+              tag: Type
+              value: Discovery
       discovery_rules:
         -
           uuid: e61723274ec84ee2b405252948f3ded2
@@ -5047,8 +5212,6 @@ zabbix_export:
           name: 'BA - MIB - Interfaces'
         -
           name: 'BA - MIB - Interfaces LLDP'
-        -
-          name: 'BA - MIB - Interfaces MAC'
         -
           name: 'BA - MIB - MAC to IP - RFC1213'
         -
