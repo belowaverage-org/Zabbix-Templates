@@ -492,9 +492,9 @@ zabbix_export:
           value: 60m
           description: 'The timeframe for counting interface flaps.'
         -
-          macro: '{$INTER_UPLINK_IMPOSTER_WARN}'
-          value: '^Uplink.*$'
-          description: 'An interface description must contain this regex expression to be considered a legitiment uplink.'
+          macro: '{$INTER_UPLINK_IMPOSTER_LLDP_WARN}'
+          value: (HP|Aruba|Cisco)
+          description: 'An interface LLDP description must contain this regex expression to be considered a benign uplink.'
         -
           macro: '{$INTER_UPLINK_LIMIT}'
           value: '3'
@@ -2563,7 +2563,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) In Errors'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.14.{#SNMPINDEX}'
-              key: 'snmp.interfaces.in.errors[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.in.errors[{#NAME}]'
               delay: 5m
               history: 7d
               units: bps
@@ -2587,7 +2587,7 @@ zabbix_export:
               uuid: 6b9bd480242345febbcfc08b18bece36
               name: 'Interface ({#NAME}: {#ALIAS}) In Usage'
               type: CALCULATED
-              key: 'snmp.interfaces.in.usage[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.in.usage[{#NAME}]'
               history: 7d
               value_type: FLOAT
               units: '%'
@@ -2615,7 +2615,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) In Rate'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.10.{#SNMPINDEX}'
-              key: 'snmp.interfaces.in[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.in[{#NAME}]'
               history: 7d
               units: bps
               preprocessing:
@@ -2639,7 +2639,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Operational Status'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.8.{#SNMPINDEX}'
-              key: 'snmp.interfaces.operstatus[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.operstatus[{#NAME}]'
               delay: 2m
               history: 7d
               valuemap:
@@ -2654,7 +2654,7 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: 5436374b9ed946e79cb2bf75e02f30e4
-                  expression: 'changecount(/BA - MIB - Interfaces/snmp.interfaces.operstatus[{#SNMPINDEX}],{$INTER_FLAP_WARN_TIME},"dec")>={$INTER_FLAP_WARN_COUNT}'
+                  expression: 'changecount(/BA - MIB - Interfaces/snmp.interfaces.operstatus[{#NAME}],{$INTER_FLAP_WARN_TIME},"dec")>={$INTER_FLAP_WARN_COUNT}'
                   name: 'Interface ({#NAME}: {#ALIAS}) Flapped >= {$INTER_FLAP_WARN_COUNT}x Within {$INTER_FLAP_WARN_TIME}'
                   priority: WARNING
                   tags:
@@ -2669,7 +2669,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Out Errors'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.20.{#SNMPINDEX}'
-              key: 'snmp.interfaces.out.errors[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.out.errors[{#NAME}]'
               delay: 5m
               history: 7d
               units: bps
@@ -2693,7 +2693,7 @@ zabbix_export:
               uuid: 27685ca79f79438f9dcd391306f44291
               name: 'Interface ({#NAME}: {#ALIAS}) Out Usage'
               type: CALCULATED
-              key: 'snmp.interfaces.out.usage[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.out.usage[{#NAME}]'
               history: 7d
               value_type: FLOAT
               units: '%'
@@ -2721,7 +2721,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Out Rate'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.2.2.1.16.{#SNMPINDEX}'
-              key: 'snmp.interfaces.out[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.out[{#NAME}]'
               history: 7d
               units: bps
               preprocessing:
@@ -2745,7 +2745,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Speed'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.31.1.1.1.15.{#SNMPINDEX}'
-              key: 'snmp.interfaces.speed[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.speed[{#NAME}]'
               delay: 1h
               history: 7d
               units: bps
@@ -2764,7 +2764,7 @@ zabbix_export:
           trigger_prototypes:
             -
               uuid: 62ed56a4a893446fa8515de4852ca5fa
-              expression: 'sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#SNMPINDEX}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#SNMPINDEX}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN}'
+              expression: 'sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN}'
               name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME}'
               priority: WARNING
               tags:
@@ -2776,7 +2776,7 @@ zabbix_export:
                   value: Errors
             -
               uuid: b429247383cd421db1f0e4471e286c98
-              expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.in.usage[{#SNMPINDEX}])>={$INTER_USAGE_WARN} or last(/BA - MIB - Interfaces/snmp.interfaces.out.usage[{#SNMPINDEX}])>={$INTER_USAGE_WARN}'
+              expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.in.usage[{#NAME}])>={$INTER_USAGE_WARN} or last(/BA - MIB - Interfaces/snmp.interfaces.out.usage[{#NAME}])>={$INTER_USAGE_WARN}'
               name: 'Interface ({#NAME}: {#ALIAS}) Usage >= {$INTER_USAGE_WARN}%'
               priority: WARNING
               tags:
@@ -2796,28 +2796,28 @@ zabbix_export:
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Interfaces'
-                    key: 'snmp.interfaces.in[{#SNMPINDEX}]'
+                    key: 'snmp.interfaces.in[{#NAME}]'
                 -
                   sortorder: '1'
                   color: 2E7D32
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Interfaces'
-                    key: 'snmp.interfaces.out[{#SNMPINDEX}]'
+                    key: 'snmp.interfaces.out[{#NAME}]'
                 -
                   sortorder: '2'
                   color: FF5722
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Interfaces'
-                    key: 'snmp.interfaces.in.errors[{#SNMPINDEX}]'
+                    key: 'snmp.interfaces.in.errors[{#NAME}]'
                 -
                   sortorder: '3'
                   color: FFA726
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Interfaces'
-                    key: 'snmp.interfaces.out.errors[{#SNMPINDEX}]'
+                    key: 'snmp.interfaces.out.errors[{#NAME}]'
       tags:
         -
           tag: Type
@@ -2906,7 +2906,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Loop Detection Count'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.4.1.11.2.14.11.5.1.12.1.5.2.1.1.4.{#SNMPINDEX}'
-              key: 'snmp.interfaces.aruba.loopdetected.status[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.aruba.loopdetected.status[{#NAME}]'
               history: 7d
               valuemap:
                 name: 'Loop Detected'
@@ -2922,7 +2922,7 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: 3add992e000848a29c0808061e524b72
-                  expression: 'changecount(/BA - MIB - Interfaces - Aruba/snmp.interfaces.aruba.loopdetected.status[{#SNMPINDEX}],{$LOOP_PROTECT_TIMER_WARN},"inc")>0'
+                  expression: 'changecount(/BA - MIB - Interfaces - Aruba/snmp.interfaces.aruba.loopdetected.status[{#NAME}],{$LOOP_PROTECT_TIMER_WARN},"inc")>0'
                   name: 'Interface ({#NAME}: {#ALIAS}) Loop Detected'
                   priority: HIGH
                   description: 'A loop has been detected on this port!'
@@ -2989,7 +2989,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Description'
               type: SNMP_AGENT
               snmp_oid: '.1.0.8802.1.1.2.1.4.1.1.10.{#SNMPINDEX}'
-              key: 'snmp.interfaces.lldp.desc[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.lldp.desc[{#NAME}]'
               delay: 30m
               history: 365d
               trends: '0'
@@ -3013,7 +3013,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Host'
               type: SNMP_AGENT
               snmp_oid: '.1.0.8802.1.1.2.1.4.1.1.9.{#SNMPINDEX}'
-              key: 'snmp.interfaces.lldp.host[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.lldp.host[{#NAME}]'
               delay: 30m
               history: 365d
               trends: '0'
@@ -3037,7 +3037,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Port'
               type: SNMP_AGENT
               snmp_oid: '.1.0.8802.1.1.2.1.4.1.1.8.{#SNMPINDEX}'
-              key: 'snmp.interfaces.lldp.port[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.lldp.port[{#NAME}]'
               delay: 30m
               history: 365d
               trends: '0'
@@ -3200,13 +3200,12 @@ zabbix_export:
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
                 formulaid: B
-          lifetime: 1h
           item_prototypes:
             -
               uuid: ea1e8ad01fa44b9c9432becb0580604c
               name: 'Interface ({#NAME}: {#ALIAS}) MAC Count'
               type: DEPENDENT
-              key: 'snmp.interfaces.mac.count[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.mac.count[{#NAME}]'
               delay: '0'
               history: 7d
               preprocessing:
@@ -3223,25 +3222,35 @@ zabbix_export:
                 -
                   tag: Type
                   value: Count
-              trigger_prototypes:
+            -
+              uuid: 8205834112a849e9aaa49a9f929ecb6d
+              name: 'Interface ({#NAME}: {#ALIAS}) Managed Status'
+              type: CALCULATED
+              key: 'snmp.interfaces.mac.unmanaged[{#NAME}]'
+              delay: 15m
+              history: 7d
+              params: 'find(//snmp.interfaces.lldp.desc[{#NAME}],#1,"regexp","{$INTER_UPLINK_IMPOSTER_LLDP_WARN}")'
+              valuemap:
+                name: 'Managed Status'
+              preprocessing:
                 -
-                  uuid: be035349a1014591bba25f5f703b1d5e
-                  expression: 'last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.count[{#SNMPINDEX}])>={$INTER_UPLINK_LIMIT}'
-                  name: 'Interface ({#NAME}: {#ALIAS}) MAC Count >= {$INTER_UPLINK_LIMIT}'
-                  priority: WARNING
-                  description: 'An un-managed device has been detected on this port.'
-                  tags:
-                    -
-                      tag: Interface
-                      value: '{#NAME}'
-                    -
-                      tag: Type
-                      value: Count
+                  type: CHECK_NOT_SUPPORTED
+                  parameters:
+                    - ''
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Status
             -
               uuid: 62187cc596264fe4938e8dd2cdc358ba
               name: 'Interface ({#NAME}: {#ALIAS}) Uplink Status'
               type: DEPENDENT
-              key: 'snmp.interfaces.mac.uplinkstatus[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.mac.uplinkstatus[{#NAME}]'
               delay: '0'
               history: 7d
               valuemap:
@@ -3264,24 +3273,22 @@ zabbix_export:
                 -
                   tag: Type
                   value: Status
+          trigger_prototypes:
+            -
+              uuid: be035349a1014591bba25f5f703b1d5e
+              expression: 'last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.count[{#NAME}])>={$INTER_UPLINK_LIMIT} and last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.unmanaged[{#NAME}])=0'
+              name: 'Interface ({#NAME}: {#ALIAS}) MAC Count >= {$INTER_UPLINK_LIMIT} With Un-managed Device'
+              priority: WARNING
+              description: 'An un-managed device has been detected on this port.'
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Count
           master_item:
             key: snmp.interfaces.mac.count.discovery.json
-          overrides:
-            -
-              name: 'No MAC Count Alarm'
-              step: '1'
-              filter:
-                conditions:
-                  -
-                    macro: '{#ALIAS}'
-                    value: '{$INTER_UPLINK_IMPOSTER_WARN}'
-                    formulaid: A
-              operations:
-                -
-                  operationobject: TRIGGER_PROTOTYPE
-                  operator: LIKE
-                  value: 'MAC Count >='
-                  discover: NO_DISCOVER
         -
           uuid: 5bcb64d2d3f54e908235d4610981cddd
           name: 'Interfaces Discovery MAC'
@@ -3293,7 +3300,7 @@ zabbix_export:
               uuid: 44672117f4544766855c1c106404e8c7
               name: 'Interface ({#NAME}: {#ALIAS}), MAC: {#SNMPINDEX}'
               type: DEPENDENT
-              key: 'snmp.interfaces.mac.status[{#PORT}:{#SNMPINDEX}]'
+              key: 'snmp.interfaces.mac.status[{#NAME}:{#SNMPINDEX}]'
               delay: '0'
               history: 7d
               trends: 30d
@@ -3341,6 +3348,16 @@ zabbix_export:
             -
               value: '1'
               newvalue: Active
+        -
+          uuid: 7f55d972ef1043b99c1846822e7ea797
+          name: 'Managed Status'
+          mappings:
+            -
+              value: '0'
+              newvalue: Un-managed
+            -
+              value: '1'
+              newvalue: Managed
         -
           uuid: f7f237d11e6648cbad93b136ccf62d2a
           name: 'Uplink Status'
@@ -3390,7 +3407,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) POE Admin Status'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.105.1.1.1.3.{#SNMPINDEX}'
-              key: 'snmp.interfaces.poe.astatus[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.poe.astatus[{#NAME}]'
               delay: 30m
               history: 7d
               valuemap:
@@ -3409,7 +3426,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) POE Detection'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.105.1.1.1.6.{#SNMPINDEX}'
-              key: 'snmp.interfaces.poe.dstatus[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.poe.dstatus[{#NAME}]'
               history: 7d
               valuemap:
                 name: 'POE Status'
@@ -3425,7 +3442,7 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: c0a0fe136b29476a883a005dddc2a666
-                  expression: 'last(/BA - MIB - Interfaces POE/snmp.interfaces.poe.dstatus[{#SNMPINDEX}])=4 or last(/BA - MIB - Interfaces POE/snmp.interfaces.poe.dstatus[{#SNMPINDEX}])=6'
+                  expression: 'last(/BA - MIB - Interfaces POE/snmp.interfaces.poe.dstatus[{#NAME}])=4 or last(/BA - MIB - Interfaces POE/snmp.interfaces.poe.dstatus[{#NAME}])=6'
                   name: 'Interface ({#NAME}: {#ALIAS}) POE Detection Fault'
                   priority: WARNING
                   tags:
@@ -3535,7 +3552,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) VLAN PVID'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.17.7.1.4.5.1.1.{#SNMPINDEX}'
-              key: 'snmp.interfaces.vlan.pvid[{#SNMPINDEX}]'
+              key: 'snmp.interfaces.vlan.pvid[{#NAME}]'
               delay: 1h
               history: 7d
               tags:
