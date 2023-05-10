@@ -492,13 +492,17 @@ zabbix_export:
           value: 60m
           description: 'The timeframe for counting interface flaps.'
         -
-          macro: '{$INTER_UPLINK_IMPOSTER_LLDP_WARN}'
-          value: (HP|Aruba|Cisco)
-          description: 'An interface LLDP description must contain this regex expression to be considered a benign uplink.'
-        -
           macro: '{$INTER_UPLINK_LIMIT}'
           value: '3'
           description: 'Limit on MACs that can be discovered before an interface is considered an uplink.'
+        -
+          macro: '{$INTER_UPLINK_MANAGED_EXCLUDE_LLDP_DESC}'
+          value: (HP|Aruba|Cisco|ProLiant|Ruckus|ProCurve)
+          description: 'An interface LLDP description that contains this regex will automatically be counted as managed.'
+        -
+          macro: '{$INTER_UPLINK_MANAGED_EXCLUDE_NAME}'
+          value: (Trk|lag)
+          description: 'An interface name that contains this regex will automatically be counted as managed.'
         -
           macro: '{$INTER_USAGE_WARN}'
           value: '90'
@@ -2559,6 +2563,27 @@ zabbix_export:
           lifetime: 1d
           item_prototypes:
             -
+              uuid: 87b5057634ea44dabc70e8d9a5c71e55
+              name: 'Interface ({#NAME}: {#ALIAS}) Alias'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.31.1.1.1.18.{#SNMPINDEX}'
+              key: 'snmp.interfaces.alias[{#NAME}]'
+              delay: 1h
+              trends: '0'
+              value_type: CHAR
+              preprocessing:
+                -
+                  type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 24h
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Alias
+            -
               uuid: 5760b2886c8640fd9bab2f200c57ce0d
               name: 'Interface ({#NAME}: {#ALIAS}) In Errors'
               type: SNMP_AGENT
@@ -3224,12 +3249,12 @@ zabbix_export:
                   value: Count
             -
               uuid: 8205834112a849e9aaa49a9f929ecb6d
-              name: 'Interface ({#NAME}: {#ALIAS}) Managed Status'
+              name: 'Interface ({#NAME}: {#ALIAS}) Managed LLDP Status'
               type: CALCULATED
-              key: 'snmp.interfaces.mac.unmanaged[{#NAME}]'
+              key: 'snmp.interfaces.mac.managed.lldp[{#NAME}]'
               delay: 15m
               history: 7d
-              params: 'find(//snmp.interfaces.lldp.desc[{#NAME}],#1,"regexp","{$INTER_UPLINK_IMPOSTER_LLDP_WARN}")'
+              params: 'find(//snmp.interfaces.lldp.desc[{#NAME}],#1,"regexp","{$INTER_UPLINK_MANAGED_EXCLUDE_LLDP_DESC}")'
               valuemap:
                 name: 'Managed Status'
               preprocessing:
@@ -3275,20 +3300,34 @@ zabbix_export:
                   value: Status
           trigger_prototypes:
             -
-              uuid: be035349a1014591bba25f5f703b1d5e
-              expression: 'last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.count[{#NAME}])>={$INTER_UPLINK_LIMIT} and last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.unmanaged[{#NAME}])=0'
+              uuid: 3ba62eed99da49268e57928089ac4d41
+              expression: 'last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.uplinkstatus[{#NAME}])=1 and last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.managed.lldp[{#NAME}])=0'
               name: 'Interface ({#NAME}: {#ALIAS}) MAC Count >= {$INTER_UPLINK_LIMIT} With Un-managed Device'
               priority: WARNING
-              description: 'An un-managed device has been detected on this port.'
-              tags:
-                -
-                  tag: Interface
-                  value: '{#NAME}'
-                -
-                  tag: Type
-                  value: Count
+              description: 'This interface has an un-managed device connected.'
           master_item:
             key: snmp.interfaces.mac.count.discovery.json
+          overrides:
+            -
+              name: 'Uplink Exclude Name'
+              step: '1'
+              filter:
+                conditions:
+                  -
+                    macro: '{#NAME}'
+                    value: '{$INTER_UPLINK_MANAGED_EXCLUDE_NAME}'
+                    formulaid: A
+              operations:
+                -
+                  operationobject: ITEM_PROTOTYPE
+                  operator: LIKE
+                  value: Managed
+                  discover: NO_DISCOVER
+                -
+                  operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Un-managed
+                  discover: NO_DISCOVER
         -
           uuid: 5bcb64d2d3f54e908235d4610981cddd
           name: 'Interfaces Discovery MAC'
