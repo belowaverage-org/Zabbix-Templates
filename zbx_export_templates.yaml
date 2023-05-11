@@ -3306,7 +3306,7 @@ zabbix_export:
             -
               uuid: 3ba62eed99da49268e57928089ac4d41
               expression: 'last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.uplinkstatus[{#NAME}])=1 and last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.managed.lldp[{#NAME}])=0'
-              name: 'Interface ({#NAME}: {#ALIAS}) MAC Count >= {$INTER_UPLINK_LIMIT} With Un-managed Device'
+              name: 'Interface ({#NAME}: {#ALIAS}) MAC Count >= {$INTER_UPLINK_THRESHOLD} With Un-managed Device'
               priority: WARNING
               description: 'This interface has an un-managed device connected.'
           master_item:
