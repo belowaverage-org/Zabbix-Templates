@@ -497,12 +497,8 @@ zabbix_export:
           description: 'Limit on MACs that can be discovered on an interface.'
         -
           macro: '{$INTER_UPLINK_MANAGED_EXCLUDE_LLDP_DESC}'
-          value: (HP|Aruba|Cisco|ProLiant|Ruckus|ProCurve)
+          value: (HP|Aruba|Cisco|ProLiant|Ruckus|ProCurve|4548GT-PWR|MS-2424)
           description: 'An interface LLDP description that contains this regex will automatically be counted as managed.'
-        -
-          macro: '{$INTER_UPLINK_MANAGED_EXCLUDE_NAME}'
-          value: (Trk|lag)
-          description: 'An interface name that contains this regex will automatically be counted as managed.'
         -
           macro: '{$INTER_UPLINK_THRESHOLD}'
           value: '3'
