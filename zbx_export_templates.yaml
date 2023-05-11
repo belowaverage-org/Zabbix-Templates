@@ -493,8 +493,8 @@ zabbix_export:
           description: 'The timeframe for counting interface flaps.'
         -
           macro: '{$INTER_UPLINK_LIMIT}'
-          value: '3'
-          description: 'Limit on MACs that can be discovered before an interface is considered an uplink.'
+          value: '10'
+          description: 'Limit on MACs that can be discovered on an interface.'
         -
           macro: '{$INTER_UPLINK_MANAGED_EXCLUDE_LLDP_DESC}'
           value: (HP|Aruba|Cisco|ProLiant|Ruckus|ProCurve)
@@ -503,6 +503,10 @@ zabbix_export:
           macro: '{$INTER_UPLINK_MANAGED_EXCLUDE_NAME}'
           value: (Trk|lag)
           description: 'An interface name that contains this regex will automatically be counted as managed.'
+        -
+          macro: '{$INTER_UPLINK_THRESHOLD}'
+          value: '3'
+          description: 'The number of MACs on a port needed to be considered an uplink port.'
         -
           macro: '{$INTER_USAGE_WARN}'
           value: '90'
@@ -3285,7 +3289,7 @@ zabbix_export:
                   type: JAVASCRIPT
                   parameters:
                     - |
-                      if ({#MACS} >= {$INTER_UPLINK_LIMIT}) {
+                      if ({#MACS} >= {$INTER_UPLINK_THRESHOLD}) {
                           return 1;
                       }
                       return 0;
