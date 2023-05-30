@@ -1687,6 +1687,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - Generic/snmp.uptime,#1)<last(/BA - MIB - Generic/snmp.uptime,#2)'
               recovery_mode: NONE
               name: 'Device rebooted'
+              status: DISABLED
               priority: AVERAGE
               manual_close: 'YES'
               tags:
