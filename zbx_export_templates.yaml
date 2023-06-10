@@ -2532,6 +2532,111 @@ zabbix_export:
         -
           tag: Type
           value: MIB
+      dashboards:
+        -
+          uuid: d2d9f956b6ab4cfb909ef6e57e601c2d
+          name: iDRAC
+          pages:
+            -
+              widgets:
+                -
+                  type: item
+                  width: '5'
+                  height: '4'
+                  fields:
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: snmp.idrac.status
+                -
+                  type: item
+                  x: '5'
+                  width: '19'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: snmp.idrac.model
+                -
+                  type: item
+                  x: '5'
+                  'y': '2'
+                  width: '19'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: snmp.idrac.servicetag
+                -
+                  type: graphprototype
+                  'y': '4'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: source_type
+                      value: '3'
+                    -
+                      type: ITEM_PROTOTYPE
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: 'snmp.psu.volts[{#SLOT}]'
+                -
+                  type: graphprototype
+                  'y': '9'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: source_type
+                      value: '3'
+                    -
+                      type: INTEGER
+                      name: columns
+                      value: '4'
+                    -
+                      type: ITEM_PROTOTYPE
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: 'snmp.idrac.temp.celsius[{#LOCATION}]'
+                -
+                  type: graphprototype
+                  'y': '14'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: source_type
+                      value: '3'
+                    -
+                      type: INTEGER
+                      name: columns
+                      value: '4'
+                    -
+                      type: ITEM_PROTOTYPE
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: 'snmp.idrac.fan.rpm[{#FAN}]'
       valuemaps:
         -
           uuid: 87528ad19e974197bd45389575d08cc4
@@ -2605,7 +2710,7 @@ zabbix_export:
     -
       uuid: c132e4d556724cb4aab6f04f031d698c
       template: 'BA - MIB - iLO'
-      name: 'BA - MIB - iLO (CPQHLTH CPQIDA)'
+      name: 'BA - MIB - iLO (CPQHLTH CPQIDA CPQSINFO)'
       groups:
         -
           name: BA/MIBs
@@ -2855,6 +2960,17 @@ zabbix_export:
                 -
                   tag: Type
                   value: Type
+          graph_prototypes:
+            -
+              uuid: c5fee29a3f3e4f78a0af1dd7758896e5
+              name: 'Drive ({#BAY}) Temperature'
+              graph_items:
+                -
+                  color: 199C0D
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - iLO'
+                    key: 'ilo.drive.temp[{#BAY}]'
         -
           uuid: 259907ba7ffb434db9ab561e915ef699
           name: 'Fan Discovery'
@@ -3038,6 +3154,24 @@ zabbix_export:
                 -
                   tag: Type
                   value: Watts
+          graph_prototypes:
+            -
+              uuid: d230d7ac6e5e43dc944c1b624be84fbd
+              name: 'Power Supply ({#BAY}) Input Volts / Output Watts'
+              graph_items:
+                -
+                  color: 199C0D
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - iLO'
+                    key: 'ilo.psu.volts[{#SNMPINDEX}]'
+                -
+                  sortorder: '1'
+                  color: F63100
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - iLO'
+                    key: 'ilo.psu.watts[{#SNMPINDEX}]'
         -
           uuid: a397d83fcc6d4190b8f9bb3d2eb9d414
           name: 'Temperature Discovery'
@@ -3098,6 +3232,17 @@ zabbix_export:
                     -
                       tag: Type
                       value: Status
+          graph_prototypes:
+            -
+              uuid: f86759c28da14fe5838dabc6c6dfe161
+              name: 'Temperature ({#LOCALE}) Celsius'
+              graph_items:
+                -
+                  color: 199C0D
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - iLO'
+                    key: 'ilo.temp.celsius[{#SNMPINDEX}]'
           preprocessing:
             -
               type: STR_REPLACE
@@ -3168,6 +3313,111 @@ zabbix_export:
         -
           tag: Type
           value: MIB
+      dashboards:
+        -
+          uuid: db86ebd68489487fb4664c66286c8d93
+          name: iLO
+          pages:
+            -
+              widgets:
+                -
+                  type: item
+                  width: '5'
+                  height: '4'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    -
+                      type: STRING
+                      name: thresholds.color.0
+                      value: 1B5E20
+                    -
+                      type: STRING
+                      name: thresholds.threshold.0
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: snmp.ilo.health
+                -
+                  type: item
+                  x: '5'
+                  width: '19'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: snmp.ilo.model
+                -
+                  type: item
+                  x: '5'
+                  'y': '2'
+                  width: '19'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: show
+                      value: '2'
+                    -
+                      type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: snmp.ilo.serial
+                -
+                  type: graphprototype
+                  'y': '14'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: columns
+                      value: '4'
+                    -
+                      type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        name: 'Drive ({#BAY}) Temperature'
+                -
+                  type: graphprototype
+                  'y': '4'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    -
+                      type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        name: 'Power Supply ({#BAY}) Input Volts / Output Watts'
+                -
+                  type: graphprototype
+                  'y': '9'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    -
+                      type: INTEGER
+                      name: columns
+                      value: '4'
+                    -
+                      type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        name: 'Temperature ({#LOCALE}) Celsius'
       valuemaps:
         -
           uuid: 5d0a36b6fc934ec8960c3f2f22ad2338
