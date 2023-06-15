@@ -449,7 +449,7 @@ zabbix_export:
           description: 'Loop protect detect interval. How many seconds since the last loop should trigger an alert?'
         -
           macro: '{$MEM_USAGE_WARN}'
-          value: '90'
+          value: '95'
           description: 'Percentage to trigger a memory usage alert.'
         -
           macro: '{$SOFTWARE_VERSION_STRINGS}'
@@ -457,7 +457,7 @@ zabbix_export:
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
         -
           macro: '{$TEMP_C_WARN}'
-          value: '70'
+          value: '75'
           description: 'Temp in Celsius to trigger an alert.'
     -
       uuid: 2e06dea1d714489c8d284e35778039ce
