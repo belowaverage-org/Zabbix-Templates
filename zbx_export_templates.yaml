@@ -7117,6 +7117,9 @@ zabbix_export:
       tags:
         -
           tag: Type
+          value: Network
+        -
+          tag: Type
           value: Profile
     -
       uuid: f0572d351d6547c7a33ae487fab360e7
@@ -7157,6 +7160,9 @@ zabbix_export:
         -
           name: BA/Profiles/Networking
       tags:
+        -
+          tag: Type
+          value: Network
         -
           tag: Type
           value: Profile
@@ -7233,6 +7239,9 @@ zabbix_export:
       tags:
         -
           tag: Type
+          value: Network
+        -
+          tag: Type
           value: Profile
     -
       uuid: edfde163545d4f058f26a5ace12614f0
@@ -7267,6 +7276,9 @@ zabbix_export:
         -
           name: BA/Profiles/Networking
       tags:
+        -
+          tag: Type
+          value: Network
         -
           tag: Type
           value: Profile
@@ -7717,6 +7729,9 @@ zabbix_export:
       tags:
         -
           tag: Type
+          value: Network
+        -
+          tag: Type
           value: Profile
     -
       uuid: c3286d6562bd4c1bad679f800b371f9f
@@ -7743,6 +7758,9 @@ zabbix_export:
       tags:
         -
           tag: Type
+          value: Network
+        -
+          tag: Type
           value: Profile
     -
       uuid: 59825d81f28447858af5e9f1425cb800
@@ -7767,6 +7785,9 @@ zabbix_export:
       tags:
         -
           tag: Type
+          value: Network
+        -
+          tag: Type
           value: Profile
     -
       uuid: 0a6869fb9afd498ca33833502d4929d2
@@ -7789,6 +7810,9 @@ zabbix_export:
         -
           name: BA/Profiles/Servers
       tags:
+        -
+          tag: Type
+          value: Network
         -
           tag: Type
           value: Profile
