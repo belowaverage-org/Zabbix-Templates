@@ -7111,6 +7111,8 @@ zabbix_export:
           name: 'BA - MIB - MAC to IP - IP'
         -
           name: 'BA - Procedure - Update Name'
+        -
+          name: 'BA - SSH - Aruba Config'
       groups:
         -
           name: BA/Profiles/Networking
@@ -7923,20 +7925,21 @@ zabbix_export:
             -
               type: REGEX
               parameters:
-                - '[\s\S]*Running configuration:\R\R([\s\S]*)\R\R'
-                - \1
+                - '[\s\S]*(Running|Current) configuration:\R{1,2}([\s\S]*)\R{1,2}'
+                - \2
             -
               type: DISCARD_UNCHANGED_HEARTBEAT
               parameters:
                 - 1d
-          timeout: 10s
+          timeout: 60s
           url: '{$SSH_SHIM_URL}'
           posts: |
             hostname={HOST.HOST}&username={$ARUBA_SSH_USER}&password={$ARUBA_SSH_PASS}&commands=
+            {"Expect":"#"}
             no page
             show run
             @@@
-            {"Expect":"@@@"}
+            {"Expect":"# @@@"}
           request_method: POST
           tags:
             -
