@@ -2425,6 +2425,18 @@ zabbix_export:
               value: Uptime
           triggers:
             -
+              uuid: f320509f49d6454e87a36f0499efd9bd
+              expression: 'nodata(/BA - MIB - Generic/snmp.uptime,5m)=1'
+              name: 'Device is not responding to SNMP'
+              priority: AVERAGE
+              dependencies:
+                -
+                  name: 'Device offline'
+                  expression: 'last(/BA - Generic - ICMP/icmpping[{HOST.HOST}])=0'
+              tags:
+                -
+                  tag: SNMP
+            -
               uuid: ed77aa0f513b454d90a231185baef9be
               expression: 'last(/BA - MIB - Generic/snmp.uptime,#1)<last(/BA - MIB - Generic/snmp.uptime,#2)'
               recovery_mode: NONE
@@ -7099,6 +7111,8 @@ zabbix_export:
           name: 'BA - MIB - Entity'
         -
           name: 'BA - MIB - Generic'
+        -
+          name: 'BA - MIB - Host Resources'
         -
           name: 'BA - MIB - Interfaces'
         -
