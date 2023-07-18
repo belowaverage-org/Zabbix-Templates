@@ -5306,7 +5306,7 @@ zabbix_export:
               value: '2'
               newvalue: Searching
             -
-              value: 3`
+              value: '3'
               newvalue: 'Delivering Power'
             -
               value: '4'
