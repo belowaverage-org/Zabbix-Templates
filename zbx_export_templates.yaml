@@ -477,7 +477,7 @@ zabbix_export:
           description: 'The count of errors allowed on an interface.'
         -
           macro: '{$INTER_ERROR_WARN_TIME}'
-          value: 1h
+          value: 6h
           description: 'The timeframe for counting errors.'
         -
           macro: '{$INTER_FILTER_REGEX}'
