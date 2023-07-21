@@ -4557,7 +4557,7 @@ zabbix_export:
           trigger_prototypes:
             -
               uuid: 62ed56a4a893446fa8515de4852ca5fa
-              expression: 'sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} and last(/BA - MIB - Interfaces/snmp.interfaces.alertonerrors[{#NAME}])=1'
+              expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN}) and last(/BA - MIB - Interfaces/snmp.interfaces.alertonerrors[{#NAME}])=1'
               name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME} On Uplink'
               priority: WARNING
               tags:
