@@ -4311,6 +4311,31 @@ zabbix_export:
           lifetime: 1d
           item_prototypes:
             -
+              uuid: a78b4fcd86c140c8a63b1b1d2bcc8925
+              name: 'Interface ({#NAME}: {#ALIAS}) Alert On Errors'
+              type: CALCULATED
+              key: 'snmp.interfaces.alertonerrors[{#NAME}]'
+              delay: 1h
+              history: 1d
+              trends: '0'
+              params: 'last(//snmp.interfaces.mac.uplinkstatus[{#NAME}])'
+              valuemap:
+                name: 'Alert On Errors'
+              preprocessing:
+                -
+                  type: CHECK_NOT_SUPPORTED
+                  parameters:
+                    - ''
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+              tags:
+                -
+                  tag: Interface
+                  value: '{#NAME}'
+                -
+                  tag: Type
+                  value: Status
+            -
               uuid: 87b5057634ea44dabc70e8d9a5c71e55
               name: 'Interface ({#NAME}: {#ALIAS}) Alias'
               type: SNMP_AGENT
@@ -4532,7 +4557,7 @@ zabbix_export:
           trigger_prototypes:
             -
               uuid: 62ed56a4a893446fa8515de4852ca5fa
-              expression: 'sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN}'
+              expression: 'sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} and last(/BA - MIB - Interfaces/snmp.interfaces.alertonerrors[{#NAME}])=1'
               name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME}'
               priority: WARNING
               tags:
@@ -4639,6 +4664,16 @@ zabbix_export:
                         host: 'BA - MIB - Interfaces'
                         name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
       valuemaps:
+        -
+          uuid: bada8a429d464bfba60f2ca27c549d6f
+          name: 'Alert On Errors'
+          mappings:
+            -
+              value: '0'
+              newvalue: 'False'
+            -
+              value: '1'
+              newvalue: 'True'
         -
           uuid: 042dd6004ca744328459b83d571efd02
           name: 'Operational Status'
