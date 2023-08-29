@@ -2481,7 +2481,7 @@ zabbix_export:
           triggers:
             -
               uuid: f320509f49d6454e87a36f0499efd9bd
-              expression: 'nodata(/BA - MIB - Generic/snmp.uptime,5m)=1'
+              expression: 'nodata(/BA - MIB - Generic/snmp.uptime,2h)=1'
               name: 'Device is not responding to SNMP'
               priority: AVERAGE
               dependencies:
