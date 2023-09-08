@@ -731,7 +731,7 @@ zabbix_export:
       discovery_rules:
         -
           uuid: f42c8b0552674b92813e17b07d391dc7
-          name: 'Discover Battery Packs'
+          name: 'Battery Packs Discovery'
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#CARTSTATUS}, .1.3.6.1.4.1.318.1.1.1.2.3.10.2.1.10]'
           key: snmp.apc.battery.discovery
@@ -940,8 +940,8 @@ zabbix_export:
               newvalue: 'On Smart Trim'
     -
       uuid: 49d106e4ab994d41b8533cccb7a04abf
-      template: 'BA - MIB - Aruba'
-      name: 'BA - MIB - Aruba (STATISTICS POWERSUPPLY FAN HP-ICF-CONFIG HP-ICF-BRIDGE)'
+      template: 'BA - MIB - Aruba OS'
+      name: 'BA - MIB - Aruba OS (STATISTICS POWERSUPPLY FAN HP-ICF-CONFIG HP-ICF-BRIDGE)'
       groups:
         -
           name: BA/MIBs
@@ -963,7 +963,7 @@ zabbix_export:
           triggers:
             -
               uuid: 6b1079669c50408998310050e7d208b4
-              expression: 'avg(/BA - MIB - Aruba/cpu.usage,{$CPU_HIGH_AVG_TIME_WARN})>={$CPU_USAGE_WARN}'
+              expression: 'avg(/BA - MIB - Aruba OS/cpu.usage,{$CPU_HIGH_AVG_TIME_WARN})>={$CPU_USAGE_WARN}'
               name: 'CPU Usage >= {$CPU_USAGE_WARN}% for {$CPU_HIGH_AVG_TIME_WARN}'
               priority: AVERAGE
               tags:
@@ -1015,7 +1015,7 @@ zabbix_export:
           triggers:
             -
               uuid: af7039dacfbc4facbe0677c9b402d06e
-              expression: 'last(/BA - MIB - Aruba/memory.usage)>={$CPU_USAGE_WARN}'
+              expression: 'last(/BA - MIB - Aruba OS/memory.usage)>={$CPU_USAGE_WARN}'
               name: 'Memory Usage >= {$MEM_USAGE_WARN}%'
               priority: AVERAGE
               tags:
@@ -1101,7 +1101,7 @@ zabbix_export:
           triggers:
             -
               uuid: c3fe47015dbf41609e4f6b5fec1af2d1
-              expression: 'find(/BA - MIB - Aruba/snmp.aruba.flash.version,,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
+              expression: 'find(/BA - MIB - Aruba OS/snmp.aruba.flash.version,,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
               name: 'Flash version out of date'
               priority: INFO
               description: 'Please update the software on this device.'
@@ -1138,7 +1138,7 @@ zabbix_export:
           triggers:
             -
               uuid: ace8b81ed191423eb5c11ef7dcb577c4
-              expression: 'last(/BA - MIB - Aruba/snmp.aruba.loopprotect.status)=2'
+              expression: 'last(/BA - MIB - Aruba OS/snmp.aruba.loopprotect.status)=2'
               name: 'Loop Protect disabled'
               priority: INFO
               tags:
@@ -1167,7 +1167,7 @@ zabbix_export:
           triggers:
             -
               uuid: b4e904ee82e5466bbf04d14ae07954ef
-              expression: 'last(/BA - MIB - Aruba/snmp.aruba.loopprotect.timer)<>{$LOOP_PROTECT_TIMER}'
+              expression: 'last(/BA - MIB - Aruba OS/snmp.aruba.loopprotect.timer)<>{$LOOP_PROTECT_TIMER}'
               name: 'Loop Protect Timer not set to {$LOOP_PROTECT_TIMER}s'
               priority: INFO
               description: 'Loop Protect Timer is not set to {$LOOP_PROTECT_TIMER} seconds.'
@@ -1199,7 +1199,7 @@ zabbix_export:
           triggers:
             -
               uuid: c138a27225a84c9a9e7115c542fa80d6
-              expression: 'last(/BA - MIB - Aruba/snmp.aruba.rstp.status)=1'
+              expression: 'last(/BA - MIB - Aruba OS/snmp.aruba.rstp.status)=1'
               name: 'Spanning Tree enabled'
               priority: INFO
               tags:
@@ -1238,7 +1238,7 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: 2623bf6494cd42fa8bc84c04e93b1291
-                  expression: 'last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=0 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=1 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=3 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=4 or last(/BA - MIB - Aruba/aruba.fan.status[{#SNMPINDEX}])=6'
+                  expression: 'last(/BA - MIB - Aruba OS/aruba.fan.status[{#SNMPINDEX}])=0 or last(/BA - MIB - Aruba OS/aruba.fan.status[{#SNMPINDEX}])=1 or last(/BA - MIB - Aruba OS/aruba.fan.status[{#SNMPINDEX}])=3 or last(/BA - MIB - Aruba OS/aruba.fan.status[{#SNMPINDEX}])=4 or last(/BA - MIB - Aruba OS/aruba.fan.status[{#SNMPINDEX}])=6'
                   name: 'Aruba Fan ({#SNMPINDEX}) Status Fault'
                   priority: AVERAGE
                   tags:
@@ -1277,10 +1277,10 @@ zabbix_export:
                 -
                   uuid: e061727ff41e4d1da6d54acc47a88027
                   expression: |
-                    last(/BA - MIB - Aruba/aruba.psu.status[{#SNMPINDEX}])=2 or
-                    last(/BA - MIB - Aruba/aruba.psu.status[{#SNMPINDEX}])=4 or
-                    last(/BA - MIB - Aruba/aruba.psu.status[{#SNMPINDEX}])=5 or
-                    last(/BA - MIB - Aruba/aruba.psu.status[{#SNMPINDEX}])=6
+                    last(/BA - MIB - Aruba OS/aruba.psu.status[{#SNMPINDEX}])=2 or
+                    last(/BA - MIB - Aruba OS/aruba.psu.status[{#SNMPINDEX}])=4 or
+                    last(/BA - MIB - Aruba OS/aruba.psu.status[{#SNMPINDEX}])=5 or
+                    last(/BA - MIB - Aruba OS/aruba.psu.status[{#SNMPINDEX}])=6
                   name: 'Aruba PSU ({#SNMPINDEX}) Status Fault'
                   priority: AVERAGE
                   tags:
@@ -1309,7 +1309,7 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: a8d0b6bb5c5343a2a130dd8bc39a0f33
-                  expression: 'last(/BA - MIB - Aruba/aruba.psu.temp[{#SNMPINDEX}])>={$TEMP_C_WARN}'
+                  expression: 'last(/BA - MIB - Aruba OS/aruba.psu.temp[{#SNMPINDEX}])>={$TEMP_C_WARN}'
                   name: 'Aruba PSU ({#SNMPINDEX}) Temperature >= {$TEMP_C_WARN}C'
                   priority: AVERAGE
                   tags:
@@ -1364,7 +1364,7 @@ zabbix_export:
                       type: GRAPH
                       name: graphid
                       value:
-                        host: 'BA - MIB - Aruba'
+                        host: 'BA - MIB - Aruba OS'
                         name: 'CPU Usage'
                 -
                   type: graph
@@ -1376,7 +1376,7 @@ zabbix_export:
                       type: GRAPH
                       name: graphid
                       value:
-                        host: 'BA - MIB - Aruba'
+                        host: 'BA - MIB - Aruba OS'
                         name: 'Memory Usage'
                 -
                   type: item
@@ -1391,7 +1391,7 @@ zabbix_export:
                       type: ITEM
                       name: itemid
                       value:
-                        host: 'BA - MIB - Aruba'
+                        host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.flash.version
                 -
                   type: item
@@ -1407,7 +1407,7 @@ zabbix_export:
                       type: ITEM
                       name: itemid
                       value:
-                        host: 'BA - MIB - Aruba'
+                        host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.rstp.status
                 -
                   type: item
@@ -1423,7 +1423,7 @@ zabbix_export:
                       type: ITEM
                       name: itemid
                       value:
-                        host: 'BA - MIB - Aruba'
+                        host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.loopprotect.status
                 -
                   type: item
@@ -1439,7 +1439,7 @@ zabbix_export:
                       type: ITEM
                       name: itemid
                       value:
-                        host: 'BA - MIB - Aruba'
+                        host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.loopprotect.timer
                 -
                   type: item
@@ -1454,7 +1454,7 @@ zabbix_export:
                       type: ITEM
                       name: itemid
                       value:
-                        host: 'BA - MIB - Aruba'
+                        host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.config.sha.running
                 -
                   type: item
@@ -1470,7 +1470,7 @@ zabbix_export:
                       type: ITEM
                       name: itemid
                       value:
-                        host: 'BA - MIB - Aruba'
+                        host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.config.sha.startup
       valuemaps:
         -
@@ -4336,7 +4336,7 @@ zabbix_export:
       items:
         -
           uuid: 7dbba147f0de468cbc4b1335674c4405
-          name: Interfaces
+          name: 'Interfaces Discovery'
           type: SNMP_AGENT
           snmp_oid: 'walk[.1.3.6.1.2.1.31.1.1.1.1,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.2,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.7,.1.3.6.1.2.1.2.2.1.10,.1.3.6.1.2.1.2.2.1.16,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.14,.1.3.6.1.2.1.2.2.1.20,.1.3.6.1.2.1.2.2.1.5,.1.3.6.1.2.1.31.1.1.1.18]'
           key: snmp.interfaces
@@ -4534,7 +4534,7 @@ zabbix_export:
                 -
                   type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
-                    - 1h
+                    - 1d
               master_item:
                 key: snmp.interfaces
               tags:
@@ -4663,7 +4663,7 @@ zabbix_export:
                 -
                   type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
-                    - 1h
+                    - 1d
               master_item:
                 key: snmp.interfaces
               tags:
@@ -4828,15 +4828,15 @@ zabbix_export:
               newvalue: Testing
     -
       uuid: c978731e458f4899bad556a58a4f7722
-      template: 'BA - MIB - Interfaces - Aruba'
-      name: 'BA - MIB - Interfaces - Aruba (IF & HP-ICF-BRIDGE)'
+      template: 'BA - MIB - Interfaces - Aruba OS'
+      name: 'BA - MIB - Interfaces - Aruba OS (IF & HP-ICF-BRIDGE)'
       groups:
         -
           name: BA/MIBs
       discovery_rules:
         -
           uuid: 42af4ec9d263413a81306b4b6c2bfcef
-          name: 'Interfaces Discovery Loop Protect'
+          name: 'Interfaces Loop Protect Discovery'
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#ENABLED}, .1.3.6.1.4.1.11.2.14.11.5.1.12.1.5.2.1.1.1, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
           key: snmp.interfaces.loopprotect.discovery
@@ -4890,7 +4890,7 @@ zabbix_export:
               trigger_prototypes:
                 -
                   uuid: 3add992e000848a29c0808061e524b72
-                  expression: 'changecount(/BA - MIB - Interfaces - Aruba/snmp.interfaces.aruba.loopdetected.status[{#NAME}],{$LOOP_PROTECT_TIMER_WARN},"inc")>0'
+                  expression: 'changecount(/BA - MIB - Interfaces - Aruba OS/snmp.interfaces.aruba.loopdetected.status[{#NAME}],{$LOOP_PROTECT_TIMER_WARN},"inc")>0'
                   name: 'Interface ({#NAME}: {#ALIAS}) Loop Detected'
                   priority: HIGH
                   description: 'A loop has been detected on this port!'
@@ -4925,14 +4925,24 @@ zabbix_export:
       groups:
         -
           name: BA/MIBs
+      items:
+        -
+          uuid: 6dae965baba64ff5867d18ea435a6b46
+          name: 'Interfaces LLDP Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[.1.0.8802.1.1.2.1.4.1.1.4,.1.3.6.1.2.1.31.1.1.1.1,.1.3.6.1.2.1.31.1.1.1.18,.1.0.8802.1.1.2.1.4.1.1.10,.1.0.8802.1.1.2.1.4.1.1.9,.1.0.8802.1.1.2.1.4.1.1.7]'
+          key: snmp.interfaces.lldp
+          delay: 15s
+          history: '0'
+          trends: '0'
+          value_type: TEXT
       discovery_rules:
         -
           uuid: 792c76d171b54eb2b4308a4f0b4747c7
-          name: 'Interfaces Discovery LLDP'
-          type: SNMP_AGENT
-          snmp_oid: 'discovery[{#LLDP}, .1.0.8802.1.1.2.1.4.1.1.4, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
+          name: 'Interfaces LLDP Discovery'
+          type: DEPENDENT
           key: snmp.interfaces.lldp.discovery
-          delay: 1h
+          delay: '0'
           filter:
             conditions:
               -
@@ -4955,18 +4965,24 @@ zabbix_export:
             -
               uuid: 67a3110993f44f008ba62945fe121530
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Description'
-              type: SNMP_AGENT
-              snmp_oid: '.1.0.8802.1.1.2.1.4.1.1.10.{#SNMPINDEX}'
+              type: DEPENDENT
               key: 'snmp.interfaces.lldp.desc[{#NAME}]'
-              delay: 30m
+              delay: '0'
               history: 365d
               trends: '0'
               value_type: CHAR
               preprocessing:
                 -
+                  type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.0.8802.1.1.2.1.4.1.1.10.{#SNMPINDEX}'
+                    - '0'
+                -
                   type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
                     - 1d
+              master_item:
+                key: snmp.interfaces.lldp
               tags:
                 -
                   tag: Interface
@@ -4979,18 +4995,24 @@ zabbix_export:
             -
               uuid: ac8d2f33e8444fba9e6275d1a531ebb2
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Host'
-              type: SNMP_AGENT
-              snmp_oid: '.1.0.8802.1.1.2.1.4.1.1.9.{#SNMPINDEX}'
+              type: DEPENDENT
               key: 'snmp.interfaces.lldp.host[{#NAME}]'
-              delay: 30m
+              delay: '0'
               history: 365d
               trends: '0'
               value_type: CHAR
               preprocessing:
                 -
+                  type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.0.8802.1.1.2.1.4.1.1.9.{#SNMPINDEX}'
+                    - '0'
+                -
                   type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
                     - 1d
+              master_item:
+                key: snmp.interfaces.lldp
               tags:
                 -
                   tag: Interface
@@ -5003,18 +5025,24 @@ zabbix_export:
             -
               uuid: 0559d8d6479a4eac8e12a88170d63e89
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Port'
-              type: SNMP_AGENT
-              snmp_oid: '.1.0.8802.1.1.2.1.4.1.1.8.{#SNMPINDEX}'
+              type: DEPENDENT
               key: 'snmp.interfaces.lldp.port[{#NAME}]'
-              delay: 30m
+              delay: '0'
               history: 365d
               trends: '0'
               value_type: CHAR
               preprocessing:
                 -
+                  type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.0.8802.1.1.2.1.4.1.1.7.{#SNMPINDEX}'
+                    - '0'
+                -
                   type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
                     - 1d
+              master_item:
+                key: snmp.interfaces.lldp
               tags:
                 -
                   tag: Interface
@@ -5024,7 +5052,21 @@ zabbix_export:
                 -
                   tag: Type
                   value: 'Remote Port'
+          master_item:
+            key: snmp.interfaces.lldp
           preprocessing:
+            -
+              type: SNMP_WALK_TO_JSON
+              parameters:
+                - '{#LLDP}'
+                - .1.0.8802.1.1.2.1.4.1.1.4
+                - '0'
+                - '{#NAME}'
+                - .1.3.6.1.2.1.31.1.1.1.1
+                - '0'
+                - '{#ALIAS}'
+                - .1.3.6.1.2.1.31.1.1.1.18
+                - '0'
             -
               type: JAVASCRIPT
               parameters:
@@ -5056,12 +5098,12 @@ zabbix_export:
       items:
         -
           uuid: fc899d89f8354984b896bbad38c158ac
-          name: 'Interfaces Discovery MAC Count'
+          name: 'Interfaces MAC Count Discovery'
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#PORT}, .1.3.6.1.2.1.17.4.3.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
           key: snmp.interfaces.mac.count.discovery.json
           delay: 15m
-          history: 1h
+          history: '0'
           trends: '0'
           value_type: TEXT
           preprocessing:
@@ -5095,12 +5137,12 @@ zabbix_export:
               value: Discovery
         -
           uuid: 9ebe2ba0750e44d6aba6d54dba1504b4
-          name: 'Interfaces Discovery MAC'
+          name: 'Interfaces MAC Discovery'
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#ADDR}, .1.3.6.1.2.1.17.4.3.1.1, {#PORT}, .1.3.6.1.2.1.17.4.3.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
           key: snmp.interfaces.mac.discovery.json
           delay: 15m
-          history: 1h
+          history: '0'
           trends: '0'
           value_type: TEXT
           preprocessing:
@@ -5152,7 +5194,7 @@ zabbix_export:
       discovery_rules:
         -
           uuid: b2841a94cb24434798eb25f1bae1be56
-          name: 'Interfaces Discovery MAC Count'
+          name: 'Interfaces MAC Count Discovery'
           type: DEPENDENT
           key: snmp.interfaces.mac.count.discovery
           delay: '0'
@@ -5273,7 +5315,7 @@ zabbix_export:
                   discover: NO_DISCOVER
         -
           uuid: 5bcb64d2d3f54e908235d4610981cddd
-          name: 'Interfaces Discovery MAC'
+          name: 'Interfaces MAC Discovery'
           type: DEPENDENT
           key: snmp.interfaces.mac.discovery
           delay: '0'
@@ -5360,7 +5402,7 @@ zabbix_export:
       discovery_rules:
         -
           uuid: fc9a676e681547f7976992861096cbee
-          name: 'Interfaces Discovery POE'
+          name: 'Interfaces POE Discovery'
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#POEENAB}, .1.3.6.1.2.1.105.1.1.1.3, {#IFINDEX}, .1.3.6.1.2.1.17.1.4.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18, {#ASTATUS}, .1.3.6.1.2.1.2.2.1.7]'
           key: snmp.interfaces.poe.discovery
@@ -5501,7 +5543,7 @@ zabbix_export:
       discovery_rules:
         -
           uuid: 9b3f3fcece214eea9a16084fa0039e13
-          name: 'Interfaces Discovery VLAN'
+          name: 'Interfaces VLAN Discovery'
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#VLAN}, .1.3.6.1.2.1.17.7.1.4.5.1.1, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18, {#ASTATUS}, .1.3.6.1.2.1.2.2.1.7]'
           key: snmp.interfaces.vlan.discovery
@@ -5565,7 +5607,7 @@ zabbix_export:
           snmp_oid: 'discovery[{#MAC}, .1.3.6.1.2.1.4.35.1.4]'
           key: m2i.discovery.json
           delay: 15m
-          history: 1h
+          history: '0'
           trends: '0'
           value_type: TEXT
           preprocessing:
@@ -5725,7 +5767,7 @@ zabbix_export:
           snmp_oid: 'discovery[{#MAC}, .1.3.6.1.2.1.4.22.1.2, {#IP}, .1.3.6.1.2.1.4.22.1.3]'
           key: m2i.discovery.json
           delay: 15m
-          history: 1h
+          history: '0'
           trends: '0'
           value_type: TEXT
           preprocessing:
@@ -5911,7 +5953,7 @@ zabbix_export:
       discovery_rules:
         -
           uuid: a218d20f379642fd83b0472df43663e8
-          name: 'ROS Gauge'
+          name: 'ROS Gauge Discovery'
           type: SNMP_AGENT
           snmp_oid: 'discovery[{#NAME}, .1.3.6.1.4.1.14988.1.1.3.100.1.2, {#UNIT}, .1.3.6.1.4.1.14988.1.1.3.100.1.4]'
           key: ros.gauge.discovery
@@ -7179,7 +7221,7 @@ zabbix_export:
           type: SCRIPT
           key: update.via.inventory
           delay: 12h
-          history: 7d
+          history: '0'
           trends: '0'
           value_type: TEXT
           params: |
@@ -7210,11 +7252,6 @@ zabbix_export:
                 "auth": params.key
             }));
             return result;
-          preprocessing:
-            -
-              type: DISCARD_UNCHANGED_HEARTBEAT
-              parameters:
-                - 1d
           timeout: 30s
           parameters:
             -
@@ -7323,7 +7360,7 @@ zabbix_export:
         -
           name: 'BA - Macro - Interfaces'
         -
-          name: 'BA - MIB - Aruba'
+          name: 'BA - MIB - Aruba OS'
         -
           name: 'BA - MIB - Entity'
         -
@@ -7331,7 +7368,7 @@ zabbix_export:
         -
           name: 'BA - MIB - Interfaces'
         -
-          name: 'BA - MIB - Interfaces - Aruba'
+          name: 'BA - MIB - Interfaces - Aruba OS'
         -
           name: 'BA - MIB - Interfaces LLDP'
         -
@@ -8180,7 +8217,7 @@ zabbix_export:
   triggers:
     -
       uuid: 0cb2f24a7f724fad988e17ed41f374ee
-      expression: 'last(/BA - MIB - Aruba/snmp.aruba.config.sha.startup)<>last(/BA - MIB - Aruba/snmp.aruba.config.sha.running)'
+      expression: 'last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.startup)<>last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.running)'
       name: 'Configuration not saved'
       priority: WARNING
       description: 'The startup config does not match the running config. Please save the running config to flash.'
@@ -8282,7 +8319,7 @@ zabbix_export:
           color: 199C0D
           calc_fnc: ALL
           item:
-            host: 'BA - MIB - Aruba'
+            host: 'BA - MIB - Aruba OS'
             key: cpu.usage
     -
       uuid: 4c4d6eca42594740977ac9df1727d1bd
@@ -8311,7 +8348,7 @@ zabbix_export:
           color: 00FFFF
           calc_fnc: ALL
           item:
-            host: 'BA - MIB - Aruba'
+            host: 'BA - MIB - Aruba OS'
             key: memory.usage
         -
           sortorder: '1'
@@ -8319,7 +8356,7 @@ zabbix_export:
           yaxisside: RIGHT
           calc_fnc: ALL
           item:
-            host: 'BA - MIB - Aruba'
+            host: 'BA - MIB - Aruba OS'
             key: memory.used
     -
       uuid: 2fa77c4a8298408babdd9161a6e49609
