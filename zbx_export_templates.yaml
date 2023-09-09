@@ -4417,7 +4417,7 @@ zabbix_export:
                 -
                   type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
-                    - 24h
+                    - 1d
               master_item:
                 key: snmp.interfaces
               tags:
@@ -4534,7 +4534,7 @@ zabbix_export:
                 -
                   type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
-                    - 1d
+                    - 1h
               master_item:
                 key: snmp.interfaces
               tags:
@@ -4663,7 +4663,7 @@ zabbix_export:
                 -
                   type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
-                    - 1d
+                    - 1h
               master_item:
                 key: snmp.interfaces
               tags:
