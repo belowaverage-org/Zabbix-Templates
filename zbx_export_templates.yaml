@@ -2036,7 +2036,7 @@ zabbix_export:
         - uuid: dfe4572fa178448692691e4d75cd44bc
           name: 'Memory Usage'
           type: DEPENDENT
-          key: snmp.hr.memory.usage
+          key: memory.usage
           delay: '0'
           history: 7d
           units: '%'
@@ -2060,7 +2060,7 @@ zabbix_export:
                   var size;
                   var linux;
                   data.forEach(function(item) {
-                      if(item['desc'] == 'main memory' || item['desc'] == 'Physical Memory') { //MikroTik / Windows
+                      if(item['desc'] == 'main memory' || item['desc'] == 'Physical Memory' || item['desc'] == 'Real Memory') { //MikroTik / Windows / VMWare
                           used = item['used'];
                           size = item['size'];
                       }
@@ -2085,7 +2085,7 @@ zabbix_export:
               value: Usage
           triggers:
             - uuid: 678770fcf45c4c8a8f617d58c4a77776
-              expression: 'last(/BA - MIB - Host Resources/snmp.hr.memory.usage)>={$MEM_USAGE_WARN}'
+              expression: 'last(/BA - MIB - Host Resources/memory.usage)>={$MEM_USAGE_WARN}'
               name: 'Memory Usage >= {$MEM_USAGE_WARN}%'
               priority: AVERAGE
               tags:
