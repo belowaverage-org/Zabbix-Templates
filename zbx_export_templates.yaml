@@ -2278,6 +2278,24 @@ zabbix_export:
                   value: '{#DESC}'
                 - tag: Type
                   value: Size
+            - uuid: 7dff57c2b11144b791f310ddb854afe0
+              name: 'Memory ({#DESC}) Usage'
+              type: DEPENDENT
+              key: 'snmp.hr.memory.usage[{#DESC}]'
+              delay: '0'
+              history: 7d
+              units: '%'
+              preprocessing:
+                - type: JAVASCRIPT
+                  parameters:
+                    - 'return Math.round({#USED} / {#SIZE} * 100);'
+              master_item:
+                key: snmp.hr.storage
+              tags:
+                - tag: Memory
+                  value: '{#DESC}'
+                - tag: Type
+                  value: Used
             - uuid: 27f46f9cff5e4fc1a7699dce1b869cbd
               name: 'Memory ({#DESC}) Used'
               type: DEPENDENT
@@ -2300,6 +2318,48 @@ zabbix_export:
                   value: '{#DESC}'
                 - tag: Type
                   value: Used
+          graph_prototypes:
+            - uuid: 8d9417a5eeab4a8487ea550f9ef784fe
+              name: 'Memory ({#DESC}) Statistics'
+              graph_items:
+                - color: 199C0D
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.memory.size[{#DESC}]'
+                - sortorder: '1'
+                  color: F63100
+                  yaxisside: RIGHT
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.memory.usage[{#DESC}]'
+                - sortorder: '2'
+                  color: 2774A4
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.memory.used[{#DESC}]'
+            - uuid: ac45f37962c04cb1b37a0c240ca18eca
+              name: 'Memory ({#DESC}) Usage'
+              yaxismax: '0'
+              show_work_period: 'NO'
+              show_triggers: 'NO'
+              type: PIE
+              show_3d: 'YES'
+              graph_items:
+                - color: FFEBEE
+                  calc_fnc: LAST
+                  type: GRAPH_SUM
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.memory.size[{#DESC}]'
+                - sortorder: '1'
+                  color: 0080FF
+                  calc_fnc: LAST
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.memory.used[{#DESC}]'
           master_item:
             key: snmp.hr.storage
           preprocessing:
@@ -2328,17 +2388,10 @@ zabbix_export:
           name: 'Host Resources'
           pages:
             - widgets:
-                - type: graphprototype
-                  'y': '6'
-                  width: '9'
-                  height: '6'
-                  fields:
-                    - type: INTEGER
-                      name: columns
-                      value: '1'
                 - type: graph
-                  width: '9'
-                  height: '6'
+                  'y': '3'
+                  width: '6'
+                  height: '5'
                   fields:
                     - type: GRAPH
                       name: graphid
@@ -2346,37 +2399,101 @@ zabbix_export:
                         host: 'BA - MIB - Host Resources'
                         name: CPU
                 - type: graphprototype
-                  x: '9'
-                  width: '4'
-                  height: '12'
+                  x: '15'
+                  width: '3'
+                  height: '24'
                   fields:
                     - type: INTEGER
                       name: columns
                       value: '1'
                     - type: INTEGER
                       name: rows
-                      value: '3'
+                      value: '6'
                     - type: GRAPH_PROTOTYPE
                       name: graphid
                       value:
                         host: 'BA - MIB - Host Resources'
                         name: 'Disk ({#DESC}) Usage'
                 - type: graphprototype
-                  x: '13'
-                  width: '11'
-                  height: '12'
+                  x: '18'
+                  width: '6'
+                  height: '24'
                   fields:
                     - type: INTEGER
                       name: columns
                       value: '1'
                     - type: INTEGER
                       name: rows
-                      value: '3'
+                      value: '6'
                     - type: GRAPH_PROTOTYPE
                       name: graphid
                       value:
                         host: 'BA - MIB - Host Resources'
                         name: 'Disk ({#DESC}) Statistics'
+                - type: graphprototype
+                  x: '6'
+                  width: '3'
+                  height: '24'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '1'
+                    - type: INTEGER
+                      name: rows
+                      value: '6'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Memory ({#DESC}) Usage'
+                - type: graphprototype
+                  x: '9'
+                  width: '6'
+                  height: '24'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '1'
+                    - type: INTEGER
+                      name: rows
+                      value: '6'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Memory ({#DESC}) Statistics'
+                - type: graph
+                  'y': '8'
+                  width: '6'
+                  height: '5'
+                  fields:
+                    - type: INTEGER
+                      name: source_type
+                      value: '1'
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        key: memory.usage
+                - type: item
+                  width: '3'
+                  height: '3'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        key: cpu.usage
+                - type: item
+                  x: '3'
+                  width: '3'
+                  height: '3'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        key: memory.usage
     - uuid: 2f56e1feb21d4d4dac7dd9f89b819162
       template: 'BA - MIB - iDRAC'
       name: 'BA - MIB - iDRAC (IDRAC)'
