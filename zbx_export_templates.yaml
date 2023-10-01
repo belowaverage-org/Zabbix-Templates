@@ -2295,7 +2295,7 @@ zabbix_export:
                 - tag: Memory
                   value: '{#DESC}'
                 - tag: Type
-                  value: Used
+                  value: Usage
             - uuid: 27f46f9cff5e4fc1a7699dce1b869cbd
               name: 'Memory ({#DESC}) Used'
               type: DEPENDENT
