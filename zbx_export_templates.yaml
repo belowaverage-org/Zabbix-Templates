@@ -2033,27 +2033,73 @@ zabbix_export:
                 - tag: CPU
                 - tag: Type
                   value: Usage
-        - uuid: 9848e28bab61439aa0e341e228cc25e2
+        - uuid: dfe4572fa178448692691e4d75cd44bc
           name: 'Memory Usage'
-          type: CALCULATED
-          key: memory.usage
+          type: DEPENDENT
+          key: snmp.hr.memory.usage
+          delay: '0'
           history: 7d
-          value_type: FLOAT
           units: '%'
-          params: 'sum(last_foreach(//snmp.hr.memory.used[*]))/sum(last_foreach(//snmp.hr.memory.size[*]))*100'
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - desc
+                - .1.3.6.1.2.1.25.2.3.1.3
+                - '0'
+                - size
+                - .1.3.6.1.2.1.25.2.3.1.5
+                - '0'
+                - used
+                - .1.3.6.1.2.1.25.2.3.1.6
+                - '0'
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var data = JSON.parse(value);
+                  var used;
+                  var size;
+                  var linux;
+                  data.forEach(function(item) {
+                      if(item['desc'] == 'main memory' || item['desc'] == 'Physical Memory') { //MikroTik / Windows
+                          used = item['used'];
+                          size = item['size'];
+                      }
+                      if(item['desc'] == 'Physical memory') { //Linux
+                          linux = true;
+                          size = item['size'];
+                      }
+                      if(item['desc'] == 'Available memory') { //Linux
+                          linux = true;
+                          used = item['size'];
+                      }
+                  });
+                  if (linux) {
+                      return Math.round((((used / size) - 1) * -1) * 100);
+                  }
+                  return Math.round(used / size * 100);
+          master_item:
+            key: snmp.hr.storage
           tags:
             - tag: Memory
             - tag: Type
               value: Usage
           triggers:
-            - uuid: a677c03f901c4659a6cf8145379883c0
-              expression: 'last(/BA - MIB - Host Resources/memory.usage)>={$MEM_USAGE_WARN}'
+            - uuid: 678770fcf45c4c8a8f617d58c4a77776
+              expression: 'last(/BA - MIB - Host Resources/snmp.hr.memory.usage)>={$MEM_USAGE_WARN}'
               name: 'Memory Usage >= {$MEM_USAGE_WARN}%'
               priority: AVERAGE
               tags:
                 - tag: Memory
                 - tag: Type
                   value: Usage
+        - uuid: d6776d1e932247fca27a366c365cd41f
+          name: 'Storage Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[.1.3.6.1.2.1.25.2.3.1.2, .1.3.6.1.2.1.25.2.3.1.3, .1.3.6.1.2.1.25.2.3.1.4, .1.3.6.1.2.1.25.2.3.1.5, .1.3.6.1.2.1.25.2.3.1.6]'
+          key: snmp.hr.storage
+          history: '0'
+          trends: '0'
+          value_type: TEXT
       discovery_rules:
         - uuid: 0c403e28a6c4499a9ca25969557b655a
           name: 'Processor Discovery'
@@ -2199,71 +2245,81 @@ zabbix_export:
                   item:
                     host: 'BA - MIB - Host Resources'
                     key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
-        - uuid: 97d4e3dfa7e24575a508a1a02efefefe
+        - uuid: 5f9d9f2ab44f452cae7c7d8b67873df2
           name: 'Memory Discovery'
-          type: SNMP_AGENT
-          snmp_oid: 'discovery[{#TYPE}, .1.3.6.1.2.1.25.2.3.1.2, {#AUNITS}, .1.3.6.1.2.1.25.2.3.1.4]'
+          type: DEPENDENT
           key: snmp.hr.memory.discovery
-          delay: 1h
+          delay: '0'
           filter:
             conditions:
-              - macro: '{#TYPE}'
-                value: iso.3.6.1.2.1.25.2.1.2
+              - macro: '{#DESC}'
+                value: '[Mm]emory'
                 formulaid: A
-              - macro: '{#TYPE}'
-                value: 'HOST-RESOURCES-TYPES::hrStorageRam'
-                formulaid: B
-          lifetime: 1d
           item_prototypes:
-            - uuid: d98fce5f76554b27b4bec73937cd52c1
-              name: 'Memory ({#SNMPINDEX}) Size'
-              type: SNMP_AGENT
-              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
-              key: 'snmp.hr.memory.size[{#SNMPINDEX}]'
-              delay: 6h
+            - uuid: e1a4c937289a420399b88d93a12d2936
+              name: 'Memory ({#DESC}) Size'
+              type: DEPENDENT
+              key: 'snmp.hr.memory.size[{#DESC}]'
+              delay: '0'
               history: 7d
               units: B
               preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
+                    - '0'
                 - type: MULTIPLIER
                   parameters:
-                    - '{#AUNITS}'
+                    - '{#ALLOCUNITS}'
+              master_item:
+                key: snmp.hr.storage
               tags:
                 - tag: Memory
-                  value: '{#SNMPINDEX}'
+                  value: '{#DESC}'
                 - tag: Type
                   value: Size
-            - uuid: ff86e673f16f4254bd7e31b89f2b463d
-              name: 'Memory ({#SNMPINDEX}) Used'
-              type: SNMP_AGENT
-              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
-              key: 'snmp.hr.memory.used[{#SNMPINDEX}]'
+            - uuid: 27f46f9cff5e4fc1a7699dce1b869cbd
+              name: 'Memory ({#DESC}) Used'
+              type: DEPENDENT
+              key: 'snmp.hr.memory.used[{#DESC}]'
+              delay: '0'
               history: 7d
               units: B
               preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
+                    - '0'
                 - type: MULTIPLIER
                   parameters:
-                    - '{#AUNITS}'
+                    - '{#ALLOCUNITS}'
+              master_item:
+                key: snmp.hr.storage
               tags:
                 - tag: Memory
-                  value: '{#SNMPINDEX}'
+                  value: '{#DESC}'
                 - tag: Type
                   value: Used
-          graph_prototypes:
-            - uuid: 627d5c0a60964b6da483b3b06f12e37b
-              name: 'Memory ({#SNMPINDEX})'
-              graph_items:
-                - color: BF00FF
-                  calc_fnc: ALL
-                  item:
-                    host: 'BA - MIB - Host Resources'
-                    key: 'snmp.hr.memory.size[{#SNMPINDEX}]'
-                - sortorder: '1'
-                  drawtype: GRADIENT_LINE
-                  color: 0080FF
-                  calc_fnc: ALL
-                  item:
-                    host: 'BA - MIB - Host Resources'
-                    key: 'snmp.hr.memory.used[{#SNMPINDEX}]'
+          master_item:
+            key: snmp.hr.storage
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - '{#TYPE}'
+                - .1.3.6.1.2.1.25.2.3.1.2
+                - '0'
+                - '{#DESC}'
+                - .1.3.6.1.2.1.25.2.3.1.3
+                - '0'
+                - '{#ALLOCUNITS}'
+                - .1.3.6.1.2.1.25.2.3.1.4
+                - '0'
+                - '{#SIZE}'
+                - .1.3.6.1.2.1.25.2.3.1.5
+                - '0'
+                - '{#USED}'
+                - .1.3.6.1.2.1.25.2.3.1.6
+                - '0'
       tags:
         - tag: Type
           value: MIB
@@ -2280,11 +2336,6 @@ zabbix_export:
                     - type: INTEGER
                       name: columns
                       value: '1'
-                    - type: GRAPH_PROTOTYPE
-                      name: graphid
-                      value:
-                        host: 'BA - MIB - Host Resources'
-                        name: 'Memory ({#SNMPINDEX})'
                 - type: graph
                   width: '9'
                   height: '6'
