@@ -3792,7 +3792,7 @@ zabbix_export:
                     - '0'
                 - type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
-                    - 1h
+                    - 15m
               master_item:
                 key: snmp.interfaces
               tags:
@@ -4375,6 +4375,8 @@ zabbix_export:
               key: 'snmp.interfaces.mac.managed.lldp[{#NAME}]'
               delay: 15m
               history: 7d
+              status: DISABLED
+              discover: NO_DISCOVER
               params: 'find(//snmp.interfaces.lldp.desc[{#NAME}],#1,"regexp","{$INTER_UPLINK_MANAGED_EXCLUDE_LLDP_DESC}")'
               valuemap:
                 name: 'Managed Status'
@@ -4416,6 +4418,8 @@ zabbix_export:
             - uuid: 3ba62eed99da49268e57928089ac4d41
               expression: 'last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.uplinkstatus[{#NAME}])=1 and last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.managed.lldp[{#NAME}])=0'
               name: 'Interface ({#NAME}: {#ALIAS}) MAC Count >= {$INTER_UPLINK_THRESHOLD} With Un-managed Device'
+              status: DISABLED
+              discover: NO_DISCOVER
               priority: INFO
               description: 'This interface has an un-managed device connected.'
           master_item:
