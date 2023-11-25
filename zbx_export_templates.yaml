@@ -380,7 +380,7 @@ zabbix_export:
           value: 6h
           description: 'The timeframe for counting errors.'
         - macro: '{$INTER_FILTER_REGEX}'
-          value: '(^tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$|br|tif|lo|wifi|wlan|eth\d\d?!|dhcp|VLAN|Po|ubond|ath)'
+          value: '(^tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$|br|tif|lo|wifi|wlan|eth\d\d?!|dhcp|VLAN|Po|ubond|ath|^sstp-)'
           description: 'Filters via Name & Alias'
         - macro: '{$INTER_FLAP_WARN_COUNT}'
           value: '3'
