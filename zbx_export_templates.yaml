@@ -109,6 +109,11 @@ zabbix_export:
                     - type: INTEGER
                       name: adv_conf
                       value: '1'
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - Generic - ICMP'
+                        key: 'icmpping[{HOST.HOST}]'
                     - type: INTEGER
                       name: show
                       value: '2'
@@ -116,22 +121,21 @@ zabbix_export:
                       name: show
                       value: '3'
                     - type: INTEGER
-                      name: value_v_pos
+                      name: time_v_pos
+                      value: '2'
+                    - type: INTEGER
+                      name: units_bold
                       value: '0'
                     - type: INTEGER
                       name: units_show
                       value: '0'
                     - type: INTEGER
-                      name: units_bold
+                      name: value_v_pos
                       value: '0'
-                    - type: INTEGER
-                      name: time_v_pos
-                      value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - Generic - ICMP'
-                        key: 'icmpping[{HOST.HOST}]'
+                - type: clock
+                  'y': '2'
+                  width: '4'
+                  height: '5'
                 - type: graph
                   x: '4'
                   width: '20'
@@ -142,10 +146,6 @@ zabbix_export:
                       value:
                         host: 'BA - Generic - ICMP'
                         name: 'ICMP Statistics'
-                - type: clock
-                  'y': '2'
-                  width: '4'
-                  height: '5'
       valuemaps:
         - uuid: 4e0b1b29cccb413ea3dbe1730a188450
           name: 'Ping Status'
@@ -380,7 +380,7 @@ zabbix_export:
           value: 6h
           description: 'The timeframe for counting errors.'
         - macro: '{$INTER_FILTER_REGEX}'
-          value: '(tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$|br|tif|lo|wifi|wlan|eth\d\d?!|dhcp|VLAN|Po|ubond|ath)'
+          value: '(^tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$|br|tif|lo|wifi|wlan|eth\d\d?!|dhcp|VLAN|Po|ubond|ath)'
           description: 'Filters via Name & Alias'
         - macro: '{$INTER_FLAP_WARN_COUNT}'
           value: '3'
@@ -651,30 +651,6 @@ zabbix_export:
                       value:
                         host: 'BA - MIB - APC'
                         key: snmp.apc.ups.status
-                - type: item
-                  x: '8'
-                  width: '8'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - APC'
-                        key: snmp.apc.model
-                - type: item
-                  x: '16'
-                  width: '8'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - APC'
-                        key: snmp.apc.serial
                 - type: graph
                   'y': '2'
                   width: '24'
@@ -700,14 +676,38 @@ zabbix_export:
                   width: '24'
                   height: '5'
                   fields:
-                    - type: INTEGER
-                      name: source_type
-                      value: '1'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - APC'
                         key: snmp.apc.battery.temperature
+                    - type: INTEGER
+                      name: source_type
+                      value: '1'
+                - type: item
+                  x: '8'
+                  width: '8'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - APC'
+                        key: snmp.apc.model
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: item
+                  x: '16'
+                  width: '8'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - APC'
+                        key: snmp.apc.serial
+                    - type: INTEGER
+                      name: show
+                      value: '2'
       valuemaps:
         - uuid: c906e884cf7549d6b51f73b35ee7ee42
           name: 'Battery Replace Indicator'
@@ -1110,78 +1110,78 @@ zabbix_export:
                   x: '11'
                   width: '4'
                   fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.flash.version
+                    - type: INTEGER
+                      name: show
+                      value: '2'
                 - type: item
                   x: '11'
                   'y': '2'
                   width: '4'
                   fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.rstp.status
+                    - type: INTEGER
+                      name: show
+                      value: '2'
                 - type: item
                   x: '11'
                   'y': '4'
                   width: '4'
                   fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.loopprotect.status
+                    - type: INTEGER
+                      name: show
+                      value: '2'
                 - type: item
                   x: '11'
                   'y': '6'
                   width: '4'
                   fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.loopprotect.timer
+                    - type: INTEGER
+                      name: show
+                      value: '2'
                 - type: item
                   x: '15'
                   width: '9'
                   fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.config.sha.running
+                    - type: INTEGER
+                      name: show
+                      value: '2'
                 - type: item
                   x: '15'
                   'y': '2'
                   width: '9'
                   fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.config.sha.startup
+                    - type: INTEGER
+                      name: show
+                      value: '2'
       valuemaps:
         - uuid: 9b1fc8e853c74f7088adf58aba8ab698
           name: 'Fan Status'
@@ -1415,30 +1415,6 @@ zabbix_export:
                       value:
                         host: 'BA - MIB - Cyber Power'
                         key: snmp.cps.ups.status
-                - type: item
-                  x: '8'
-                  width: '8'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - Cyber Power'
-                        key: snmp.cps.model
-                - type: item
-                  x: '16'
-                  width: '8'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - Cyber Power'
-                        key: snmp.cps.serial
                 - type: graph
                   'y': '2'
                   width: '24'
@@ -1464,14 +1440,38 @@ zabbix_export:
                   width: '24'
                   height: '5'
                   fields:
-                    - type: INTEGER
-                      name: source_type
-                      value: '1'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - Cyber Power'
                         key: snmp.cps.battery.temperature
+                    - type: INTEGER
+                      name: source_type
+                      value: '1'
+                - type: item
+                  x: '8'
+                  width: '8'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Cyber Power'
+                        key: snmp.cps.model
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: item
+                  x: '16'
+                  width: '8'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Cyber Power'
+                        key: snmp.cps.serial
+                    - type: INTEGER
+                      name: show
+                      value: '2'
       valuemaps:
         - uuid: d2ffc6a43eb34045b9d1c2d8b90bef59
           name: 'Battery Replace Indicator'
@@ -1532,11 +1532,11 @@ zabbix_export:
             evaltype: OR
             conditions:
               - macro: '{#CLASS}'
-                value: ^2|5|10$
-                operator: NOT_MATCHES_REGEX
+                operator: NOT_EXISTS
                 formulaid: A
               - macro: '{#CLASS}'
-                operator: NOT_EXISTS
+                value: ^2|5|10$
+                operator: NOT_MATCHES_REGEX
                 formulaid: B
           item_prototypes:
             - uuid: bdd96b4040ef4985abc5c82e9738a33a
@@ -1677,25 +1677,6 @@ zabbix_export:
                   });
                   return JSON.stringify(data);
           overrides:
-            - name: 'No Alarm'
-              step: '5'
-              filter:
-                conditions:
-                  - macro: '{#ALARM}'
-                    operator: NOT_EXISTS
-                    formulaid: A
-                  - macro: '{#ALARM}'
-                    value: ^$
-                    formulaid: B
-              operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: LIKE
-                  value: Alarm
-                  discover: NO_DISCOVER
-                - operationobject: TRIGGER_PROTOTYPE
-                  operator: LIKE
-                  value: Alarm
-                  discover: NO_DISCOVER
             - name: 'No Class'
               step: '1'
               filter:
@@ -1725,23 +1706,6 @@ zabbix_export:
                   operator: LIKE
                   value: Description
                   discover: NO_DISCOVER
-            - name: 'No Model'
-              step: '6'
-              filter:
-                evaltype: OR
-                conditions:
-                  - macro: '{#MODEL}'
-                    operator: NOT_EXISTS
-                    formulaid: A
-                  - macro: '{#MODEL}'
-                    value: .+
-                    operator: NOT_MATCHES_REGEX
-                    formulaid: B
-              operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: REGEXP
-                  value: Model
-                  discover: NO_DISCOVER
             - name: 'No Sensor Type'
               step: '3'
               filter:
@@ -1769,6 +1733,42 @@ zabbix_export:
                 - operationobject: GRAPH_PROTOTYPE
                   operator: LIKE
                   value: 'Sensor Value'
+                  discover: NO_DISCOVER
+            - name: 'No Alarm'
+              step: '5'
+              filter:
+                conditions:
+                  - macro: '{#ALARM}'
+                    operator: NOT_EXISTS
+                    formulaid: A
+                  - macro: '{#ALARM}'
+                    value: ^$
+                    formulaid: B
+              operations:
+                - operationobject: ITEM_PROTOTYPE
+                  operator: LIKE
+                  value: Alarm
+                  discover: NO_DISCOVER
+                - operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Alarm
+                  discover: NO_DISCOVER
+            - name: 'No Model'
+              step: '6'
+              filter:
+                evaltype: OR
+                conditions:
+                  - macro: '{#MODEL}'
+                    operator: NOT_EXISTS
+                    formulaid: A
+                  - macro: '{#MODEL}'
+                    value: .+
+                    operator: NOT_MATCHES_REGEX
+                    formulaid: B
+              operations:
+                - operationobject: ITEM_PROTOTYPE
+                  operator: REGEXP
+                  value: Model
                   discover: NO_DISCOVER
             - name: 'No Serial'
               step: '7'
@@ -2129,10 +2129,10 @@ zabbix_export:
           filter:
             conditions:
               - macro: '{#TYPE}'
-                value: iso.3.6.1.2.1.25.2.1.4
+                value: 'HOST-RESOURCES-TYPES::hrStorageFixedDisk'
                 formulaid: A
               - macro: '{#TYPE}'
-                value: 'HOST-RESOURCES-TYPES::hrStorageFixedDisk'
+                value: iso.3.6.1.2.1.25.2.1.4
                 formulaid: B
           lifetime: 1d
           item_prototypes:
@@ -2388,6 +2388,15 @@ zabbix_export:
           name: 'Host Resources'
           pages:
             - widgets:
+                - type: item
+                  width: '3'
+                  height: '3'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        key: cpu.usage
                 - type: graph
                   'y': '3'
                   width: '6'
@@ -2398,92 +2407,19 @@ zabbix_export:
                       value:
                         host: 'BA - MIB - Host Resources'
                         name: CPU
-                - type: graphprototype
-                  x: '15'
-                  width: '3'
-                  height: '24'
-                  fields:
-                    - type: INTEGER
-                      name: columns
-                      value: '1'
-                    - type: INTEGER
-                      name: rows
-                      value: '6'
-                    - type: GRAPH_PROTOTYPE
-                      name: graphid
-                      value:
-                        host: 'BA - MIB - Host Resources'
-                        name: 'Disk ({#DESC}) Usage'
-                - type: graphprototype
-                  x: '18'
-                  width: '6'
-                  height: '24'
-                  fields:
-                    - type: INTEGER
-                      name: columns
-                      value: '1'
-                    - type: INTEGER
-                      name: rows
-                      value: '6'
-                    - type: GRAPH_PROTOTYPE
-                      name: graphid
-                      value:
-                        host: 'BA - MIB - Host Resources'
-                        name: 'Disk ({#DESC}) Statistics'
-                - type: graphprototype
-                  x: '6'
-                  width: '3'
-                  height: '24'
-                  fields:
-                    - type: INTEGER
-                      name: columns
-                      value: '1'
-                    - type: INTEGER
-                      name: rows
-                      value: '6'
-                    - type: GRAPH_PROTOTYPE
-                      name: graphid
-                      value:
-                        host: 'BA - MIB - Host Resources'
-                        name: 'Memory ({#DESC}) Usage'
-                - type: graphprototype
-                  x: '9'
-                  width: '6'
-                  height: '24'
-                  fields:
-                    - type: INTEGER
-                      name: columns
-                      value: '1'
-                    - type: INTEGER
-                      name: rows
-                      value: '6'
-                    - type: GRAPH_PROTOTYPE
-                      name: graphid
-                      value:
-                        host: 'BA - MIB - Host Resources'
-                        name: 'Memory ({#DESC}) Statistics'
                 - type: graph
                   'y': '8'
                   width: '6'
                   height: '5'
                   fields:
-                    - type: INTEGER
-                      name: source_type
-                      value: '1'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - Host Resources'
                         key: memory.usage
-                - type: item
-                  width: '3'
-                  height: '3'
-                  fields:
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - Host Resources'
-                        key: cpu.usage
+                    - type: INTEGER
+                      name: source_type
+                      value: '1'
                 - type: item
                   x: '3'
                   width: '3'
@@ -2494,6 +2430,70 @@ zabbix_export:
                       value:
                         host: 'BA - MIB - Host Resources'
                         key: memory.usage
+                - type: graphprototype
+                  x: '6'
+                  width: '3'
+                  height: '24'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '1'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Memory ({#DESC}) Usage'
+                    - type: INTEGER
+                      name: rows
+                      value: '6'
+                - type: graphprototype
+                  x: '9'
+                  width: '6'
+                  height: '24'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '1'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Memory ({#DESC}) Statistics'
+                    - type: INTEGER
+                      name: rows
+                      value: '6'
+                - type: graphprototype
+                  x: '15'
+                  width: '3'
+                  height: '24'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '1'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Disk ({#DESC}) Usage'
+                    - type: INTEGER
+                      name: rows
+                      value: '6'
+                - type: graphprototype
+                  x: '18'
+                  width: '6'
+                  height: '24'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '1'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Disk ({#DESC}) Statistics'
+                    - type: INTEGER
+                      name: rows
+                      value: '6'
     - uuid: 2f56e1feb21d4d4dac7dd9f89b819162
       template: 'BA - MIB - iDRAC'
       name: 'BA - MIB - iDRAC (IDRAC)'
@@ -2858,52 +2858,24 @@ zabbix_export:
                       value:
                         host: 'BA - MIB - iDRAC'
                         key: snmp.idrac.status
-                - type: item
-                  x: '5'
-                  width: '19'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iDRAC'
-                        key: snmp.idrac.model
-                - type: item
-                  x: '5'
-                  'y': '2'
-                  width: '19'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iDRAC'
-                        key: snmp.idrac.servicetag
                 - type: graphprototype
                   'y': '4'
                   width: '24'
                   height: '5'
                   fields:
-                    - type: INTEGER
-                      name: source_type
-                      value: '3'
                     - type: ITEM_PROTOTYPE
                       name: itemid
                       value:
                         host: 'BA - MIB - iDRAC'
                         key: 'snmp.psu.volts[{#SLOT}]'
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
                 - type: graphprototype
                   'y': '9'
                   width: '24'
                   height: '5'
                   fields:
-                    - type: INTEGER
-                      name: source_type
-                      value: '3'
                     - type: INTEGER
                       name: columns
                       value: '4'
@@ -2912,14 +2884,14 @@ zabbix_export:
                       value:
                         host: 'BA - MIB - iDRAC'
                         key: 'snmp.idrac.temp.celsius[{#LOCATION}]'
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
                 - type: graphprototype
                   'y': '14'
                   width: '24'
                   height: '5'
                   fields:
-                    - type: INTEGER
-                      name: source_type
-                      value: '3'
                     - type: INTEGER
                       name: columns
                       value: '4'
@@ -2928,6 +2900,34 @@ zabbix_export:
                       value:
                         host: 'BA - MIB - iDRAC'
                         key: 'snmp.idrac.fan.rpm[{#FAN}]'
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: item
+                  x: '5'
+                  width: '19'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: snmp.idrac.model
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: item
+                  x: '5'
+                  'y': '2'
+                  width: '19'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: snmp.idrac.servicetag
+                    - type: INTEGER
+                      name: show
+                      value: '2'
       valuemaps:
         - uuid: 87528ad19e974197bd45389575d08cc4
           name: 'Drive Status'
@@ -3466,58 +3466,17 @@ zabbix_export:
                     - type: INTEGER
                       name: adv_conf
                       value: '1'
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: snmp.ilo.health
                     - type: STRING
                       name: thresholds.color.0
                       value: 1B5E20
                     - type: STRING
                       name: thresholds.threshold.0
                       value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: snmp.ilo.health
-                - type: item
-                  x: '5'
-                  width: '19'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: snmp.ilo.model
-                - type: item
-                  x: '5'
-                  'y': '2'
-                  width: '19'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: snmp.ilo.serial
-                - type: graphprototype
-                  'y': '14'
-                  width: '24'
-                  height: '5'
-                  fields:
-                    - type: INTEGER
-                      name: columns
-                      value: '4'
-                    - type: INTEGER
-                      name: source_type
-                      value: '3'
-                    - type: ITEM_PROTOTYPE
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: 'ilo.drive.temp[{#BAY}]'
                 - type: graphprototype
                   'y': '4'
                   width: '24'
@@ -3536,14 +3495,55 @@ zabbix_export:
                     - type: INTEGER
                       name: columns
                       value: '4'
-                    - type: INTEGER
-                      name: source_type
-                      value: '3'
                     - type: ITEM_PROTOTYPE
                       name: itemid
                       value:
                         host: 'BA - MIB - iLO'
                         key: 'ilo.temp.celsius[{#SNMPINDEX}]'
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  'y': '14'
+                  width: '24'
+                  height: '5'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '4'
+                    - type: ITEM_PROTOTYPE
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: 'ilo.drive.temp[{#BAY}]'
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: item
+                  x: '5'
+                  width: '19'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: snmp.ilo.model
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: item
+                  x: '5'
+                  'y': '2'
+                  width: '19'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: snmp.ilo.serial
+                    - type: INTEGER
+                      name: show
+                      value: '2'
       valuemaps:
         - uuid: 5d0a36b6fc934ec8960c3f2f22ad2338
           name: Condition
@@ -3644,22 +3644,22 @@ zabbix_export:
           delay: '0'
           filter:
             conditions:
-              - macro: '{#NAME}'
-                value: '.*{$INTER_FILTER_REGEX}.*'
-                operator: NOT_MATCHES_REGEX
-                formulaid: C
               - macro: '{#ALIAS}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
                 formulaid: A
-              - macro: '{#OSTATUS}'
-                value: '6'
-                operator: NOT_MATCHES_REGEX
-                formulaid: D
               - macro: '{#ASTATUS}'
                 value: '2'
                 operator: NOT_MATCHES_REGEX
                 formulaid: B
+              - macro: '{#NAME}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+                formulaid: C
+              - macro: '{#OSTATUS}'
+                value: '6'
+                operator: NOT_MATCHES_REGEX
+                formulaid: D
           lifetime: 1d
           item_prototypes:
             - uuid: a78b4fcd86c140c8a63b1b1d2bcc8925
@@ -4003,14 +4003,14 @@ zabbix_export:
                   width: '24'
                   height: '11'
                   fields:
-                    - type: INTEGER
-                      name: rows
-                      value: '2'
                     - type: GRAPH_PROTOTYPE
                       name: graphid
                       value:
                         host: 'BA - MIB - Interfaces'
                         name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
+                    - type: INTEGER
+                      name: rows
+                      value: '2'
       valuemaps:
         - uuid: bada8a429d464bfba60f2ca27c549d6f
           name: 'Alert On Errors'
@@ -4047,6 +4047,12 @@ zabbix_export:
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
                 formulaid: A
+              - macro: '{#ENABLED}'
+                operator: EXISTS
+                formulaid: B
+              - macro: '{#ENABLED}'
+                value: '1'
+                formulaid: C
               - macro: '{#NAME}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
@@ -4055,12 +4061,6 @@ zabbix_export:
                 value: '^(Vl|Bl|Nu).*$'
                 operator: NOT_MATCHES_REGEX
                 formulaid: E
-              - macro: '{#ENABLED}'
-                operator: EXISTS
-                formulaid: B
-              - macro: '{#ENABLED}'
-                value: '1'
-                formulaid: C
           lifetime: 1d
           item_prototypes:
             - uuid: 6f074bb7eaf6440b9f60faae0eba55cb
@@ -4517,14 +4517,14 @@ zabbix_export:
           delay: 1h
           filter:
             conditions:
-              - macro: '{#ASTATUS}'
-                value: '2'
-                operator: NOT_MATCHES_REGEX
-                formulaid: B
               - macro: '{#ALIAS}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
                 formulaid: A
+              - macro: '{#ASTATUS}'
+                value: '2'
+                operator: NOT_MATCHES_REGEX
+                formulaid: B
               - macro: '{#NAME}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
@@ -4628,21 +4628,21 @@ zabbix_export:
           delay: 1h
           filter:
             conditions:
-              - macro: '{#VLAN}'
-                operator: EXISTS
-                formulaid: D
-              - macro: '{#ASTATUS}'
-                value: '2'
-                operator: NOT_MATCHES_REGEX
-                formulaid: B
               - macro: '{#ALIAS}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
                 formulaid: A
+              - macro: '{#ASTATUS}'
+                value: '2'
+                operator: NOT_MATCHES_REGEX
+                formulaid: B
               - macro: '{#NAME}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
                 formulaid: C
+              - macro: '{#VLAN}'
+                operator: EXISTS
+                formulaid: D
           lifetime: 1d
           item_prototypes:
             - uuid: dec676c9f63b4fe4804f11bc396bf9d5
@@ -4749,11 +4749,11 @@ zabbix_export:
                 operator: NOT_MATCHES_REGEX
                 formulaid: A
               - macro: '{#MAC}'
-                value: '^ff:ff:ff:ff:ff:ff$'
+                value: '^00:00:00:00:00:00$'
                 operator: NOT_MATCHES_REGEX
                 formulaid: B
               - macro: '{#MAC}'
-                value: '^00:00:00:00:00:00$'
+                value: '^ff:ff:ff:ff:ff:ff$'
                 operator: NOT_MATCHES_REGEX
                 formulaid: C
           item_prototypes:
@@ -4849,11 +4849,11 @@ zabbix_export:
                 operator: NOT_MATCHES_REGEX
                 formulaid: A
               - macro: '{#MAC}'
-                value: '^ff:ff:ff:ff:ff:ff$'
+                value: '^00:00:00:00:00:00$'
                 operator: NOT_MATCHES_REGEX
                 formulaid: B
               - macro: '{#MAC}'
-                value: '^00:00:00:00:00:00$'
+                value: '^ff:ff:ff:ff:ff:ff$'
                 operator: NOT_MATCHES_REGEX
                 formulaid: C
           item_prototypes:
@@ -4951,7 +4951,7 @@ zabbix_export:
         - uuid: d98aae57d9454c6a8836fab035873f83
           name: 'RouterOS Version'
           type: SNMP_AGENT
-          snmp_oid: .1.3.6.1.4.1.14988.1.1.7.4.0
+          snmp_oid: .1.3.6.1.4.1.14988.1.1.4.4.0
           key: ros.version
           delay: 6h
           history: 30d
@@ -5057,38 +5057,38 @@ zabbix_export:
                 - type: item
                   width: '4'
                   fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - MikroTik'
                         key: ros.boardname
-                - type: item
-                  'y': '4'
-                  width: '4'
-                  fields:
                     - type: INTEGER
                       name: show
                       value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - MikroTik'
-                        key: ros.serial
                 - type: item
                   'y': '2'
                   width: '4'
                   fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - MikroTik'
                         key: ros.version
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: item
+                  'y': '4'
+                  width: '4'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - MikroTik'
+                        key: ros.serial
+                    - type: INTEGER
+                      name: show
+                      value: '2'
                 - type: graphprototype
                   'y': '6'
                   width: '24'
@@ -5097,14 +5097,14 @@ zabbix_export:
                     - type: INTEGER
                       name: columns
                       value: '3'
-                    - type: INTEGER
-                      name: rows
-                      value: '2'
                     - type: GRAPH_PROTOTYPE
                       name: graphid
                       value:
                         host: 'BA - MIB - MikroTik'
                         name: 'Gauge ({#NAME}) {#UNIT}'
+                    - type: INTEGER
+                      name: rows
+                      value: '2'
                 - type: graph
                   x: '4'
                   width: '20'
@@ -5271,18 +5271,6 @@ zabbix_export:
                       value:
                         host: 'BA - MIB - UPS'
                         key: snmp.ups.ups.status
-                - type: item
-                  x: '16'
-                  width: '8'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - UPS'
-                        key: snmp.ups.model
                 - type: graph
                   'y': '2'
                   width: '24'
@@ -5308,14 +5296,14 @@ zabbix_export:
                   width: '24'
                   height: '5'
                   fields:
-                    - type: INTEGER
-                      name: source_type
-                      value: '1'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - MIB - UPS'
                         key: snmp.ups.battery.temperature
+                    - type: INTEGER
+                      name: source_type
+                      value: '1'
                 - type: item
                   x: '8'
                   width: '8'
@@ -5325,6 +5313,18 @@ zabbix_export:
                       value:
                         host: 'BA - MIB - UPS'
                         key: snmp.ups.ups.alarms
+                - type: item
+                  x: '16'
+                  width: '8'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - UPS'
+                        key: snmp.ups.model
+                    - type: INTEGER
+                      name: show
+                      value: '2'
       valuemaps:
         - uuid: e1ea0ce38dba43fbbd6d91fd183681d3
           name: 'Battery Status'
@@ -5782,196 +5782,196 @@ zabbix_export:
           pages:
             - widgets:
                 - type: item
-                  x: '4'
-                  'y': '2'
-                  width: '4'
+                  width: '12'
                   fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
                     - type: INTEGER
                       name: adv_conf
                       value: '1'
                     - type: INTEGER
                       name: decimal_size
                       value: '10'
+                    - type: STRING
+                      name: description
+                      value: 'Avigilon Camera'
                     - type: INTEGER
-                      name: value_bold
+                      name: desc_size
+                      value: '30'
+                    - type: INTEGER
+                      name: desc_v_pos
                       value: '0'
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ONVIF - Avigilon'
+                        key: camera.name
+                    - type: INTEGER
+                      name: show
+                      value: '1'
+                    - type: INTEGER
+                      name: show
+                      value: '2'
                     - type: INTEGER
                       name: units_bold
                       value: '0'
                     - type: INTEGER
+                      name: units_size
+                      value: '10'
+                    - type: INTEGER
                       name: value_size
-                      value: '30'
+                      value: '35'
+                - type: item
+                  'y': '2'
+                  width: '4'
+                  fields:
+                    - type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    - type: INTEGER
+                      name: decimal_size
+                      value: '10'
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ONVIF - Avigilon'
+                        key: camera.net.mac
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                    - type: INTEGER
+                      name: units_bold
+                      value: '0'
                     - type: INTEGER
                       name: units_size
+                      value: '10'
+                    - type: INTEGER
+                      name: value_bold
+                      value: '0'
+                    - type: INTEGER
+                      name: value_size
+                      value: '30'
+                - type: item
+                  'y': '4'
+                  width: '4'
+                  fields:
+                    - type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    - type: INTEGER
+                      name: decimal_size
+                      value: '10'
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ONVIF - Avigilon'
+                        key: camera.sensor
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                    - type: INTEGER
+                      name: units_bold
+                      value: '0'
+                    - type: INTEGER
+                      name: units_size
+                      value: '10'
+                    - type: INTEGER
+                      name: value_bold
+                      value: '0'
+                    - type: INTEGER
+                      name: value_size
+                      value: '30'
+                - type: item
+                  x: '4'
+                  'y': '2'
+                  width: '4'
+                  fields:
+                    - type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    - type: INTEGER
+                      name: decimal_size
                       value: '10'
                     - type: ITEM
                       name: itemid
                       value:
                         host: 'BA - ONVIF - Avigilon'
                         key: camera.firmware.version
-                - type: item
-                  'y': '2'
-                  width: '4'
-                  fields:
                     - type: INTEGER
                       name: show
                       value: '2'
                     - type: INTEGER
-                      name: adv_conf
-                      value: '1'
+                      name: units_bold
+                      value: '0'
                     - type: INTEGER
-                      name: decimal_size
+                      name: units_size
                       value: '10'
-                    - type: INTEGER
-                      name: value_size
-                      value: '30'
                     - type: INTEGER
                       name: value_bold
                       value: '0'
                     - type: INTEGER
-                      name: units_size
-                      value: '10'
-                    - type: INTEGER
-                      name: units_bold
-                      value: '0'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - ONVIF - Avigilon'
-                        key: camera.net.mac
-                - type: item
-                  width: '12'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '1'
-                    - type: INTEGER
-                      name: adv_conf
-                      value: '1'
-                    - type: INTEGER
-                      name: decimal_size
-                      value: '10'
-                    - type: INTEGER
-                      name: value_size
-                      value: '35'
-                    - type: INTEGER
-                      name: units_size
-                      value: '10'
-                    - type: INTEGER
-                      name: units_bold
-                      value: '0'
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: INTEGER
-                      name: desc_v_pos
-                      value: '0'
-                    - type: INTEGER
-                      name: desc_size
-                      value: '30'
-                    - type: STRING
-                      name: description
-                      value: 'Avigilon Camera'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - ONVIF - Avigilon'
-                        key: camera.name
-                - type: item
-                  x: '8'
-                  'y': '2'
-                  width: '4'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: INTEGER
-                      name: adv_conf
-                      value: '1'
-                    - type: INTEGER
-                      name: decimal_size
-                      value: '10'
-                    - type: INTEGER
                       name: value_size
                       value: '30'
-                    - type: INTEGER
-                      name: value_bold
-                      value: '0'
-                    - type: INTEGER
-                      name: units_size
-                      value: '10'
-                    - type: INTEGER
-                      name: units_bold
-                      value: '0'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - ONVIF - Avigilon'
-                        key: camera.model
-                - type: item
-                  'y': '4'
-                  width: '4'
-                  fields:
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                    - type: INTEGER
-                      name: adv_conf
-                      value: '1'
-                    - type: INTEGER
-                      name: decimal_size
-                      value: '10'
-                    - type: INTEGER
-                      name: value_size
-                      value: '30'
-                    - type: INTEGER
-                      name: value_bold
-                      value: '0'
-                    - type: INTEGER
-                      name: units_size
-                      value: '10'
-                    - type: INTEGER
-                      name: units_bold
-                      value: '0'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - ONVIF - Avigilon'
-                        key: camera.sensor
                 - type: item
                   x: '4'
                   'y': '4'
                   width: '4'
                   fields:
                     - type: INTEGER
+                      name: adv_conf
+                      value: '1'
+                    - type: INTEGER
+                      name: decimal_size
+                      value: '10'
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ONVIF - Avigilon'
+                        key: camera.serial
+                    - type: INTEGER
                       name: show
                       value: '2'
+                    - type: INTEGER
+                      name: units_bold
+                      value: '0'
+                    - type: INTEGER
+                      name: units_size
+                      value: '10'
+                    - type: INTEGER
+                      name: value_bold
+                      value: '0'
+                    - type: INTEGER
+                      name: value_size
+                      value: '30'
+                - type: item
+                  x: '8'
+                  'y': '2'
+                  width: '4'
+                  fields:
                     - type: INTEGER
                       name: adv_conf
                       value: '1'
                     - type: INTEGER
                       name: decimal_size
                       value: '10'
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - ONVIF - Avigilon'
+                        key: camera.model
                     - type: INTEGER
-                      name: value_size
-                      value: '30'
+                      name: show
+                      value: '2'
                     - type: INTEGER
-                      name: value_bold
+                      name: units_bold
                       value: '0'
                     - type: INTEGER
                       name: units_size
                       value: '10'
                     - type: INTEGER
-                      name: units_bold
+                      name: value_bold
                       value: '0'
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - ONVIF - Avigilon'
-                        key: camera.serial
+                    - type: INTEGER
+                      name: value_size
+                      value: '30'
     - uuid: a63b4d7270ab4e44a4618cc7b23e7049
       template: 'BA - Procedure - Update Name'
       name: 'BA - Procedure - Update Name'
@@ -6017,12 +6017,12 @@ zabbix_export:
             return result;
           timeout: 30s
           parameters:
-            - name: key
-              value: '{$ZABSELFKEY}'
             - name: api
               value: '{$ZABSELFAPI}'
             - name: host
               value: '{HOST.HOST}'
+            - name: key
+              value: '{$ZABSELFKEY}'
           tags:
             - tag: Type
               value: Procedure
@@ -6227,22 +6227,22 @@ zabbix_export:
           delay: 1h
           filter:
             conditions:
-              - macro: '{#NAME}'
-                value: '.*{$INTER_FILTER_REGEX}.*'
-                operator: NOT_MATCHES_REGEX
-                formulaid: C
               - macro: '{#ALIAS}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
                 formulaid: A
-              - macro: '{#OSTATUS}'
-                value: '6'
-                operator: NOT_MATCHES_REGEX
-                formulaid: D
               - macro: '{#ASTATUS}'
                 value: '2'
                 operator: NOT_MATCHES_REGEX
                 formulaid: B
+              - macro: '{#NAME}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+                formulaid: C
+              - macro: '{#OSTATUS}'
+                value: '6'
+                operator: NOT_MATCHES_REGEX
+                formulaid: D
           lifetime: 1d
           item_prototypes:
             - uuid: ef92486394574885983d2c02b1f3d264
@@ -6715,21 +6715,6 @@ zabbix_export:
           item:
             host: 'BA - MIB - APC'
             key: snmp.apc.battery.runtime
-    - uuid: ab621a713e324752b7a53d0084914239
-      name: 'Battery Charge'
-      graph_items:
-        - color: 199C0D
-          calc_fnc: ALL
-          item:
-            host: 'BA - MIB - UPS'
-            key: snmp.ups.battery.charge
-        - sortorder: '1'
-          color: F63100
-          yaxisside: RIGHT
-          calc_fnc: ALL
-          item:
-            host: 'BA - MIB - UPS'
-            key: snmp.ups.battery.runtime
     - uuid: ffb6d4eea7c749868407affdda162187
       name: 'Battery Charge'
       graph_items:
@@ -6745,6 +6730,21 @@ zabbix_export:
           item:
             host: 'BA - MIB - Cyber Power'
             key: snmp.cps.battery.runtime
+    - uuid: ab621a713e324752b7a53d0084914239
+      name: 'Battery Charge'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - UPS'
+            key: snmp.ups.battery.charge
+        - sortorder: '1'
+          color: F63100
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - UPS'
+            key: snmp.ups.battery.runtime
     - uuid: 12e77545f5a8427892619e4f55fc37e0
       name: CPU
       graph_items:
@@ -6825,21 +6825,6 @@ zabbix_export:
           item:
             host: 'BA - MIB - APC'
             key: snmp.apc.ups.inputvoltage
-    - uuid: a2d389b4e1844b0aa6ce408286637096
-      name: 'UPS Input'
-      graph_items:
-        - color: 199C0D
-          calc_fnc: ALL
-          item:
-            host: 'BA - MIB - UPS'
-            key: snmp.ups.ups.inputfreq
-        - sortorder: '1'
-          color: F63100
-          yaxisside: RIGHT
-          calc_fnc: ALL
-          item:
-            host: 'BA - MIB - UPS'
-            key: snmp.ups.ups.inputvoltage
     - uuid: ef6e9c90d3c94313ba1856fdfdbf0944
       name: 'UPS Input'
       graph_items:
@@ -6855,3 +6840,18 @@ zabbix_export:
           item:
             host: 'BA - MIB - Cyber Power'
             key: snmp.cps.ups.inputvoltage
+    - uuid: a2d389b4e1844b0aa6ce408286637096
+      name: 'UPS Input'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - UPS'
+            key: snmp.ups.ups.inputfreq
+        - sortorder: '1'
+          color: F63100
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - UPS'
+            key: snmp.ups.ups.inputvoltage
