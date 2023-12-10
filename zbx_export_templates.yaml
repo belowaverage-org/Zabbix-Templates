@@ -1984,12 +1984,11 @@ zabbix_export:
               tags:
                 - tag: SNMP
             - uuid: ed77aa0f513b454d90a231185baef9be
-              expression: 'last(/BA - MIB - Generic/snmp.uptime,#1)<last(/BA - MIB - Generic/snmp.uptime,#2)'
+              expression: 'last(/BA - MIB - Generic/snmp.uptime)<=300'
               recovery_mode: NONE
               name: 'Device rebooted'
-              status: DISABLED
               priority: AVERAGE
-              manual_close: 'YES'
+              description: 'This device rebooted within the last 5 minutes.'
               tags:
                 - tag: SNMP
       tags:
@@ -5983,7 +5982,7 @@ zabbix_export:
           type: SCRIPT
           key: update.via.inventory
           delay: 12h
-          history: '0'
+          history: 1d
           trends: '0'
           value_type: TEXT
           params: |
