@@ -1985,7 +1985,6 @@ zabbix_export:
                 - tag: SNMP
             - uuid: ed77aa0f513b454d90a231185baef9be
               expression: 'last(/BA - MIB - Generic/snmp.uptime)<=300'
-              recovery_mode: NONE
               name: 'Device rebooted'
               priority: AVERAGE
               description: 'This device rebooted within the last 5 minutes.'
