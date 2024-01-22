@@ -325,6 +325,220 @@ zabbix_export:
       tags:
         - tag: Type
           value: HTTP
+    - uuid: 96d88b30329a4c36b6d42b341295e558
+      template: 'BA - HTTP - Veeam'
+      name: 'BA - HTTP - Veeam'
+      groups:
+        - name: BA/HTTP
+      items:
+        - uuid: 9ae4e0df868a44f88026330676fc4974
+          name: 'Veeam Jobs Discovery'
+          type: SCRIPT
+          key: veeam.jobs
+          delay: 5m
+          history: '0'
+          trends: '0'
+          value_type: TEXT
+          params: |
+            var obj = JSON.parse(value);
+            var url = obj.url;
+            var api = obj.api;
+            var user = "{$VEEAM_USER}";
+            var pass = "{$VEEAM_PASS}";
+            var request = new HttpRequest();
+            request.addHeader("x-api-version: 1.1-rev0");
+            request.addHeader("accept: application/json");
+            var token = JSON.parse(request.post(url + "oauth2/token", "grant_type=password&username=" + user + "&password=" + pass)).access_token;
+            request.addHeader("Authorization: Bearer " + token);
+            return request.get(url + api);
+          parameters:
+            - name: api
+              value: v1/jobs/states
+            - name: url
+              value: 'https://{HOST.HOST}:9419/api/'
+          tags:
+            - tag: Type
+              value: Discovery
+            - tag: Veeam
+        - uuid: 831492be81dd4b849cd77348b3edd618
+          name: 'Veeam Version'
+          type: SCRIPT
+          key: veeam.version
+          delay: 12h
+          history: 30d
+          trends: '0'
+          value_type: TEXT
+          params: |
+            var obj = JSON.parse(value);
+            var url = obj.url;
+            var api = obj.api;
+            var user = "{$VEEAM_USER}";
+            var pass = "{$VEEAM_PASS}";
+            var request = new HttpRequest();
+            request.addHeader("x-api-version: 1.1-rev0");
+            request.addHeader("accept: application/json");
+            var token = JSON.parse(request.post(url + "oauth2/token", "grant_type=password&username=" + user + "&password=" + pass)).access_token;
+            request.addHeader("Authorization: Bearer " + token);
+            return request.get(url + api);
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.buildVersion
+          parameters:
+            - name: api
+              value: v1/serverInfo
+            - name: url
+              value: 'https://{HOST.HOST}:9419/api/'
+          tags:
+            - tag: Type
+              value: Version
+            - tag: Veeam
+      discovery_rules:
+        - uuid: 5b80dbbc2f564807be78cbc079cdcdd8
+          name: 'Veeam Jobs Discovery'
+          type: DEPENDENT
+          key: veeam.jobs.discovery
+          delay: '0'
+          item_prototypes:
+            - uuid: 1fc5becbc7b345f99d43676d3d62faf1
+              name: 'Veeam Job ({#NAME}) Last Result'
+              type: DEPENDENT
+              key: 'veeam.jobs.lastresult[{#NAME}]'
+              delay: '0'
+              trends: '0'
+              value_type: CHAR
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.data.[?(@.name=="{#NAME}")].lastResult.first()'
+              master_item:
+                key: veeam.jobs
+              tags:
+                - tag: Job
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Status
+                - tag: Veeam
+              trigger_prototypes:
+                - uuid: 5737da01e3e34a1ebeb05a2dac82d549
+                  expression: 'last(/BA - HTTP - Veeam/veeam.jobs.lastresult[{#NAME}])<>"Success"'
+                  name: 'Veeam Job ({#NAME}) Last Result != Success'
+                  priority: HIGH
+                  description: 'The last run of this job was not successful.'
+                  tags:
+                    - tag: Job
+                      value: '{#NAME}'
+                    - tag: Type
+                      value: Status
+                    - tag: Veeam
+            - uuid: 77ef2a4ddcfe4854895283fe5ce21e10
+              name: 'Veeam Job ({#NAME}) Last Run'
+              type: DEPENDENT
+              key: 'veeam.jobs.lastrun[{#NAME}]'
+              delay: '0'
+              history: 7d
+              trends: '0'
+              value_type: CHAR
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.data.[?(@.name=="{#NAME}")].lastRun.first()'
+              master_item:
+                key: veeam.jobs
+              tags:
+                - tag: Job
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Date
+                - tag: Veeam
+            - uuid: 827c77eb38914b65b311f3c3c859a390
+              name: 'Veeam Job ({#NAME}) Next Run'
+              type: DEPENDENT
+              key: 'veeam.jobs.nextrun[{#NAME}]'
+              delay: '0'
+              history: 7d
+              trends: '0'
+              value_type: CHAR
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.data.[?(@.name=="{#NAME}")].nextRun.first()'
+              master_item:
+                key: veeam.jobs
+              tags:
+                - tag: Job
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Date
+                - tag: Veeam
+            - uuid: feda128672764e18b1a627a0fafb4e73
+              name: 'Veeam Job ({#NAME}) Status'
+              type: DEPENDENT
+              key: 'veeam.jobs.status[{#NAME}]'
+              delay: '0'
+              trends: '0'
+              value_type: CHAR
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.data.[?(@.name=="{#NAME}")].status.first()'
+              master_item:
+                key: veeam.jobs
+              tags:
+                - tag: Job
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Status
+                - tag: Veeam
+            - uuid: 4b20b0db8a4d40928192d18ab673daec
+              name: 'Veeam Job ({#NAME}) Type'
+              type: DEPENDENT
+              key: 'veeam.jobs.type[{#NAME}]'
+              delay: '0'
+              history: 7d
+              trends: '0'
+              value_type: CHAR
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.data.[?(@.name=="{#NAME}")].type.first()'
+              master_item:
+                key: veeam.jobs
+              tags:
+                - tag: Job
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Type
+                - tag: Veeam
+            - uuid: 752c067975ca4b639b1becbbcd31a5e8
+              name: 'Veeam Job ({#NAME}) Workload'
+              type: DEPENDENT
+              key: 'veeam.jobs.workload[{#NAME}]'
+              delay: '0'
+              history: 7d
+              trends: '0'
+              value_type: CHAR
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.data.[?(@.name=="{#NAME}")].workload.first()'
+              master_item:
+                key: veeam.jobs
+              tags:
+                - tag: Job
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Type
+                - tag: Veeam
+          master_item:
+            key: veeam.jobs
+          lld_macro_paths:
+            - lld_macro: '{#NAME}'
+              path: $.name
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data
     - uuid: 02f18dcc823241fe9c718128522f1188
       template: 'BA - Macro - Generic'
       name: 'BA - Macro - Generic'
@@ -6502,6 +6716,7 @@ zabbix_export:
         - name: 'BA - MIB - Host Resources'
         - name: 'BA - MIB - Interfaces'
         - name: 'BA - MIB - Interfaces LLDP'
+        - name: 'BA - MIB - Interfaces MAC'
         - name: 'BA - MIB - MAC to IP - RFC1213'
         - name: 'BA - MIB - MikroTik'
         - name: 'BA - Procedure - Update Name'
@@ -6579,6 +6794,13 @@ zabbix_export:
       tags:
         - tag: Type
           value: Profile
+    - uuid: 9bd3c02ec76a4ffaba78735a510a9e49
+      template: 'BA - Profile - Veeam'
+      name: 'BA - Profile - Veeam'
+      templates:
+        - name: 'BA - HTTP - Veeam'
+      groups:
+        - name: BA/Profiles
     - uuid: 00258b13162c4a3d9283a479b1a10f80
       template: 'BA - Profile - vSphere'
       name: 'BA - Profile - vSphere'
