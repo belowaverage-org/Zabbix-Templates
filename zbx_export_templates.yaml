@@ -421,7 +421,7 @@ zabbix_export:
                 - tag: Veeam
               trigger_prototypes:
                 - uuid: 5737da01e3e34a1ebeb05a2dac82d549
-                  expression: 'last(/BA - HTTP - Veeam/veeam.jobs.lastresult[{#NAME}])<>"Success"'
+                  expression: 'last(/BA - HTTP - Veeam/veeam.jobs.lastresult[{#NAME}])<>"Success" and last(/BA - HTTP - Veeam/veeam.jobs.lastresult[{#NAME}])<>"None"'
                   name: 'Veeam Job ({#NAME}) Last Result != Success'
                   priority: HIGH
                   description: 'The last run of this job was not successful.'
