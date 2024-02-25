@@ -6910,6 +6910,178 @@ zabbix_export:
       tags:
         - tag: Type
           value: SSH
+    - uuid: 5363825b8b51440ab13167e282af90de
+      template: 'BA - SSH - UPS'
+      name: 'BA - SSH - UPS (NUT)'
+      groups:
+        - name: BA/SSH
+      items:
+        - uuid: 5dc8fcd056714c81b6f37ada8fd25263
+          name: 'UPS Discovery'
+          type: SSH
+          key: 'ssh.run[upsdiscovery]'
+          history: '0'
+          trends: '0'
+          value_type: TEXT
+          params: |
+            for ups in $(upsc -l); do
+                echo "#$ups";
+                upsc $ups;
+            done
+          username: '{$SSH_USERNAME}'
+          password: '{$SSH_PASSWORD}'
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var UPSs = value.split('#');
+                  var result = [];
+                  var mIndex = 0;
+                  UPSs.forEach(function(ups) {
+                      if (ups == '') { return; }
+                      var lines = ups.split('\n');
+                      var lIndex = 0;
+                      result[mIndex] = {};
+                      lines.forEach(function(line) {
+                          if (line == '') { return; }
+                          if (lIndex++ == 0) { 
+                              result[mIndex]['{#NAME}'] = line;
+                              result[mIndex]['name'] = line;
+                              return;
+                          }
+                          var kv = line.split(': ');
+                          result[mIndex][kv[0]] = kv[1];
+                      });
+                      mIndex++;
+                  });
+                  return JSON.stringify(result);
+      discovery_rules:
+        - uuid: aab88f1eccb54af58b4845c52cf5265e
+          name: 'UPS Discovery'
+          type: DEPENDENT
+          key: ssh.nut.ups.discovery
+          delay: '0'
+          item_prototypes:
+            - uuid: 3141f09d1c8547e485b8f90d9dba0f2a
+              name: 'UPS ({#NAME}) Charge'
+              type: DEPENDENT
+              key: 'ssh.nut.ups.charge[{#NAME}]'
+              delay: '0'
+              history: 30d
+              units: '%'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$..[?(@.name==''{#NAME}'')][''battery.charge''].first()'
+              master_item:
+                key: 'ssh.run[upsdiscovery]'
+              tags:
+                - tag: Type
+                  value: Charge
+                - tag: UPS
+                  value: '{#NAME}'
+            - uuid: caf05ab2f31346d1aee194218fdc3bef
+              name: 'UPS ({#NAME}) Load'
+              type: DEPENDENT
+              key: 'ssh.nut.ups.load[{#NAME}]'
+              delay: '0'
+              history: 30d
+              units: '%'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$..[?(@.name==''{#NAME}'')][''ups.load''].first()'
+              master_item:
+                key: 'ssh.run[upsdiscovery]'
+              tags:
+                - tag: Type
+                  value: Load
+                - tag: UPS
+                  value: '{#NAME}'
+            - uuid: ab90c08feeb4464eaf34dc8a21a1def4
+              name: 'UPS ({#NAME}) Runtime'
+              type: DEPENDENT
+              key: 'ssh.nut.ups.runtime[{#NAME}]'
+              delay: '0'
+              history: 30d
+              units: s
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$..[?(@.name==''{#NAME}'')][''battery.runtime''].first()'
+              master_item:
+                key: 'ssh.run[upsdiscovery]'
+              tags:
+                - tag: Type
+                  value: Runtime
+                - tag: UPS
+                  value: '{#NAME}'
+            - uuid: 1178a6cb711e4f1983c69c82eeb5bacb
+              name: 'UPS ({#NAME}) Status'
+              type: DEPENDENT
+              key: 'ssh.nut.ups.status[{#NAME}]'
+              delay: '0'
+              history: 30d
+              valuemap:
+                name: 'UPS Status'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$..[?(@.name==''{#NAME}'')][''ups.status''].first()'
+                - type: JAVASCRIPT
+                  parameters:
+                    - |
+                      if (value.includes('OL')) {
+                          return 1;
+                      } else {
+                          return 0;
+                      }
+              master_item:
+                key: 'ssh.run[upsdiscovery]'
+              tags:
+                - tag: Type
+                  value: Status
+                - tag: UPS
+                  value: '{#NAME}'
+              trigger_prototypes:
+                - uuid: 61cb309d62f8429f852aff61c7c3fd2f
+                  expression: 'last(/BA - SSH - UPS/ssh.nut.ups.status[{#NAME}])=0'
+                  name: 'UPS ({#NAME}) Status = Offline'
+                  priority: HIGH
+                  tags:
+                    - tag: Type
+                      value: Status
+                    - tag: UPS
+                      value: '{#NAME}'
+            - uuid: 71e2da69276a404c9f3aacd9cac442aa
+              name: 'UPS ({#NAME}) Voltage'
+              type: DEPENDENT
+              key: 'ssh.nut.ups.voltage[{#NAME}]'
+              delay: '0'
+              history: 30d
+              value_type: FLOAT
+              units: V
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$..[?(@.name==''{#NAME}'')][''input.voltage''].first()'
+              master_item:
+                key: 'ssh.run[upsdiscovery]'
+              tags:
+                - tag: Type
+                  value: Voltage
+                - tag: UPS
+                  value: '{#NAME}'
+          master_item:
+            key: 'ssh.run[upsdiscovery]'
+      valuemaps:
+        - uuid: aff82d0edfcb41379ecd4705717395a9
+          name: 'UPS Status'
+          mappings:
+            - value: '0'
+              newvalue: Offline
+            - value: '1'
+              newvalue: Online
   triggers:
     - uuid: 0cb2f24a7f724fad988e17ed41f374ee
       expression: 'last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.startup)<>last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.running)'
