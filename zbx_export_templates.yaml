@@ -573,7 +573,7 @@ zabbix_export:
           value: '95'
           description: 'Percentage to trigger a memory usage alert.'
         - macro: '{$SOFTWARE_VERSION_STRINGS}'
-          value: (16\.11\.0010|KA\.16\.04\.0026|WB\.16\.10\.0023)
+          value: (7\.13\.5)
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
         - macro: '{$TEMP_C_WARN}'
           value: '75'
@@ -5169,15 +5169,24 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: .1.3.6.1.4.1.14988.1.1.4.4.0
           key: ros.version
-          delay: 6h
-          history: 30d
+          delay: 5m
+          history: 1d
           trends: '0'
           value_type: CHAR
-          inventory_link: OS
+          inventory_link: SOFTWARE
           tags:
             - tag: RouterOS
             - tag: Type
               value: Version
+          triggers:
+            - uuid: 23f1bc1096ff49728e3c340164fbe352
+              expression: 'find(/BA - MIB - MikroTik/ros.version,#1,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
+              name: 'RouterOS Version Out of Date'
+              priority: WARNING
+              tags:
+                - tag: RouterOS
+                - tag: Type
+                  value: Version
       discovery_rules:
         - uuid: a218d20f379642fd83b0472df43663e8
           name: 'ROS Gauge Discovery'
@@ -6271,6 +6280,8 @@ zabbix_export:
       tags:
         - tag: Type
           value: Profile
+        - tag: Vendor
+          value: APC
     - uuid: 901df0e8cba24e74890e3e629e965b9a
       template: 'BA - Profile - Aruba CX Switch'
       name: 'BA - Profile - Aruba CX Switch'
@@ -6295,6 +6306,8 @@ zabbix_export:
           value: Network
         - tag: Type
           value: Profile
+        - tag: Vendor
+          value: Aruba
     - uuid: f0572d351d6547c7a33ae487fab360e7
       template: 'BA - Profile - Aruba Switch'
       name: 'BA - Profile - Aruba Switch'
@@ -6321,6 +6334,8 @@ zabbix_export:
           value: Network
         - tag: Type
           value: Profile
+        - tag: Vendor
+          value: Aruba
     - uuid: 32d4adb424bf414683487c8d6414bc72
       template: 'BA - Profile - Avigilon'
       name: 'BA - Profile - Avigilon'
@@ -6336,6 +6351,8 @@ zabbix_export:
           value: Profile
         - tag: Type
           value: Surveillance
+        - tag: Vendor
+          value: Avigilon
     - uuid: dd62fc36b98043b98668524c168b3787
       template: 'BA - Profile - Axis'
       name: 'BA - Profile - Axis'
@@ -6351,6 +6368,8 @@ zabbix_export:
           value: Profile
         - tag: Type
           value: Surveillance
+        - tag: Vendor
+          value: Axis
     - uuid: c14d11008b524874a40ab65d935d01cf
       template: 'BA - Profile - Cisco IOS Switch'
       name: 'BA - Profile - Cisco IOS Switch'
@@ -6370,6 +6389,8 @@ zabbix_export:
           value: Network
         - tag: Type
           value: Profile
+        - tag: Vendor
+          value: Cisco
     - uuid: edfde163545d4f058f26a5ace12614f0
       template: 'BA - Profile - Cisco Small Business Switch'
       name: 'BA - Profile - Cisco Small Business Switch'
@@ -6393,6 +6414,8 @@ zabbix_export:
           value: Network
         - tag: Type
           value: Profile
+        - tag: Vendor
+          value: Cisco
     - uuid: c9872f3dbacb455482641a09da61e4c3
       template: 'BA - Profile - Cyber Power'
       name: 'BA - Profile - Cyber Power'
@@ -6406,7 +6429,11 @@ zabbix_export:
         - name: BA/Profiles
       tags:
         - tag: Type
+          value: Power
+        - tag: Type
           value: Profile
+        - tag: Vendor
+          value: 'Cyber Power'
     - uuid: cba898d4d6af47ccbf5bd0c8c5340c96
       template: 'BA - Profile - iDRAC'
       name: 'BA - Profile - iDRAC'
@@ -6423,6 +6450,8 @@ zabbix_export:
           value: Profile
         - tag: Type
           value: Servers
+        - tag: Vendor
+          value: iDRAC
     - uuid: 6e39e8aa1a0848f3b2454a082094ecde
       template: 'BA - Profile - iLO'
       name: 'BA - Profile - iLO'
@@ -6690,6 +6719,8 @@ zabbix_export:
           value: Profile
         - tag: Type
           value: Servers
+        - tag: Vendor
+          value: iLO
     - uuid: cfc4c512c2c4421599b4703ddae48352
       template: 'BA - Profile - Linux'
       name: 'BA - Profile - Linux'
@@ -6708,6 +6739,8 @@ zabbix_export:
           value: Profile
         - tag: Type
           value: Servers
+        - tag: Vendor
+          value: Linux
     - uuid: 2d6c963fca534c2eb56112e107ab2e9c
       template: 'BA - Profile - MikroTik'
       name: 'BA - Profile - MikroTik'
@@ -6732,6 +6765,8 @@ zabbix_export:
           value: Network
         - tag: Type
           value: Profile
+        - tag: Vendor
+          value: MikroTik
     - uuid: c3286d6562bd4c1bad679f800b371f9f
       template: 'BA - Profile - pfSense'
       name: 'BA - Profile - pfSense'
@@ -6750,6 +6785,8 @@ zabbix_export:
           value: Network
         - tag: Type
           value: Profile
+        - tag: Vendor
+          value: pfSense
     - uuid: 59825d81f28447858af5e9f1425cb800
       template: 'BA - Profile - Ruckus'
       name: 'BA - Profile - Ruckus'
@@ -6767,6 +6804,8 @@ zabbix_export:
           value: Network
         - tag: Type
           value: Profile
+        - tag: Vendor
+          value: Ruckus
     - uuid: 0a6869fb9afd498ca33833502d4929d2
       template: 'BA - Profile - Ubiquiti'
       name: 'BA - Profile - Ubiquiti'
@@ -6784,6 +6823,8 @@ zabbix_export:
           value: Network
         - tag: Type
           value: Profile
+        - tag: Vendor
+          value: Ubiquiti
     - uuid: a84485143ea944d39947bc6beb5c8dee
       template: 'BA - Profile - UPS'
       name: 'BA - Profile - UPS'
@@ -6797,14 +6838,11 @@ zabbix_export:
         - name: BA/Profiles
       tags:
         - tag: Type
+          value: Power
+        - tag: Type
           value: Profile
-    - uuid: 9bd3c02ec76a4ffaba78735a510a9e49
-      template: 'BA - Profile - Veeam'
-      name: 'BA - Profile - Veeam'
-      templates:
-        - name: 'BA - HTTP - Veeam'
-      groups:
-        - name: BA/Profiles
+        - tag: Vendor
+          value: Generic
     - uuid: 00258b13162c4a3d9283a479b1a10f80
       template: 'BA - Profile - vSphere'
       name: 'BA - Profile - vSphere'
@@ -6825,6 +6863,8 @@ zabbix_export:
           value: Profile
         - tag: Type
           value: Servers
+        - tag: Vendor
+          value: VMWare
     - uuid: 22526bb9690840debbaa02fd6f35d5b0
       template: 'BA - Profile - Windows'
       name: 'BA - Profile - Windows'
@@ -6844,6 +6884,8 @@ zabbix_export:
           value: Profile
         - tag: Type
           value: Servers
+        - tag: Vendor
+          value: Windows
     - uuid: ed7b2d0bb3bc487f85dd64fe636c783e
       template: 'BA - SSH - Aruba Config'
       name: 'BA - SSH - Aruba Config'
