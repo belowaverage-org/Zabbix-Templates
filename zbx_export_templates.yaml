@@ -2259,7 +2259,7 @@ zabbix_export:
               value: Usage
           triggers:
             - uuid: 54befd1674e64270b7bc9876c05d5204
-              expression: 'avg(/BA - MIB - Host Resources/cpu.usage,{$CPU_USAGE_WARN})>={$CPU_USAGE_WARN}'
+              expression: 'avg(/BA - MIB - Host Resources/cpu.usage,{$CPU_HIGH_AVG_TIME_WARN})>={$CPU_USAGE_WARN}'
               name: 'CPU Usage >= {$CPU_USAGE_WARN}% for {$CPU_HIGH_AVG_TIME_WARN}'
               priority: AVERAGE
               tags:
