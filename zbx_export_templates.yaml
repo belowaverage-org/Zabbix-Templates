@@ -573,7 +573,7 @@ zabbix_export:
           value: '95'
           description: 'Percentage to trigger a memory usage alert.'
         - macro: '{$SOFTWARE_VERSION_STRINGS}'
-          value: (7\.13\.5)
+          value: (7\.14)
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
         - macro: '{$TEMP_C_WARN}'
           value: '75'
@@ -2215,23 +2215,44 @@ zabbix_export:
       items:
         - uuid: 06f324c51e5f4598907c5cb273b658b8
           name: 'CPU Count'
-          type: CALCULATED
+          type: DEPENDENT
           key: cpu.count
-          delay: 6h
+          delay: '0'
           history: 7d
-          params: 'sum(exists_foreach(//snmp.hr.cpu.usage[*]))'
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - usage
+                - .1.3.6.1.2.1.25.3.3.1.2
+                - '0'
+            - type: JSONPATH
+              parameters:
+                - $.length()
+          master_item:
+            key: snmp.cpu
           tags:
             - tag: CPU
             - tag: Type
               value: Count
         - uuid: 5025fa88f9a7452289629d2d127374e8
           name: 'CPU Usage'
-          type: CALCULATED
+          type: DEPENDENT
           key: cpu.usage
+          delay: '0'
           history: 7d
           value_type: FLOAT
           units: '%'
-          params: 'avg(last_foreach(//snmp.hr.cpu.usage[*]))'
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - usage
+                - .1.3.6.1.2.1.25.3.3.1.2
+                - '0'
+            - type: JSONPATH
+              parameters:
+                - $..usage.avg()
+          master_item:
+            key: snmp.cpu
           tags:
             - tag: CPU
             - tag: Type
@@ -2304,6 +2325,15 @@ zabbix_export:
                 - tag: Memory
                 - tag: Type
                   value: Usage
+        - uuid: 466a0ad4e7d64c64ac813cf42a1a42f6
+          name: 'CPU Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[.1.3.6.1.2.1.25.3.3.1.2]'
+          key: snmp.cpu
+          delay: 10s
+          history: '0'
+          trends: '0'
+          value_type: TEXT
         - uuid: d6776d1e932247fca27a366c365cd41f
           name: 'Storage Discovery'
           type: SNMP_AGENT
@@ -2315,23 +2345,37 @@ zabbix_export:
       discovery_rules:
         - uuid: 0c403e28a6c4499a9ca25969557b655a
           name: 'Processor Discovery'
-          type: SNMP_AGENT
-          snmp_oid: 'discovery[{#USAGE}, .1.3.6.1.2.1.25.3.3.1.2]'
+          type: DEPENDENT
           key: snmp.hr.cpu.discovery
-          delay: 1h
+          delay: '0'
           item_prototypes:
             - uuid: d7b4dc1bc39e46548aa5dcbcc9e42d9a
               name: 'CPU ({#SNMPINDEX}) Usage'
-              type: SNMP_AGENT
-              snmp_oid: '.1.3.6.1.2.1.25.3.3.1.2.{#SNMPINDEX}'
+              type: DEPENDENT
               key: 'snmp.hr.cpu.usage[{#SNMPINDEX}]'
+              delay: '0'
               history: 7d
               units: '%'
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.25.3.3.1.2.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: snmp.cpu
               tags:
                 - tag: CPU
                   value: '{#SNMPINDEX}'
                 - tag: Type
                   value: Usage
+          master_item:
+            key: snmp.cpu
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - '{#USAGE}'
+                - .1.3.6.1.2.1.25.3.3.1.2
+                - '0'
         - uuid: b06ed58b63fe4b74b7028ec8eb23facc
           name: 'Fixed Disk Discovery'
           type: SNMP_AGENT
