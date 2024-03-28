@@ -7069,6 +7069,16 @@ zabbix_export:
                   value: Charge
                 - tag: UPS
                   value: '{#NAME}'
+              trigger_prototypes:
+                - uuid: 51af5fe88b8e4eebaae011a3f2022ba8
+                  expression: 'last(/BA - SSH - UPS/ssh.nut.ups.charge[{#NAME}])<100'
+                  name: 'UPS ({#NAME}) Charge < 100%'
+                  priority: WARNING
+                  tags:
+                    - tag: Type
+                      value: Charge
+                    - tag: UPS
+                      value: '{#NAME}'
             - uuid: caf05ab2f31346d1aee194218fdc3bef
               name: 'UPS ({#NAME}) Load'
               type: DEPENDENT
