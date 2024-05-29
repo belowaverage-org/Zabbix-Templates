@@ -2589,7 +2589,7 @@ zabbix_export:
               name: 'Disk ({#DESC}) Size'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
-              key: 'snmp.hr.fdisk.size[{#SNMPINDEX}]'
+              key: 'snmp.hr.fdisk.size[{#DESC}]'
               delay: 6h
               history: 7d
               units: B
@@ -2610,12 +2610,12 @@ zabbix_export:
             - uuid: d9309c8752944c33ad352b0b23118259
               name: 'Disk ({#DESC}) Usage'
               type: CALCULATED
-              key: 'snmp.hr.fdisk.usage[{#SNMPINDEX}]'
+              key: 'snmp.hr.fdisk.usage[{#DESC}]'
               delay: 1h
               history: 7d
               value_type: FLOAT
               units: '%'
-              params: 'last(//snmp.hr.fdisk.used[{#SNMPINDEX}])/last(//snmp.hr.fdisk.size[{#SNMPINDEX}])'
+              params: 'last(//snmp.hr.fdisk.used[{#DESC}])/last(//snmp.hr.fdisk.size[{#DESC}])'
               preprocessing:
                 - type: MULTIPLIER
                   parameters:
@@ -2627,14 +2627,14 @@ zabbix_export:
                   value: Usage
               trigger_prototypes:
                 - uuid: 4e5aa0b34f4745ada32f998ac09fe99e
-                  expression: 'last(/BA - MIB - Host Resources/snmp.hr.fdisk.usage[{#SNMPINDEX}])>={$DISK_HIGH_AVG_PERC_WARN}'
+                  expression: 'last(/BA - MIB - Host Resources/snmp.hr.fdisk.usage[{#DESC}])>={$DISK_HIGH_AVG_PERC_WARN}'
                   name: 'Disk ({#DESC}) Usage >= {$DISK_HIGH_AVG_PERC_WARN}%'
                   priority: HIGH
             - uuid: d12b45c4665144ab99bcc2b12ee4073d
               name: 'Disk ({#DESC}) Used'
               type: SNMP_AGENT
               snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
-              key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
+              key: 'snmp.hr.fdisk.used[{#DESC}]'
               delay: 1h
               history: 7d
               units: B
@@ -2660,20 +2660,20 @@ zabbix_export:
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Host Resources'
-                    key: 'snmp.hr.fdisk.size[{#SNMPINDEX}]'
+                    key: 'snmp.hr.fdisk.size[{#DESC}]'
                 - sortorder: '1'
                   color: F63100
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Host Resources'
-                    key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
+                    key: 'snmp.hr.fdisk.used[{#DESC}]'
                 - sortorder: '2'
                   color: 2774A4
                   yaxisside: RIGHT
                   calc_fnc: ALL
                   item:
                     host: 'BA - MIB - Host Resources'
-                    key: 'snmp.hr.fdisk.usage[{#SNMPINDEX}]'
+                    key: 'snmp.hr.fdisk.usage[{#DESC}]'
             - uuid: 80c9eb5bde2e4873af69913d1cc94a51
               name: 'Disk ({#DESC}) Usage'
               yaxismax: '0'
@@ -2687,13 +2687,13 @@ zabbix_export:
                   type: GRAPH_SUM
                   item:
                     host: 'BA - MIB - Host Resources'
-                    key: 'snmp.hr.fdisk.size[{#SNMPINDEX}]'
+                    key: 'snmp.hr.fdisk.size[{#DESC}]'
                 - sortorder: '1'
                   color: E57373
                   calc_fnc: LAST
                   item:
                     host: 'BA - MIB - Host Resources'
-                    key: 'snmp.hr.fdisk.used[{#SNMPINDEX}]'
+                    key: 'snmp.hr.fdisk.used[{#DESC}]'
         - uuid: 5f9d9f2ab44f452cae7c7d8b67873df2
           name: 'Memory Discovery'
           type: DEPENDENT
@@ -6554,6 +6554,7 @@ zabbix_export:
           delay: 12h
           history: 1d
           trends: '0'
+          status: DISABLED
           value_type: TEXT
           params: |
             var params = JSON.parse(value);
@@ -6599,6 +6600,7 @@ zabbix_export:
             - uuid: cf94790245f74d69803a9680c0032f02
               expression: 'find(/BA - Procedure - Update Name/update.via.inventory,,"regexp","^.*Host with the same visible name.*$")=1'
               name: 'Device name not unique'
+              status: DISABLED
               priority: INFO
               description: |
                 This device name matches another device with a different IP.
