@@ -711,7 +711,7 @@ zabbix_export:
           value: '1'
           description: 'The count of discards allowed on an interface.'
         - macro: '{$INTER_DISCARD_WARN_TIME}'
-          value: 6h
+          value: 1h
           description: 'The timeframe for counting discards.'
         - macro: '{$INTER_ERROR_WARN}'
           value: '1'
