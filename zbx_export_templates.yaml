@@ -195,9 +195,7 @@ zabbix_export:
           name: 'Device Firmware Version'
           type: DEPENDENT
           key: camera.firmware.version
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: OS
           preprocessing:
@@ -217,9 +215,7 @@ zabbix_export:
           name: 'Device Model'
           type: DEPENDENT
           key: camera.model
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: MODEL
           preprocessing:
@@ -239,9 +235,7 @@ zabbix_export:
           name: 'Device Name'
           type: DEPENDENT
           key: camera.name
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: NAME
           preprocessing:
@@ -261,9 +255,7 @@ zabbix_export:
           name: 'Device MAC'
           type: DEPENDENT
           key: camera.net.mac
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: MACADDRESS_A
           preprocessing:
@@ -285,7 +277,6 @@ zabbix_export:
           key: camera.parameters
           delay: 15m
           history: 1h
-          trends: '0'
           value_type: TEXT
           authtype: DIGEST
           username: '{$AXIS_CAM_USERNAME}'
@@ -313,9 +304,7 @@ zabbix_export:
           name: 'Device Sensor'
           type: DEPENDENT
           key: camera.sensor
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: TYPE
           preprocessing:
@@ -335,9 +324,7 @@ zabbix_export:
           name: 'Device Serial'
           type: DEPENDENT
           key: camera.serial
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: SERIALNO_A
           preprocessing:
@@ -368,7 +355,6 @@ zabbix_export:
           key: github.releases
           delay: 15m
           history: '0'
-          trends: '0'
           value_type: TEXT
           timeout: 30s
           url: 'https://api.github.com/repos/{$REPOSITORY}/releases'
@@ -389,8 +375,6 @@ zabbix_export:
           params: last(//github.releases.totaldownloads)
           preprocessing:
             - type: SIMPLE_CHANGE
-              parameters:
-                - ''
           tags:
             - tag: GitHub
               value: Releases
@@ -400,7 +384,6 @@ zabbix_export:
           name: 'GitHub Releases Total Downloads'
           type: DEPENDENT
           key: github.releases.totaldownloads
-          delay: '0'
           history: 7d
           preprocessing:
             - type: JSONPATH
@@ -418,7 +401,6 @@ zabbix_export:
           name: 'GitHub Releases Discovery'
           type: DEPENDENT
           key: github.releases.discovery
-          delay: '0'
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -426,7 +408,6 @@ zabbix_export:
               name: 'Github Release ({#TAG}) Downloads'
               type: DEPENDENT
               key: 'github.release.downloads[{#ID}]'
-              delay: '0'
               history: 7d
               preprocessing:
                 - type: JSONPATH
@@ -444,17 +425,13 @@ zabbix_export:
               name: 'Github Release ({#TAG}) JSON'
               type: DEPENDENT
               key: 'github.release.json[{#ID}]'
-              delay: '0'
               history: 30d
-              trends: '0'
               value_type: TEXT
               preprocessing:
                 - type: JSONPATH
                   parameters:
                     - '$.body[?(@.tag_name == "{#TAG}")]'
                 - type: DISCARD_UNCHANGED
-                  parameters:
-                    - ''
               master_item:
                 key: github.releases
               tags:
@@ -489,7 +466,6 @@ zabbix_export:
           key: veeam.jobs
           delay: 5m
           history: '0'
-          trends: '0'
           value_type: TEXT
           params: |
             var obj = JSON.parse(value);
@@ -519,7 +495,6 @@ zabbix_export:
           key: veeam.version
           delay: 12h
           history: 30d
-          trends: '0'
           value_type: TEXT
           params: |
             var obj = JSON.parse(value);
@@ -552,7 +527,6 @@ zabbix_export:
           name: 'Veeam Jobs Discovery'
           type: DEPENDENT
           key: veeam.jobs.discovery
-          delay: '0'
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -560,9 +534,7 @@ zabbix_export:
               name: 'Veeam Job ({#NAME}) Last Result'
               type: DEPENDENT
               key: 'veeam.jobs.lastresult[{#NAME}]'
-              delay: '0'
               history: 90d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: JSONPATH
@@ -592,9 +564,7 @@ zabbix_export:
               name: 'Veeam Job ({#NAME}) Last Run'
               type: DEPENDENT
               key: 'veeam.jobs.lastrun[{#NAME}]'
-              delay: '0'
               history: 7d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: JSONPATH
@@ -612,9 +582,7 @@ zabbix_export:
               name: 'Veeam Job ({#NAME}) Next Run'
               type: DEPENDENT
               key: 'veeam.jobs.nextrun[{#NAME}]'
-              delay: '0'
               history: 7d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: JSONPATH
@@ -632,9 +600,7 @@ zabbix_export:
               name: 'Veeam Job ({#NAME}) Status'
               type: DEPENDENT
               key: 'veeam.jobs.status[{#NAME}]'
-              delay: '0'
               history: 90d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: JSONPATH
@@ -652,9 +618,7 @@ zabbix_export:
               name: 'Veeam Job ({#NAME}) Type'
               type: DEPENDENT
               key: 'veeam.jobs.type[{#NAME}]'
-              delay: '0'
               history: 7d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: JSONPATH
@@ -672,9 +636,7 @@ zabbix_export:
               name: 'Veeam Job ({#NAME}) Workload'
               type: DEPENDENT
               key: 'veeam.jobs.workload[{#NAME}]'
-              delay: '0'
               history: 7d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: JSONPATH
@@ -731,7 +693,7 @@ zabbix_export:
           value: '95'
           description: 'Percentage to trigger a memory usage alert.'
         - macro: '{$SOFTWARE_VERSION_STRINGS}'
-          value: (7\.14\.2|(YA|WC)\.16\.11\.0016)
+          value: (7\.15|(YA|WC)\.16\.11\.0016)
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
         - macro: '{$TEMP_C_WARN}'
           value: '75'
@@ -745,6 +707,12 @@ zabbix_export:
         - tag: Type
           value: Macro
       macros:
+        - macro: '{$INTER_DISCARD_WARN}'
+          value: '1'
+          description: 'The count of discards allowed on an interface.'
+        - macro: '{$INTER_DISCARD_WARN_TIME}'
+          value: 6h
+          description: 'The timeframe for counting discards.'
         - macro: '{$INTER_ERROR_WARN}'
           value: '1'
           description: 'The count of errors allowed on an interface.'
@@ -752,7 +720,7 @@ zabbix_export:
           value: 6h
           description: 'The timeframe for counting errors.'
         - macro: '{$INTER_FILTER_REGEX}'
-          value: '(^tunnel|ppp|loopback|LightWeight|Scheduler|Local Area Connection|Hyper-V|enc0|lo0|pflog0|pfsync0|Logical-int|Nu0|Vl1|veth|lo|docker0$|br|tif|lo|wifi|wlan|eth\d\d?!|dhcp|VLAN|Po|ubond|ath|^<sstp-|^enP)'
+          value: '(^tunnel|^ppp|^loopback|^LightWeight|^Scheduler|^Local Area Connection|^Hyper-V|^enc0|^lo0|^pflog0|^pfsync0|^Logical-int|^Nu0|^Vl1|^veth|^lo|^docker0$|^br|^tif|^lo|^wifi|^wlan|^eth\d\d?!|^dhcp|^VLAN|^Po|^ubond|^ath|^<sstp-|^enP)'
           description: 'Filters via Name & Alias'
         - macro: '{$INTER_FLAP_WARN_COUNT}'
           value: '3'
@@ -785,7 +753,6 @@ zabbix_export:
           key: snmp.apc.age
           delay: 6h
           history: 30d
-          trends: '0'
           value_type: CHAR
           inventory_link: DATE_HW_INSTALL
           preprocessing:
@@ -813,7 +780,6 @@ zabbix_export:
           key: snmp.apc.battery.replaced
           delay: 6h
           history: 30d
-          trends: '0'
           value_type: CHAR
           description: 'Last time the battery was replaced.'
           preprocessing:
@@ -889,7 +855,6 @@ zabbix_export:
           key: snmp.apc.model
           delay: 6h
           history: 30d
-          trends: '0'
           value_type: CHAR
           inventory_link: MODEL
           preprocessing:
@@ -906,7 +871,6 @@ zabbix_export:
           key: snmp.apc.serial
           delay: 6h
           history: 30d
-          trends: '0'
           value_type: CHAR
           inventory_link: SERIALNO_A
           preprocessing:
@@ -970,7 +934,6 @@ zabbix_export:
               - macro: '{#CARTSTATUS}'
                 value: ^$
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -981,7 +944,6 @@ zabbix_export:
               key: 'snmp.apc.battery.status[{#SNMPINDEX}]'
               delay: 1h
               history: 30d
-              trends: '0'
               value_type: CHAR
               description: |
                 The battery cartridge status.
@@ -1224,7 +1186,6 @@ zabbix_export:
           key: snmp.aruba.config.sha.running
           delay: 15m
           history: 7d
-          trends: '0'
           value_type: CHAR
           preprocessing:
             - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -1240,7 +1201,6 @@ zabbix_export:
           key: snmp.aruba.config.sha.startup
           delay: 15m
           history: 7d
-          trends: '0'
           value_type: CHAR
           preprocessing:
             - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -1256,7 +1216,6 @@ zabbix_export:
           key: snmp.aruba.flash.version
           delay: 5m
           history: 1d
-          trends: '0'
           value_type: CHAR
           inventory_link: OS_SHORT
           tags:
@@ -1454,13 +1413,10 @@ zabbix_export:
                 conditions:
                   - macro: '{#TEMP}'
                     value: '0'
-                    formulaid: A
                   - macro: '{#TEMP}'
                     value: '254'
-                    formulaid: B
               operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: LIKE
+                - operator: LIKE
                   value: Temperature
                   discover: NO_DISCOVER
                 - operationobject: TRIGGER_PROTOTYPE
@@ -1640,7 +1596,6 @@ zabbix_export:
           key: snmp.cps.battery.replaced
           delay: 6h
           history: 30d
-          trends: '0'
           value_type: CHAR
           description: 'Last time the battery was replaced.'
           preprocessing:
@@ -1716,7 +1671,6 @@ zabbix_export:
           key: snmp.cps.model
           delay: 6h
           history: 30d
-          trends: '0'
           value_type: CHAR
           inventory_link: MODEL
           preprocessing:
@@ -1733,7 +1687,6 @@ zabbix_export:
           key: snmp.cps.serial
           delay: 6h
           history: 30d
-          trends: '0'
           value_type: CHAR
           inventory_link: SERIALNO_A
           preprocessing:
@@ -1937,10 +1890,8 @@ zabbix_export:
               - macro: '{#CLASS}'
                 value: ^2|5|10$
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
               - macro: '{#CLASS}'
                 operator: NOT_EXISTS
-                formulaid: B
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -1989,7 +1940,6 @@ zabbix_export:
               key: 'entity.desc[{#SNMPINDEX}]'
               delay: 12h
               history: 365d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -2007,7 +1957,6 @@ zabbix_export:
               key: 'entity.model[{#SNMPINDEX}]'
               delay: 12h
               history: 365d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -2050,7 +1999,6 @@ zabbix_export:
               key: 'entity.serial[{#SNMPINDEX}]'
               delay: 12h
               history: 365d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -2088,10 +2036,8 @@ zabbix_export:
                 conditions:
                   - macro: '{#CLASS}'
                     operator: NOT_EXISTS
-                    formulaid: A
               operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: LIKE
+                - operator: LIKE
                   value: Class
                   discover: NO_DISCOVER
             - name: 'No Description'
@@ -2102,13 +2048,10 @@ zabbix_export:
                   - macro: '{#DESCRIPTION}'
                     value: .+
                     operator: NOT_MATCHES_REGEX
-                    formulaid: A
                   - macro: '{#DESCRIPTION}'
                     operator: NOT_EXISTS
-                    formulaid: B
               operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: LIKE
+                - operator: LIKE
                   value: Description
                   discover: NO_DISCOVER
             - name: 'No Sensor Type'
@@ -2117,10 +2060,8 @@ zabbix_export:
                 conditions:
                   - macro: '{#SENSORTYPE}'
                     operator: NOT_EXISTS
-                    formulaid: A
               operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: LIKE
+                - operator: LIKE
                   value: 'Sensor Type'
                   discover: NO_DISCOVER
             - name: 'No Sensor Value'
@@ -2129,10 +2070,8 @@ zabbix_export:
                 conditions:
                   - macro: '{#SENSORVALUE}'
                     operator: NOT_EXISTS
-                    formulaid: A
               operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: LIKE
+                - operator: LIKE
                   value: 'Sensor Value'
                   discover: NO_DISCOVER
                 - operationobject: GRAPH_PROTOTYPE
@@ -2145,13 +2084,10 @@ zabbix_export:
                 conditions:
                   - macro: '{#ALARM}'
                     value: ^$
-                    formulaid: A
                   - macro: '{#ALARM}'
                     operator: NOT_EXISTS
-                    formulaid: B
               operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: LIKE
+                - operator: LIKE
                   value: Alarm
                   discover: NO_DISCOVER
                 - operationobject: TRIGGER_PROTOTYPE
@@ -2166,13 +2102,10 @@ zabbix_export:
                   - macro: '{#MODEL}'
                     value: .+
                     operator: NOT_MATCHES_REGEX
-                    formulaid: A
                   - macro: '{#MODEL}'
                     operator: NOT_EXISTS
-                    formulaid: B
               operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: REGEXP
+                - operator: REGEXP
                   value: Model
                   discover: NO_DISCOVER
             - name: 'No Serial'
@@ -2183,13 +2116,10 @@ zabbix_export:
                   - macro: '{#SERIAL}'
                     value: .+
                     operator: NOT_MATCHES_REGEX
-                    formulaid: A
                   - macro: '{#SERIAL}'
                     operator: NOT_EXISTS
-                    formulaid: B
               operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: LIKE
+                - operator: LIKE
                   value: Serial
                   discover: NO_DISCOVER
       tags:
@@ -2289,7 +2219,6 @@ zabbix_export:
           key: snmp.description
           delay: 12h
           history: 365d
-          trends: '0'
           value_type: CHAR
           inventory_link: NOTES
           preprocessing:
@@ -2307,7 +2236,6 @@ zabbix_export:
           key: snmp.location
           delay: 12h
           history: 365d
-          trends: '0'
           value_type: CHAR
           inventory_link: LOCATION
           preprocessing:
@@ -2325,7 +2253,6 @@ zabbix_export:
           key: snmp.name
           delay: 12h
           history: 365d
-          trends: '0'
           value_type: CHAR
           inventory_link: NAME
           preprocessing:
@@ -2352,7 +2279,6 @@ zabbix_export:
           key: snmp.objectid
           delay: 12h
           history: 365d
-          trends: '0'
           value_type: CHAR
           inventory_link: TYPE
           preprocessing:
@@ -2408,7 +2334,6 @@ zabbix_export:
           name: 'CPU Count'
           type: DEPENDENT
           key: cpu.count
-          delay: '0'
           history: 7d
           preprocessing:
             - type: SNMP_WALK_TO_JSON
@@ -2429,7 +2354,6 @@ zabbix_export:
           name: 'CPU Usage'
           type: DEPENDENT
           key: cpu.usage
-          delay: '0'
           history: 7d
           value_type: FLOAT
           units: '%'
@@ -2461,7 +2385,6 @@ zabbix_export:
           name: 'Memory Usage'
           type: DEPENDENT
           key: memory.usage
-          delay: '0'
           history: 7d
           units: '%'
           preprocessing:
@@ -2522,7 +2445,6 @@ zabbix_export:
           snmp_oid: 'walk[.1.3.6.1.2.1.25.3.3.1.2]'
           key: snmp.cpu
           history: '0'
-          trends: '0'
           value_type: TEXT
         - uuid: d6776d1e932247fca27a366c365cd41f
           name: 'Storage Discovery'
@@ -2530,14 +2452,12 @@ zabbix_export:
           snmp_oid: 'walk[.1.3.6.1.2.1.25.2.3.1.2, .1.3.6.1.2.1.25.2.3.1.3, .1.3.6.1.2.1.25.2.3.1.4, .1.3.6.1.2.1.25.2.3.1.5, .1.3.6.1.2.1.25.2.3.1.6]'
           key: snmp.hr.storage
           history: '0'
-          trends: '0'
           value_type: TEXT
       discovery_rules:
         - uuid: 0c403e28a6c4499a9ca25969557b655a
           name: 'Processor Discovery'
           type: DEPENDENT
           key: snmp.hr.cpu.discovery
-          delay: '0'
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -2545,7 +2465,6 @@ zabbix_export:
               name: 'CPU ({#SNMPINDEX}) Usage'
               type: DEPENDENT
               key: 'snmp.hr.cpu.usage[{#SNMPINDEX}]'
-              delay: '0'
               history: 7d
               units: '%'
               preprocessing:
@@ -2578,10 +2497,8 @@ zabbix_export:
             conditions:
               - macro: '{#TYPE}'
                 value: 'HOST-RESOURCES-TYPES::hrStorageFixedDisk'
-                formulaid: A
               - macro: '{#TYPE}'
                 value: iso.3.6.1.2.1.25.2.1.4
-                formulaid: B
           lifetime: 1d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -2698,12 +2615,10 @@ zabbix_export:
           name: 'Memory Discovery'
           type: DEPENDENT
           key: snmp.hr.memory.discovery
-          delay: '0'
           filter:
             conditions:
               - macro: '{#DESC}'
                 value: '[Mm]emory'
-                formulaid: A
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -2711,7 +2626,6 @@ zabbix_export:
               name: 'Memory ({#DESC}) Size'
               type: DEPENDENT
               key: 'snmp.hr.memory.size[{#DESC}]'
-              delay: '0'
               history: 7d
               units: B
               preprocessing:
@@ -2733,7 +2647,6 @@ zabbix_export:
               name: 'Memory ({#DESC}) Usage'
               type: DEPENDENT
               key: 'snmp.hr.memory.usage[{#DESC}]'
-              delay: '0'
               history: 7d
               units: '%'
               preprocessing:
@@ -2751,7 +2664,6 @@ zabbix_export:
               name: 'Memory ({#DESC}) Used'
               type: DEPENDENT
               key: 'snmp.hr.memory.used[{#DESC}]'
-              delay: '0'
               history: 7d
               units: B
               preprocessing:
@@ -2976,7 +2888,6 @@ zabbix_export:
           key: snmp.idrac.model
           delay: 6h
           history: 90d
-          trends: '0'
           value_type: CHAR
           inventory_link: MODEL
           preprocessing:
@@ -2993,7 +2904,6 @@ zabbix_export:
           key: snmp.idrac.servicetag
           delay: 6h
           history: 90d
-          trends: '0'
           value_type: CHAR
           inventory_link: TAG
           preprocessing:
@@ -3041,7 +2951,6 @@ zabbix_export:
               key: 'snmp.idrac.drive.make[{#DISK}]'
               delay: 6h
               history: 90d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -3059,7 +2968,6 @@ zabbix_export:
               key: 'snmp.idrac.drive.model[{#DISK}]'
               delay: 6h
               history: 90d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -3077,7 +2985,6 @@ zabbix_export:
               key: 'snmp.idrac.drive.serial[{#DISK}]'
               delay: 6h
               history: 90d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -3530,7 +3437,6 @@ zabbix_export:
           key: snmp.ilo.model
           delay: 6h
           history: 30d
-          trends: '0'
           value_type: CHAR
           inventory_link: MODEL
           preprocessing:
@@ -3547,7 +3453,6 @@ zabbix_export:
           key: snmp.ilo.serial
           delay: 6h
           history: 30d
-          trends: '0'
           value_type: CHAR
           inventory_link: SERIALNO_A
           preprocessing:
@@ -3574,7 +3479,6 @@ zabbix_export:
               key: 'ilo.drive.model[{#BAY}]'
               delay: 6h
               history: 90d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -3592,7 +3496,6 @@ zabbix_export:
               key: 'ilo.drive.serial[{#BAY}]'
               delay: 6h
               history: 90d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -3691,7 +3594,6 @@ zabbix_export:
             conditions:
               - macro: '{#PRESENT}'
                 value: '3'
-                formulaid: A
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -3735,7 +3637,6 @@ zabbix_export:
               - macro: '{#STATUS}'
                 value: '2'
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -4142,36 +4043,30 @@ zabbix_export:
         - uuid: 7dbba147f0de468cbc4b1335674c4405
           name: 'Interfaces Discovery'
           type: SNMP_AGENT
-          snmp_oid: 'walk[.1.3.6.1.2.1.31.1.1.1.1,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.2,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.7,.1.3.6.1.2.1.2.2.1.10,.1.3.6.1.2.1.2.2.1.16,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.14,.1.3.6.1.2.1.2.2.1.20,.1.3.6.1.2.1.2.2.1.5,.1.3.6.1.2.1.31.1.1.1.18]'
+          snmp_oid: 'walk[.1.3.6.1.2.1.31.1.1.1.1,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.2,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.7,.1.3.6.1.2.1.2.2.1.10,.1.3.6.1.2.1.2.2.1.16,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.14,.1.3.6.1.2.1.2.2.1.20,.1.3.6.1.2.1.2.2.1.5,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.13,.1.3.6.1.2.1.2.2.1.19]'
           key: snmp.interfaces
           delay: 10s
           history: '0'
-          trends: '0'
           value_type: TEXT
       discovery_rules:
         - uuid: e4cdcd9f67b24b3c93b312a52bf78a11
           name: 'Interfaces Discovery'
           type: DEPENDENT
           key: snmp.interfaces.discovery
-          delay: '0'
           filter:
             conditions:
               - macro: '{#ALIAS}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
               - macro: '{#ASTATUS}'
                 value: '2'
                 operator: NOT_MATCHES_REGEX
-                formulaid: B
               - macro: '{#NAME}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: C
               - macro: '{#OSTATUS}'
                 value: '6'
                 operator: NOT_MATCHES_REGEX
-                formulaid: D
           lifetime: 1d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -4200,9 +4095,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Alias'
               type: DEPENDENT
               key: 'snmp.interfaces.alias[{#NAME}]'
-              delay: '0'
               history: 90d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: SNMP_WALK_VALUE
@@ -4219,24 +4112,37 @@ zabbix_export:
                   value: '{#NAME}'
                 - tag: Type
                   value: Alias
+            - uuid: b9691cce3ddf42839e1f3f770ecebefd
+              name: 'Interface ({#NAME}: {#ALIAS}) In Discards'
+              type: DEPENDENT
+              key: 'snmp.interfaces.in.discards[{#NAME}]'
+              history: 7d
+              units: pps
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.2.2.1.13.{#SNMPINDEX}'
+                    - '0'
+                - type: CHANGE_PER_SECOND
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Discards
             - uuid: 5760b2886c8640fd9bab2f200c57ce0d
               name: 'Interface ({#NAME}: {#ALIAS}) In Errors'
               type: DEPENDENT
               key: 'snmp.interfaces.in.errors[{#NAME}]'
-              delay: '0'
               history: 7d
-              units: bps
+              units: pps
               preprocessing:
                 - type: SNMP_WALK_VALUE
                   parameters:
                     - '.1.3.6.1.2.1.2.2.1.14.{#SNMPINDEX}'
                     - '0'
-                - type: MULTIPLIER
-                  parameters:
-                    - '8'
                 - type: CHANGE_PER_SECOND
-                  parameters:
-                    - ''
               master_item:
                 key: snmp.interfaces
               tags:
@@ -4270,7 +4176,6 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) In Rate'
               type: DEPENDENT
               key: 'snmp.interfaces.in[{#NAME}]'
-              delay: '0'
               history: 7d
               units: bps
               preprocessing:
@@ -4282,8 +4187,6 @@ zabbix_export:
                   parameters:
                     - '8'
                 - type: CHANGE_PER_SECOND
-                  parameters:
-                    - ''
               master_item:
                 key: snmp.interfaces
               tags:
@@ -4295,7 +4198,6 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Operational Status'
               type: DEPENDENT
               key: 'snmp.interfaces.operstatus[{#NAME}]'
-              delay: '0'
               history: 7d
               valuemap:
                 name: 'Operational Status'
@@ -4315,6 +4217,7 @@ zabbix_export:
                 - uuid: 5436374b9ed946e79cb2bf75e02f30e4
                   expression: 'changecount(/BA - MIB - Interfaces/snmp.interfaces.operstatus[{#NAME}],{$INTER_FLAP_WARN_TIME},"dec")>={$INTER_FLAP_WARN_COUNT}'
                   name: 'Interface ({#NAME}: {#ALIAS}) Flapped >= {$INTER_FLAP_WARN_COUNT}x Within {$INTER_FLAP_WARN_TIME}'
+                  status: DISABLED
                   priority: WARNING
                   tags:
                     - tag: Interface
@@ -4331,24 +4234,37 @@ zabbix_export:
                       value: '{#NAME}'
                     - tag: Type
                       value: Status
+            - uuid: 80d88a690e8047e9aa1b627467aa2458
+              name: 'Interface ({#NAME}: {#ALIAS}) Out Discards'
+              type: DEPENDENT
+              key: 'snmp.interfaces.out.discards[{#NAME}]'
+              history: 7d
+              units: pps
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.2.2.1.19.{#SNMPINDEX}'
+                    - '0'
+                - type: CHANGE_PER_SECOND
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Discards
             - uuid: 8767d44b389a4d39bfa7cdd9bef3e19d
               name: 'Interface ({#NAME}: {#ALIAS}) Out Errors'
               type: DEPENDENT
               key: 'snmp.interfaces.out.errors[{#NAME}]'
-              delay: '0'
               history: 7d
-              units: bps
+              units: pps
               preprocessing:
                 - type: SNMP_WALK_VALUE
                   parameters:
                     - '.1.3.6.1.2.1.2.2.1.20.{#SNMPINDEX}'
                     - '0'
-                - type: MULTIPLIER
-                  parameters:
-                    - '8'
                 - type: CHANGE_PER_SECOND
-                  parameters:
-                    - ''
               master_item:
                 key: snmp.interfaces
               tags:
@@ -4382,7 +4298,6 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Out Rate'
               type: DEPENDENT
               key: 'snmp.interfaces.out[{#NAME}]'
-              delay: '0'
               history: 7d
               units: bps
               preprocessing:
@@ -4394,8 +4309,6 @@ zabbix_export:
                   parameters:
                     - '8'
                 - type: CHANGE_PER_SECOND
-                  parameters:
-                    - ''
               master_item:
                 key: snmp.interfaces
               tags:
@@ -4407,7 +4320,6 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Speed'
               type: DEPENDENT
               key: 'snmp.interfaces.speed[{#NAME}]'
-              delay: '0'
               history: 7d
               units: bps
               preprocessing:
@@ -4423,9 +4335,18 @@ zabbix_export:
                 - tag: Type
                   value: Speed
           trigger_prototypes:
+            - uuid: f7ac6e903d5d4c9fa6bdb6a0a4bdf5ad
+              expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN})'
+              name: 'Interface ({#NAME}: {#ALIAS}) Discards >= {$INTER_DISCARD_WARN} Within {$INTER_DISCARD_WARN_TIME}'
+              priority: WARNING
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Discards
             - uuid: 62ed56a4a893446fa8515de4852ca5fa
-              expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN}) and last(/BA - MIB - Interfaces/snmp.interfaces.alertonerrors[{#NAME}])=1'
-              name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME} On Uplink'
+              expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN})'
+              name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME}'
               priority: WARNING
               tags:
                 - tag: Interface
@@ -4503,10 +4424,8 @@ zabbix_export:
                 conditions:
                   - macro: '{#ALIAS}'
                     value: ^$
-                    formulaid: A
               operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: LIKE
+                - operator: LIKE
                   value: Alias
                   discover: NO_DISCOVER
       tags:
@@ -4567,21 +4486,16 @@ zabbix_export:
               - macro: '{#ALIAS}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
               - macro: '{#ENABLED}'
                 value: '1'
-                formulaid: B
               - macro: '{#ENABLED}'
                 operator: EXISTS
-                formulaid: C
               - macro: '{#NAME}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: D
               - macro: '{#NAME}'
                 value: '^(Vl|Bl|Nu).*$'
                 operator: NOT_MATCHES_REGEX
-                formulaid: E
           lifetime: 1d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -4635,28 +4549,23 @@ zabbix_export:
           key: snmp.interfaces.lldp
           delay: 15s
           history: '0'
-          trends: '0'
           value_type: TEXT
       discovery_rules:
         - uuid: 792c76d171b54eb2b4308a4f0b4747c7
           name: 'Interfaces LLDP Discovery'
           type: DEPENDENT
           key: snmp.interfaces.lldp.discovery
-          delay: '0'
           filter:
             conditions:
               - macro: '{#ALIAS}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
               - macro: '{#NAME}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: B
               - macro: '{#NAME}'
                 value: '^(Vl|Bl|Nu).*$'
                 operator: NOT_MATCHES_REGEX
-                formulaid: C
           lifetime: 1d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -4664,9 +4573,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Description'
               type: DEPENDENT
               key: 'snmp.interfaces.lldp.desc[{#NAME}]'
-              delay: '0'
               history: 365d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: SNMP_WALK_VALUE
@@ -4688,9 +4595,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Host'
               type: DEPENDENT
               key: 'snmp.interfaces.lldp.host[{#NAME}]'
-              delay: '0'
               history: 365d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: SNMP_WALK_VALUE
@@ -4712,9 +4617,7 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Port'
               type: DEPENDENT
               key: 'snmp.interfaces.lldp.port[{#NAME}]'
-              delay: '0'
               history: 365d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: SNMP_WALK_VALUE
@@ -4778,7 +4681,6 @@ zabbix_export:
           key: snmp.interfaces.mac.count.discovery.json
           delay: 15m
           history: '0'
-          trends: '0'
           value_type: TEXT
           preprocessing:
             - type: JAVASCRIPT
@@ -4813,7 +4715,6 @@ zabbix_export:
           key: snmp.interfaces.mac.discovery.json
           delay: 15m
           history: '0'
-          trends: '0'
           value_type: TEXT
           preprocessing:
             - type: JAVASCRIPT
@@ -4863,17 +4764,14 @@ zabbix_export:
           name: 'Interfaces MAC Count Discovery'
           type: DEPENDENT
           key: snmp.interfaces.mac.count.discovery
-          delay: '0'
           filter:
             conditions:
               - macro: '{#ALIAS}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
               - macro: '{#NAME}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: B
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -4881,7 +4779,6 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) MAC Count'
               type: DEPENDENT
               key: 'snmp.interfaces.mac.count[{#NAME}]'
-              delay: '0'
               history: 7d
               preprocessing:
                 - type: JAVASCRIPT
@@ -4920,7 +4817,6 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}) Uplink Status'
               type: DEPENDENT
               key: 'snmp.interfaces.mac.uplinkstatus[{#NAME}]'
-              delay: '0'
               history: 7d
               valuemap:
                 name: 'Uplink Status'
@@ -4956,10 +4852,8 @@ zabbix_export:
                 conditions:
                   - macro: '{#NAME}'
                     value: '{$INTER_UPLINK_MANAGED_EXCLUDE_NAME}'
-                    formulaid: A
               operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: LIKE
+                - operator: LIKE
                   value: Managed
                   discover: NO_DISCOVER
                 - operationobject: TRIGGER_PROTOTYPE
@@ -4970,7 +4864,6 @@ zabbix_export:
           name: 'Interfaces MAC Discovery'
           type: DEPENDENT
           key: snmp.interfaces.mac.discovery
-          delay: '0'
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -4978,7 +4871,6 @@ zabbix_export:
               name: 'Interface ({#NAME}: {#ALIAS}), MAC: {#SNMPINDEX}'
               type: DEPENDENT
               key: 'snmp.interfaces.mac.status[{#NAME}:{#SNMPINDEX}]'
-              delay: '0'
               history: 7d
               trends: 30d
               valuemap:
@@ -5047,15 +4939,12 @@ zabbix_export:
               - macro: '{#ALIAS}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
               - macro: '{#ASTATUS}'
                 value: '2'
                 operator: NOT_MATCHES_REGEX
-                formulaid: B
               - macro: '{#NAME}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: C
           lifetime: 1d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -5159,18 +5048,14 @@ zabbix_export:
               - macro: '{#ALIAS}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
               - macro: '{#ASTATUS}'
                 value: '2'
                 operator: NOT_MATCHES_REGEX
-                formulaid: B
               - macro: '{#NAME}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: C
               - macro: '{#VLAN}'
                 operator: EXISTS
-                formulaid: D
           lifetime: 1d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -5203,7 +5088,6 @@ zabbix_export:
           key: m2i.discovery.json
           delay: 15m
           history: '0'
-          trends: '0'
           value_type: TEXT
           preprocessing:
             - type: JAVASCRIPT
@@ -5269,22 +5153,18 @@ zabbix_export:
           name: 'MAC to IP Discovery'
           type: DEPENDENT
           key: m2i.discovery
-          delay: '0'
           filter:
             evaltype: AND
             conditions:
               - macro: '{#MAC}'
                 value: ^$
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
               - macro: '{#MAC}'
                 value: '^00:00:00:00:00:00$'
                 operator: NOT_MATCHES_REGEX
-                formulaid: B
               - macro: '{#MAC}'
                 value: '^ff:ff:ff:ff:ff:ff$'
                 operator: NOT_MATCHES_REGEX
-                formulaid: C
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -5292,7 +5172,6 @@ zabbix_export:
               name: 'MAC: {#MAC}, IP: {#IP}'
               type: DEPENDENT
               key: 'm2i.status[{#MAC}:{#IP}]'
-              delay: '0'
               history: 7d
               trends: 30d
               valuemap:
@@ -5344,7 +5223,6 @@ zabbix_export:
           key: m2i.discovery.json
           delay: 15m
           history: '0'
-          trends: '0'
           value_type: TEXT
           preprocessing:
             - type: JAVASCRIPT
@@ -5371,22 +5249,18 @@ zabbix_export:
           name: 'MAC to IP Discovery'
           type: DEPENDENT
           key: m2i.discovery
-          delay: '0'
           filter:
             evaltype: AND
             conditions:
               - macro: '{#MAC}'
                 value: ^$
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
               - macro: '{#MAC}'
                 value: '^00:00:00:00:00:00$'
                 operator: NOT_MATCHES_REGEX
-                formulaid: B
               - macro: '{#MAC}'
                 value: '^ff:ff:ff:ff:ff:ff$'
                 operator: NOT_MATCHES_REGEX
-                formulaid: C
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -5394,7 +5268,6 @@ zabbix_export:
               name: 'MAC: {#MAC}, IP: {#IP}'
               type: DEPENDENT
               key: 'm2i.status[{#MAC}:{#IP}]'
-              delay: '0'
               history: 7d
               trends: 30d
               valuemap:
@@ -5446,7 +5319,6 @@ zabbix_export:
           key: ros.bl.version
           delay: 5m
           history: 1d
-          trends: '0'
           value_type: CHAR
           tags:
             - tag: RouterOS
@@ -5471,7 +5343,6 @@ zabbix_export:
           key: ros.boardname
           delay: 12h
           history: 30d
-          trends: '0'
           value_type: CHAR
           inventory_link: MODEL
           tags:
@@ -5500,7 +5371,6 @@ zabbix_export:
           key: ros.serial
           delay: 12h
           history: 90d
-          trends: '0'
           value_type: CHAR
           inventory_link: SERIALNO_A
           tags:
@@ -5514,7 +5384,6 @@ zabbix_export:
           key: ros.version
           delay: 5m
           history: 1d
-          trends: '0'
           value_type: CHAR
           inventory_link: SOFTWARE
           tags:
@@ -5598,8 +5467,7 @@ zabbix_export:
             - name: CPU
               step: '1'
               operations:
-                - operationobject: ITEM_PROTOTYPE
-                  operator: LIKE
+                - operator: LIKE
                   value: cpu
                   tags:
                     - tag: CPU
@@ -5610,7 +5478,6 @@ zabbix_export:
                   - macro: '{#UNIT}'
                     value: Celsius
                     operator: NOT_MATCHES_REGEX
-                    formulaid: A
               operations:
                 - operationobject: TRIGGER_PROTOTYPE
                   operator: LIKE
@@ -5753,7 +5620,6 @@ zabbix_export:
           key: snmp.ups.model
           delay: 6h
           history: 30d
-          trends: '0'
           value_type: CHAR
           inventory_link: MODEL
           preprocessing:
@@ -6047,7 +5913,6 @@ zabbix_export:
               key: 'vsphere.vm.guestos[{#SNMPINDEX}]'
               delay: 1h
               history: 365d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -6065,7 +5930,6 @@ zabbix_export:
               key: 'vsphere.vm.gueststate[{#SNMPINDEX}]'
               delay: 5m
               history: 365d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -6100,7 +5964,6 @@ zabbix_export:
               key: 'vsphere.vm.state[{#SNMPINDEX}]'
               delay: 5m
               history: 365d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -6124,9 +5987,7 @@ zabbix_export:
           name: 'Device Firmware Version'
           type: DEPENDENT
           key: camera.firmware.version
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: OS
           preprocessing:
@@ -6148,12 +6009,9 @@ zabbix_export:
           key: camera.info
           delay: 1h
           history: 3h
-          trends: '0'
           value_type: TEXT
           preprocessing:
             - type: XML_TO_JSON
-              parameters:
-                - ''
           timeout: 30s
           url: '{$ONVIF_SHIM_URL}/{HOST.CONN}'
           query_fields:
@@ -6172,12 +6030,9 @@ zabbix_export:
           key: camera.media
           delay: 1h
           history: 3h
-          trends: '0'
           value_type: TEXT
           preprocessing:
             - type: XML_TO_JSON
-              parameters:
-                - ''
           timeout: 30s
           url: '{$ONVIF_SHIM_URL}/{HOST.CONN}'
           query_fields:
@@ -6196,9 +6051,7 @@ zabbix_export:
           name: 'Device Model'
           type: DEPENDENT
           key: camera.model
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: MODEL
           preprocessing:
@@ -6218,9 +6071,7 @@ zabbix_export:
           name: 'Device Name'
           type: DEPENDENT
           key: camera.name
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: NAME
           preprocessing:
@@ -6248,9 +6099,7 @@ zabbix_export:
           name: 'Device MAC'
           type: DEPENDENT
           key: camera.net.mac
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: MACADDRESS_A
           preprocessing:
@@ -6276,12 +6125,9 @@ zabbix_export:
           key: camera.scopes
           delay: 15m
           history: 1h
-          trends: '0'
           value_type: TEXT
           preprocessing:
             - type: XML_TO_JSON
-              parameters:
-                - ''
           timeout: 30s
           url: '{$ONVIF_SHIM_URL}/{HOST.CONN}'
           query_fields:
@@ -6312,9 +6158,7 @@ zabbix_export:
           name: 'Device Sensor'
           type: DEPENDENT
           key: camera.sensor
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: TYPE
           preprocessing:
@@ -6343,9 +6187,7 @@ zabbix_export:
           name: 'Device Serial'
           type: DEPENDENT
           key: camera.serial
-          delay: '0'
           history: 7d
-          trends: '0'
           value_type: CHAR
           inventory_link: SERIALNO_A
           preprocessing:
@@ -6553,9 +6395,8 @@ zabbix_export:
           key: update.via.inventory
           delay: 12h
           history: 1d
-          trends: '0'
-          status: DISABLED
           value_type: TEXT
+          status: DISABLED
           params: |
             var params = JSON.parse(value);
             var wr = new HttpRequest();
@@ -6821,19 +6662,15 @@ zabbix_export:
               - macro: '{#ALIAS}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: A
               - macro: '{#ASTATUS}'
                 value: '2'
                 operator: NOT_MATCHES_REGEX
-                formulaid: B
               - macro: '{#NAME}'
                 value: '.*{$INTER_FILTER_REGEX}.*'
                 operator: NOT_MATCHES_REGEX
-                formulaid: C
               - macro: '{#OSTATUS}'
                 value: '6'
                 operator: NOT_MATCHES_REGEX
-                formulaid: D
           lifetime: 1d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -6844,7 +6681,6 @@ zabbix_export:
               key: 'snmp.interfaces.alias[{#NAME}]'
               delay: 1h
               history: 90d
-              trends: '0'
               value_type: CHAR
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -6868,8 +6704,6 @@ zabbix_export:
                   parameters:
                     - '8'
                 - type: CHANGE_PER_SECOND
-                  parameters:
-                    - ''
               tags:
                 - tag: Interface
                   value: '{#NAME}'
@@ -6909,8 +6743,6 @@ zabbix_export:
                   parameters:
                     - '8'
                 - type: CHANGE_PER_SECOND
-                  parameters:
-                    - ''
               tags:
                 - tag: Interface
                   value: '{#NAME}'
@@ -6951,8 +6783,6 @@ zabbix_export:
                   parameters:
                     - '8'
                 - type: CHANGE_PER_SECOND
-                  parameters:
-                    - ''
               tags:
                 - tag: Interface
                   value: '{#NAME}'
@@ -6992,8 +6822,6 @@ zabbix_export:
                   parameters:
                     - '8'
                 - type: CHANGE_PER_SECOND
-                  parameters:
-                    - ''
               tags:
                 - tag: Interface
                   value: '{#NAME}'
@@ -7246,7 +7074,6 @@ zabbix_export:
           key: ssh.config
           delay: 6h
           history: 90d
-          trends: '0'
           value_type: TEXT
           inventory_link: SOFTWARE_FULL
           preprocessing:
@@ -7295,7 +7122,6 @@ zabbix_export:
           key: 'ssh.run[export]'
           delay: 1d
           history: 90d
-          trends: '0'
           value_type: TEXT
           params: 'export show-sensitive'
           username: '{$ROS_SSH_USER}'
@@ -7317,7 +7143,6 @@ zabbix_export:
           type: SSH
           key: 'ssh.run[upsdiscovery]'
           history: '0'
-          trends: '0'
           value_type: TEXT
           params: |
             for ups in $(upsc -l); do
@@ -7356,7 +7181,6 @@ zabbix_export:
           name: 'UPS Discovery'
           type: DEPENDENT
           key: ssh.nut.ups.discovery
-          delay: '0'
           lifetime: 30d
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
@@ -7364,7 +7188,6 @@ zabbix_export:
               name: 'UPS ({#NAME}) Charge'
               type: DEPENDENT
               key: 'ssh.nut.ups.charge[{#NAME}]'
-              delay: '0'
               history: 30d
               units: '%'
               preprocessing:
@@ -7392,7 +7215,6 @@ zabbix_export:
               name: 'UPS ({#NAME}) Load'
               type: DEPENDENT
               key: 'ssh.nut.ups.load[{#NAME}]'
-              delay: '0'
               history: 30d
               units: '%'
               preprocessing:
@@ -7410,7 +7232,6 @@ zabbix_export:
               name: 'UPS ({#NAME}) Runtime'
               type: DEPENDENT
               key: 'ssh.nut.ups.runtime[{#NAME}]'
-              delay: '0'
               history: 30d
               units: s
               preprocessing:
@@ -7428,7 +7249,6 @@ zabbix_export:
               name: 'UPS ({#NAME}) Status'
               type: DEPENDENT
               key: 'ssh.nut.ups.status[{#NAME}]'
-              delay: '0'
               history: 30d
               valuemap:
                 name: 'UPS Status'
@@ -7465,7 +7285,6 @@ zabbix_export:
               name: 'UPS ({#NAME}) Voltage'
               type: DEPENDENT
               key: 'ssh.nut.ups.voltage[{#NAME}]'
-              delay: '0'
               history: 30d
               value_type: FLOAT
               units: V
