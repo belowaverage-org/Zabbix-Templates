@@ -7744,6 +7744,9 @@ zabbix_export:
               expression: 'last(/BA - SSH/net.tcp.service[ssh,,])<>1'
               name: 'SSH Status != Up'
               priority: WARNING
+              dependencies:
+                - name: 'Device offline'
+                  expression: 'last(/BA - Generic - ICMP/icmpping[{HOST.HOST}])=0'
               tags:
                 - tag: SSH
                 - tag: Type
@@ -8007,6 +8010,95 @@ zabbix_export:
                   value: '{#NAME}'
           master_item:
             key: 'ssh.run[upsdiscovery]'
+      dashboards:
+        - uuid: a867be58c5ef404ebfe3baf24c32b9fd
+          name: NUT
+          pages:
+            - widgets:
+                - type: graphprototype
+                  width: '72'
+                  height: '3'
+                  fields:
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - SSH - UPS'
+                        key: 'ssh.nut.ups.status[{#NAME}]'
+                    - type: STRING
+                      name: reference
+                      value: RCUIG
+                    - type: INTEGER
+                      name: show_legend
+                      value: '0'
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  'y': '3'
+                  width: '36'
+                  height: '4'
+                  fields:
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - SSH - UPS'
+                        key: 'ssh.nut.ups.charge[{#NAME}]'
+                    - type: STRING
+                      name: reference
+                      value: KXXKG
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  'y': '7'
+                  width: '36'
+                  height: '4'
+                  fields:
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - SSH - UPS'
+                        key: 'ssh.nut.ups.runtime[{#NAME}]'
+                    - type: STRING
+                      name: reference
+                      value: UKARK
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  x: '36'
+                  'y': '3'
+                  width: '36'
+                  height: '4'
+                  fields:
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - SSH - UPS'
+                        key: 'ssh.nut.ups.load[{#NAME}]'
+                    - type: STRING
+                      name: reference
+                      value: UUXKG
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  x: '36'
+                  'y': '7'
+                  width: '36'
+                  height: '4'
+                  fields:
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - SSH - UPS'
+                        key: 'ssh.nut.ups.voltage[{#NAME}]'
+                    - type: STRING
+                      name: reference
+                      value: IRSIF
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
       valuemaps:
         - uuid: aff82d0edfcb41379ecd4705717395a9
           name: 'UPS Status'
