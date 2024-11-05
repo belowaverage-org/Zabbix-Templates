@@ -1042,7 +1042,7 @@ zabbix_export:
           value: '95'
           description: 'Percentage to trigger a memory usage alert.'
         - macro: '{$SOFTWARE_VERSION_STRINGS}'
-          value: ^(7\.16|(YA|WC)\.16\.11\.0020)$
+          value: ^(7\.16|7\.17beta4|(YA|WC)\.16\.11\.0020)$
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
         - macro: '{$TEMP_C_WARN}'
           value: '75'
@@ -4898,10 +4898,13 @@ zabbix_export:
             - widgets:
                 - type: graphprototype
                   width: '72'
-                  height: '11'
+                  height: '38'
                   fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '3'
                     - type: GRAPH_PROTOTYPE
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - Interfaces'
                         name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
@@ -4910,7 +4913,7 @@ zabbix_export:
                       value: AAAAS
                     - type: INTEGER
                       name: rows
-                      value: '2'
+                      value: '8'
       valuemaps:
         - uuid: bada8a429d464bfba60f2ca27c549d6f
           name: 'Alert On Errors'
@@ -5188,7 +5191,7 @@ zabbix_export:
         - uuid: 9ebe2ba0750e44d6aba6d54dba1504b4
           name: 'Interfaces MAC Discovery'
           type: SNMP_AGENT
-          snmp_oid: 'discovery[{#ADDR}, .1.3.6.1.2.1.17.4.3.1.1, {#PORT}, .1.3.6.1.2.1.17.4.3.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
+          snmp_oid: 'discovery[{#ADDR}, .1.3.6.1.2.1.17.4.3.1.1, {#IFINDEX}, .1.3.6.1.2.1.17.1.4.1.2, {#PORT}, .1.3.6.1.2.1.17.4.3.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
           key: snmp.interfaces.mac.discovery.json
           delay: 15m
           history: '0'
@@ -5202,36 +5205,40 @@ zabbix_export:
                   var addressReg = /("{#ADDR}":"..)( )(..)( )(..)( )(..)( )(..)( )(..)( )/g;
                   value = value.replace(addressReg, '$1:$3:$5:$7:$9:$11');
                   var jvalue = JSON.parse(value);
-                  jvalue.forEach(function(port) {
-                      if (port['{#ALIAS}'] == undefined) return;
-                      var portResult = [];
-                      jvalue.forEach(function(address) {
-                          if (portResult.length > {$INTER_UPLINK_LIMIT}) return;
-                          if (address['{#ADDR}'] == undefined) return;
-                          if (address['{#PORT}'] == port['{#SNMPINDEX}']) {
-                              var newAddrParts = [];
-                              var addr = address['{#ADDR}'].toLowerCase();
-                              var addrParts = addr.split(':');
-                              addrParts.forEach(function(v) {
-                                  if (v.length == 1) v = '0' + v;
-                                  newAddrParts.push(v);
-                              });
-                              var newAddr = newAddrParts.join(':');
-                              var obj = {
-                                  '{#SNMPINDEX}': newAddr,
-                                  '{#PORT}': port['{#SNMPINDEX}'],
-                                  '{#NAME}': port['{#NAME}'],
-                                  '{#ALIAS}': port['{#ALIAS}']
-                              };
-                              portResult.push(obj);
-                          }
+                  var macToPort = {};
+                  jvalue.forEach(function(address) {
+                      if (address['{#ADDR}'] == undefined) return;
+                      var newAddrParts = [];
+                      var addr = address['{#ADDR}'].toLowerCase();
+                      var addrParts = addr.split(':');
+                      addrParts.forEach(function(v) {
+                          if (v.length == 1) v = '0' + v;
+                          newAddrParts.push(v);
                       });
-                      if (portResult.length > 0 && portResult.length <= {$INTER_UPLINK_LIMIT}) {
-                          portResult.forEach(function(item) {
-                              result.push(item);
-                          });
-                      }
+                      var newAddr = newAddrParts.join(':');
+                      macToPort[newAddr] = address['{#PORT}'];
                   });
+                  var portToIfIndex = {};
+                  jvalue.forEach(function(ifindex) {
+                      if (ifindex['{#IFINDEX}'] == undefined) return;
+                      portToIfIndex[ifindex['{#SNMPINDEX}']] = ifindex['{#IFINDEX}'];
+                  });
+                  var ifIndexToInterface = {};
+                  jvalue.forEach(function(interface) {
+                      if (interface['{#NAME}'] == undefined) return;
+                      ifIndexToInterface[interface['{#SNMPINDEX}']] = {
+                          '{#NAME}': interface['{#NAME}'],
+                          '{#ALIAS}': interface['{#ALIAS}']
+                      };
+                  });
+                  for (mac in macToPort) {
+                      if (portToIfIndex[macToPort[mac]] == undefined) continue;
+                      result.push({
+                          '{#SNMPINDEX}': mac + ':' + macToPort[mac],
+                          '{#NAME}': ifIndexToInterface[portToIfIndex[macToPort[mac]]]['{#NAME}'],
+                          '{#ALIAS}': ifIndexToInterface[portToIfIndex[macToPort[mac]]]['{#ALIAS}']
+                      });
+                  }
                   return JSON.stringify(result);
           tags:
             - tag: MAC
@@ -5365,7 +5372,7 @@ zabbix_export:
               preprocessing:
                 - type: MATCHES_REGEX
                   parameters:
-                    - '{.SNMPINDEX}":"{#SNMPINDEX}","{.PORT}":"{#PORT}"'
+                    - '"{.SNMPINDEX}":"{#SNMPINDEX}"'
                   error_handler: CUSTOM_VALUE
                   error_handler_params: '0'
                 - type: JAVASCRIPT
