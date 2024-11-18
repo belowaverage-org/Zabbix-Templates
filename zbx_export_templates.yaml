@@ -1099,7 +1099,7 @@ zabbix_export:
           value: Macro
       macros:
         - macro: '{$WIN_SERVICES}'
-          value: '^(DHCP Server|DNS Client|File Server Resource Manager|Group Policy Client|Microsoft Defender Antivirus Service|Netlogon|Network Location Awareness|Network Policy Server|Print Spooler|Server|Task Scheduler|Windows Defender Firewall|Windows Event Collector|Windows Event Log|Windows Management Instrumentation|Windows Time|World Wide Web Publishing Service)$'
+          value: '^(DHCP Server|DNS Client|File Server Resource Manager|Group Policy Client|Microsoft Defender Antivirus Service|Netlogon|Network Policy Server|Print Spooler|Server|Task Scheduler|Windows Defender Firewall|Windows Event Collector|Windows Event Log|Windows Management Instrumentation|Windows Time|World Wide Web Publishing Service|DNS Server|Active Directory Certificate Services|DFS (Namespace|Replication)|Kerberos Key Distribution Center|Microsoft Key Distribution Service|Active Directory Domain Services|Remote Desktop Services|SQL Server \(.*\)|SQL Server Reporting Services|Microsoft Exchange (Active Directory Topology|Mailbox Transport Delivery|Frontend Transport|Information Store|Service Host|Transport)|Veeam.*|Milestone.*|MySQL|Jellyfin Server)$'
           description: 'Windows Services to Poll (Regex)'
     - uuid: 65d533f18b41407cbc7556aca81dd27e
       template: 'BA - MIB - APC'
@@ -5235,6 +5235,7 @@ zabbix_export:
                       if (portToIfIndex[macToPort[mac]] == undefined) continue;
                       result.push({
                           '{#SNMPINDEX}': mac + ':' + macToPort[mac],
+                          '{#MAC}': mac,
                           '{#NAME}': ifIndexToInterface[portToIfIndex[macToPort[mac]]]['{#NAME}'],
                           '{#ALIAS}': ifIndexToInterface[portToIfIndex[macToPort[mac]]]['{#ALIAS}']
                       });
@@ -5361,9 +5362,9 @@ zabbix_export:
           enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
             - uuid: 44672117f4544766855c1c106404e8c7
-              name: 'Interface ({#NAME}: {#ALIAS}), MAC: {#SNMPINDEX}'
+              name: 'Interface ({#NAME}: {#ALIAS}), MAC: {#MAC}'
               type: DEPENDENT
-              key: 'snmp.interfaces.mac.status[{#NAME}:{#SNMPINDEX}]'
+              key: 'snmp.interfaces.mac.status[{#SNMPINDEX}]'
               delay: '0'
               history: 7d
               trends: 30d
@@ -5386,7 +5387,7 @@ zabbix_export:
                 - tag: Interface
                   value: '{#NAME}'
                 - tag: MAC
-                  value: '{#SNMPINDEX}'
+                  value: '{#MAC}'
                 - tag: Type
                   value: Status
           master_item:
@@ -6556,8 +6557,19 @@ zabbix_export:
                 key: windows.services
               tags:
                 - tag: Service
+                  value: '{#NAME}'
                 - tag: Type
                   value: Status
+              trigger_prototypes:
+                - uuid: 378d1d6f5c8446fb8430042af8a49e04
+                  expression: 'last(/BA - MIB - Windows/windows.services.status[{#NAME}])<>1'
+                  name: 'Windows Service ({#NAME}) Not Active'
+                  priority: AVERAGE
+                  tags:
+                    - tag: Service
+                      value: '{#NAME}'
+                    - tag: Type
+                      value: Status
           master_item:
             key: windows.services
           preprocessing:
@@ -6569,6 +6581,37 @@ zabbix_export:
       tags:
         - tag: Type
           value: MIB
+      dashboards:
+        - uuid: e4ec2731c79441a999eb38f3351d62d8
+          name: 'Windows Services'
+          pages:
+            - widgets:
+                - type: honeycomb
+                  name: 'Windows Services'
+                  width: '72'
+                  height: '16'
+                  fields:
+                    - type: STRING
+                      name: items.0
+                      value: 'Windows Service*Status'
+                    - type: STRING
+                      name: primary_label
+                      value: '{{ITEM.NAME}.regrepl("^Windows Service \(|\) Status$", "")}'
+                    - type: STRING
+                      name: reference
+                      value: POOEJ
+                    - type: STRING
+                      name: thresholds.0.color
+                      value: 1B5E20
+                    - type: STRING
+                      name: thresholds.0.threshold
+                      value: '1'
+                    - type: STRING
+                      name: thresholds.1.color
+                      value: '891515'
+                    - type: STRING
+                      name: thresholds.1.threshold
+                      value: '5'
       valuemaps:
         - uuid: a19ed2fd49044aaabeb7e90dca5873a6
           name: 'Operating Status'
