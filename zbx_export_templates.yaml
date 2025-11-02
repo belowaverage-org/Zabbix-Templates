@@ -37,7 +37,7 @@ zabbix_export:
         - uuid: 925ec895069249bca0ec0472a970d21a
           name: 'ICMP Loss'
           type: SIMPLE
-          key: 'icmppingloss[{HOST.HOST},10,50,1000,500]'
+          key: 'icmppingloss[{HOST.HOST},5,1000]'
           history: 7d
           value_type: FLOAT
           units: '%'
@@ -47,18 +47,39 @@ zabbix_export:
               value: Loss
           triggers:
             - uuid: 7e3ebb73a3e4415a8f69c2ddb2d40edb
-              expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},10,50,1000,500],#3)>={$ICMP_HIGH_LOSS_WARN}'
+              expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
               name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
               priority: WARNING
+              manual_close: 'YES'
               dependencies:
                 - name: 'Device offline'
-                  expression: 'last(/BA - Generic - ICMP/icmpping[{HOST.HOST}])=0'
+                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
+              tags:
+                - tag: ICMP
+        - uuid: 157c0a57578f4b6fa626c497c413b7ff
+          name: 'ICMP Ping'
+          type: SIMPLE
+          key: 'icmppingretry[{HOST.HOST},3]'
+          delay: 10s
+          history: 7d
+          valuemap:
+            name: 'Ping Status'
+          tags:
+            - tag: ICMP
+            - tag: Type
+              value: Status
+          triggers:
+            - uuid: 77f9ed9ba5d44b938fd34d222cd5c502
+              expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
+              name: 'Device offline'
+              priority: HIGH
+              manual_close: 'YES'
               tags:
                 - tag: ICMP
         - uuid: 8b397b5e4de74806b3d4814da8ca7497
           name: 'ICMP Latency'
           type: SIMPLE
-          key: 'icmppingsec[{HOST.HOST}]'
+          key: 'icmppingsec[{HOST.HOST},1]'
           history: 7d
           value_type: FLOAT
           units: ms
@@ -72,31 +93,13 @@ zabbix_export:
               value: Latency
           triggers:
             - uuid: 0b6fa791e1cc4993bd779488cc08fe64
-              expression: 'avg(/BA - Generic - ICMP/icmppingsec[{HOST.HOST}],#3)>={$ICMP_HIGH_LATENCY_WARN}'
+              expression: 'avg(/BA - Generic - ICMP/icmppingsec[{HOST.HOST},1],#3)>={$ICMP_HIGH_LATENCY_WARN}'
               name: 'ICMP Latency >= {$ICMP_HIGH_LATENCY_WARN}'
               priority: INFO
+              manual_close: 'YES'
               dependencies:
                 - name: 'Device offline'
-                  expression: 'last(/BA - Generic - ICMP/icmpping[{HOST.HOST}])=0'
-              tags:
-                - tag: ICMP
-        - uuid: 157c0a57578f4b6fa626c497c413b7ff
-          name: 'ICMP Ping'
-          type: SIMPLE
-          key: 'icmpping[{HOST.HOST}]'
-          delay: 10s
-          history: 7d
-          valuemap:
-            name: 'Ping Status'
-          tags:
-            - tag: ICMP
-            - tag: Type
-              value: Status
-          triggers:
-            - uuid: 77f9ed9ba5d44b938fd34d222cd5c502
-              expression: 'last(/BA - Generic - ICMP/icmpping[{HOST.HOST}])=0'
-              name: 'Device offline'
-              priority: HIGH
+                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: ICMP
       tags:
@@ -114,7 +117,7 @@ zabbix_export:
                       name: itemid.0
                       value:
                         host: 'BA - Generic - ICMP'
-                        key: 'icmpping[{HOST.HOST}]'
+                        key: 'icmppingretry[{HOST.HOST},3]'
                     - type: INTEGER
                       name: show.0
                       value: '2'
@@ -146,7 +149,7 @@ zabbix_export:
                       name: itemid.0
                       value:
                         host: 'BA - Generic - ICMP'
-                        key: 'icmppingsec[{HOST.HOST}]'
+                        key: 'icmppingsec[{HOST.HOST},1]'
                     - type: STRING
                       name: max
                       value: '100'
@@ -299,11 +302,12 @@ zabbix_export:
               name: 'Could not retrieve device parameters via HTTP'
               priority: WARNING
               description: 'Please check the password on the device.'
+              manual_close: 'YES'
               dependencies:
                 - name: 'Device offline'
-                  expression: 'last(/BA - Generic - ICMP/icmpping[{HOST.HOST}])=0'
+                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
                 - name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
-                  expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},10,50,1000,500],#3)>={$ICMP_HIGH_LOSS_WARN}'
+                  expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
               tags:
                 - tag: Type
                   value: HTTP
@@ -646,6 +650,7 @@ zabbix_export:
               expression: 'last(/BA - HTTP - EarthCam/stream.status)=0'
               name: 'EarthCam Stream Offline'
               priority: WARNING
+              manual_close: 'YES'
       tags:
         - tag: Type
           value: HTTP
@@ -874,6 +879,7 @@ zabbix_export:
                   name: 'Veeam Job ({#NAME}) Last Result != Success'
                   priority: HIGH
                   description: 'The last run of this job was not successful.'
+                  manual_close: 'YES'
                   tags:
                     - tag: Job
                       value: '{#NAME}'
@@ -1016,7 +1022,7 @@ zabbix_export:
           value: '95'
           description: 'Percentage to trigger a memory usage alert.'
         - macro: '{$SOFTWARE_VERSION_STRINGS}'
-          value: ^(7\.19(\.2|\.3)|(YA|WC)\.16\.11\.0020)$
+          value: ^(7\.20(\.2)|(YA|WC)\.16\.11\.0020)$
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
         - macro: '{$TEMP_C_WARN}'
           value: '75'
@@ -1154,6 +1160,7 @@ zabbix_export:
               name: 'Battery Replacement Status not OK'
               priority: AVERAGE
               description: 'The battery in this UPS needs replaced.'
+              manual_close: 'YES'
               tags:
                 - tag: Type
                   value: Status
@@ -1266,6 +1273,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - APC/snmp.apc.ups.status)<>2'
               name: 'UPS Status not Online'
               priority: WARNING
+              manual_close: 'YES'
               tags:
                 - tag: Type
                   value: Status
@@ -1315,6 +1323,7 @@ zabbix_export:
                   expression: 'find(/BA - MIB - APC/snmp.apc.battery.status[{#SNMPINDEX}],,"regexp" ,"..1.............")=1'
                   name: 'Battery ({#SNMPINDEX}) Replacement Status not OK'
                   priority: AVERAGE
+                  manual_close: 'YES'
                   tags:
                     - tag: Type
                       value: Status
@@ -1469,6 +1478,7 @@ zabbix_export:
               expression: 'avg(/BA - MIB - Aruba OS/cpu.usage,{$CPU_HIGH_AVG_TIME_WARN})>={$CPU_USAGE_WARN}'
               name: 'CPU Usage >= {$CPU_USAGE_WARN}% for {$CPU_HIGH_AVG_TIME_WARN}'
               priority: AVERAGE
+              manual_close: 'YES'
               tags:
                 - tag: CPU
                 - tag: Type
@@ -1510,6 +1520,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - Aruba OS/memory.usage)>={$CPU_USAGE_WARN}'
               name: 'Memory Usage >= {$MEM_USAGE_WARN}%'
               priority: AVERAGE
+              manual_close: 'YES'
               tags:
                 - tag: Memory
                 - tag: Type
@@ -1579,6 +1590,7 @@ zabbix_export:
               name: 'Flash version out of date'
               priority: INFO
               description: 'Please update the software on this device.'
+              manual_close: 'YES'
               tags:
                 - tag: Software
                   value: Flash
@@ -1609,6 +1621,7 @@ zabbix_export:
               name: 'Loop Protect disabled'
               status: DISABLED
               priority: INFO
+              manual_close: 'YES'
               tags:
                 - tag: Config
                   value: 'Loop Protect'
@@ -1633,6 +1646,7 @@ zabbix_export:
               name: 'Loop Protect Timer not set to {$LOOP_PROTECT_TIMER}s'
               priority: INFO
               description: 'Loop Protect Timer is not set to {$LOOP_PROTECT_TIMER} seconds.'
+              manual_close: 'YES'
               tags:
                 - tag: Config
                   value: 'Loop Protect'
@@ -1659,6 +1673,7 @@ zabbix_export:
               name: 'Spanning Tree enabled'
               status: DISABLED
               priority: INFO
+              manual_close: 'YES'
               tags:
                 - tag: Config
                   value: 'Spanning Tree'
@@ -1693,6 +1708,7 @@ zabbix_export:
                   expression: 'last(/BA - MIB - Aruba OS/aruba.fan.status[{#SNMPINDEX}])=0 or last(/BA - MIB - Aruba OS/aruba.fan.status[{#SNMPINDEX}])=1 or last(/BA - MIB - Aruba OS/aruba.fan.status[{#SNMPINDEX}])=3 or last(/BA - MIB - Aruba OS/aruba.fan.status[{#SNMPINDEX}])=4 or last(/BA - MIB - Aruba OS/aruba.fan.status[{#SNMPINDEX}])=6'
                   name: 'Aruba Fan ({#SNMPINDEX}) Status Fault'
                   priority: AVERAGE
+                  manual_close: 'YES'
                   tags:
                     - tag: Fan
                       value: '{#SNMPINDEX}'
@@ -1730,6 +1746,7 @@ zabbix_export:
                     last(/BA - MIB - Aruba OS/aruba.psu.status[{#SNMPINDEX}])=6
                   name: 'Aruba PSU ({#SNMPINDEX}) Status Fault'
                   priority: AVERAGE
+                  manual_close: 'YES'
                   tags:
                     - tag: PSU
                       value: '{#SNMPINDEX}'
@@ -1753,6 +1770,7 @@ zabbix_export:
                   expression: 'last(/BA - MIB - Aruba OS/aruba.psu.temp[{#SNMPINDEX}])>={$TEMP_C_WARN}'
                   name: 'Aruba PSU ({#SNMPINDEX}) Temperature >= {$TEMP_C_WARN}C'
                   priority: AVERAGE
+                  manual_close: 'YES'
                   tags:
                     - tag: PSU
                       value: '{#SNMPINDEX}'
@@ -1978,6 +1996,7 @@ zabbix_export:
               name: 'Battery Replacement Status not OK'
               priority: AVERAGE
               description: 'The battery in this UPS needs replaced.'
+              manual_close: 'YES'
               tags:
                 - tag: Type
                   value: Status
@@ -2098,6 +2117,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - Cyber Power/snmp.cps.ups.status)<>2'
               name: 'UPS Status not Online'
               priority: WARNING
+              manual_close: 'YES'
               tags:
                 - tag: Type
                   value: Status
@@ -2272,6 +2292,7 @@ zabbix_export:
                   name: 'Entity ({#NAME}) Alarm Fault'
                   priority: HIGH
                   description: 'An alarm has been triggered!'
+                  manual_close: 'YES'
                   tags:
                     - tag: Entity
                       value: '{#NAME}'
@@ -2706,9 +2727,10 @@ zabbix_export:
               expression: 'nodata(/BA - MIB - Generic/snmp.uptime,2h)=1'
               name: 'Device is not responding to SNMP'
               priority: AVERAGE
+              manual_close: 'YES'
               dependencies:
                 - name: 'Device offline'
-                  expression: 'last(/BA - Generic - ICMP/icmpping[{HOST.HOST}])=0'
+                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: SNMP
             - uuid: ed77aa0f513b454d90a231185baef9be
@@ -2716,6 +2738,7 @@ zabbix_export:
               name: 'Device rebooted'
               priority: AVERAGE
               description: 'This device rebooted within the last 5 minutes.'
+              manual_close: 'YES'
               tags:
                 - tag: SNMP
       tags:
@@ -2846,6 +2869,7 @@ zabbix_export:
               expression: 'avg(/BA - MIB - Host Resources/cpu.usage,{$CPU_HIGH_AVG_TIME_WARN})>={$CPU_USAGE_WARN}'
               name: 'CPU Usage >= {$CPU_USAGE_WARN}% for {$CPU_HIGH_AVG_TIME_WARN}'
               priority: AVERAGE
+              manual_close: 'YES'
               tags:
                 - tag: CPU
                 - tag: Type
@@ -2904,6 +2928,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - Host Resources/memory.usage)>={$MEM_USAGE_WARN}'
               name: 'Memory Usage >= {$MEM_USAGE_WARN}%'
               priority: AVERAGE
+              manual_close: 'YES'
               tags:
                 - tag: Memory
                 - tag: Type
@@ -3016,6 +3041,7 @@ zabbix_export:
                   expression: 'last(/BA - MIB - Host Resources/snmp.hr.fdisk.usage[{#DESC}])>={$DISK_HIGH_AVG_PERC_WARN}'
                   name: 'Disk ({#DESC}) Usage >= {$DISK_HIGH_AVG_PERC_WARN}%'
                   priority: HIGH
+                  manual_close: 'YES'
             - uuid: d12b45c4665144ab99bcc2b12ee4073d
               name: 'Disk ({#DESC}) Used'
               type: SNMP_AGENT
@@ -3080,6 +3106,18 @@ zabbix_export:
                   item:
                     host: 'BA - MIB - Host Resources'
                     key: 'snmp.hr.fdisk.used[{#DESC}]'
+          overrides:
+            - name: 'Disable Usage Trigger "System Disk" MikroTik'
+              step: '1'
+              filter:
+                conditions:
+                  - macro: '{#DESC}'
+                    value: '^system disk$'
+              operations:
+                - operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Usage
+                  status: DISABLED
         - uuid: 5f9d9f2ab44f452cae7c7d8b67873df2
           name: 'Memory Discovery'
           type: DEPENDENT
@@ -3390,7 +3428,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: .1.3.6.1.4.1.674.10892.5.2.1.0
           key: snmp.idrac.status
-          history: 90d
+          history: 30d
           valuemap:
             name: 'Object Status'
           tags:
@@ -3402,6 +3440,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - iDRAC/snmp.idrac.status)<>3'
               name: 'Global Status not OK'
               priority: HIGH
+              manual_close: 'YES'
               tags:
                 - tag: Global
                 - tag: Type
@@ -3505,6 +3544,7 @@ zabbix_export:
                     and last(/BA - MIB - iDRAC/snmp.idrac.drive.state[{#DISK}])<>3
                   name: 'Drive ({#DISK}) Status not OK'
                   priority: HIGH
+                  manual_close: 'YES'
                   tags:
                     - tag: Drive
                       value: '{#DISK}'
@@ -3565,6 +3605,7 @@ zabbix_export:
                   expression: 'last(/BA - MIB - iDRAC/snmp.idrac.fan.status[{#FAN}])<>3'
                   name: 'Fan ({#FAN}) Status not OK'
                   priority: AVERAGE
+                  manual_close: 'YES'
                   tags:
                     - tag: Fan
                       value: '{#FAN}'
@@ -3638,6 +3679,7 @@ zabbix_export:
                   expression: 'last(/BA - MIB - iDRAC/snmp.psu.status[{#SLOT}])<>3'
                   name: 'Power Supply ({#SLOT}) Status not OK'
                   priority: HIGH
+                  manual_close: 'YES'
                   tags:
                     - tag: 'Power Supply'
                       value: '{#SLOT}'
@@ -3700,6 +3742,7 @@ zabbix_export:
                   expression: 'last(/BA - MIB - iDRAC/snmp.idrac.temp.status[{#LOCATION}])<>3'
                   name: 'Temperature ({#LOCATION}) Status not OK'
                   priority: AVERAGE
+                  manual_close: 'YES'
                   tags:
                     - tag: Temperature
                       value: '{#LOCATION}'
@@ -3881,6 +3924,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - iLO/ilo.bios.status)>=3'
               name: 'BIOS Status fault'
               priority: HIGH
+              manual_close: 'YES'
               tags:
                 - tag: iLO
                 - tag: Type
@@ -3902,6 +3946,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - iLO/snmp.ilo.health)<>2'
               name: 'Health Status not OK'
               priority: HIGH
+              manual_close: 'YES'
               tags:
                 - tag: Type
                   value: Status
@@ -4018,6 +4063,7 @@ zabbix_export:
                   name: 'Drive ({#BAY}) Status not OK'
                   priority: HIGH
                   description: 'The status of this drive is not OK.'
+                  manual_close: 'YES'
                   tags:
                     - tag: Drive
                       value: '{#BAY}'
@@ -4096,6 +4142,7 @@ zabbix_export:
                   expression: 'last(/BA - MIB - iLO/ilo.fan.status[{#SNMPINDEX}])>=3'
                   name: 'Fan ({#INDEX}) Status Fault'
                   priority: AVERAGE
+                  manual_close: 'YES'
                   tags:
                     - tag: Fan
                       value: '{#INDEX}'
@@ -4145,6 +4192,7 @@ zabbix_export:
                     last(/BA - MIB - iLO/ilo.memory.status[{#SNMPINDEX}])=15
                   name: 'Memory Module ({#LOCATION}) Status Fault'
                   priority: HIGH
+                  manual_close: 'YES'
                   tags:
                     - tag: Memory
                       value: '{#LOCATION}'
@@ -4183,6 +4231,7 @@ zabbix_export:
                   expression: 'last(/BA - MIB - iLO/ilo.psu.status[{#SNMPINDEX}])>=3'
                   name: 'Power Supply ({#BAY}) Status Fault'
                   priority: HIGH
+                  manual_close: 'YES'
                   tags:
                     - tag: 'Power Supply'
                       value: '{#BAY}'
@@ -4275,6 +4324,7 @@ zabbix_export:
                   expression: 'last(/BA - MIB - iLO/ilo.temp.status[{#SNMPINDEX}])>=3'
                   name: 'Temperature ({#LOCALE}) Status Fault'
                   priority: HIGH
+                  manual_close: 'YES'
                   tags:
                     - tag: Temperature
                       value: '{#LOCALE}'
@@ -4521,7 +4571,7 @@ zabbix_export:
         - uuid: 7dbba147f0de468cbc4b1335674c4405
           name: 'Interfaces Discovery'
           type: SNMP_AGENT
-          snmp_oid: 'walk[.1.3.6.1.2.1.31.1.1.1.1,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.2,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.7,.1.3.6.1.2.1.2.2.1.10,.1.3.6.1.2.1.2.2.1.16,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.14,.1.3.6.1.2.1.2.2.1.20,.1.3.6.1.2.1.2.2.1.5,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.13,.1.3.6.1.2.1.2.2.1.19]'
+          snmp_oid: 'walk[.1.3.6.1.2.1.31.1.1.1.1,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.2,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.7,.1.3.6.1.2.1.2.2.1.10,.1.3.6.1.2.1.2.2.1.16,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.14,.1.3.6.1.2.1.2.2.1.20,.1.3.6.1.2.1.2.2.1.5,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.13,.1.3.6.1.2.1.2.2.1.19,.1.3.6.1.2.1.2.2.1.3]'
           key: snmp.interfaces
           delay: 10s
           history: '0'
@@ -4697,6 +4747,7 @@ zabbix_export:
                   name: 'Interface ({#NAME}: {#ALIAS}) Flapped >= {$INTER_FLAP_WARN_COUNT}x Within {$INTER_FLAP_WARN_TIME}'
                   status: DISABLED
                   priority: WARNING
+                  manual_close: 'YES'
                   tags:
                     - tag: Interface
                       value: '{#NAME}'
@@ -4707,6 +4758,7 @@ zabbix_export:
                   name: 'Interface ({#NAME}: {#ALIAS}) Operational Status != Up'
                   status: DISABLED
                   priority: AVERAGE
+                  manual_close: 'YES'
                   tags:
                     - tag: Interface
                       value: '{#NAME}'
@@ -4812,11 +4864,32 @@ zabbix_export:
                   value: '{#NAME}'
                 - tag: Type
                   value: Speed
+            - uuid: 17a15d0758b94ad9a5f6002c7523e144
+              name: 'Interface ({#NAME}: {#ALIAS}) Type'
+              type: DEPENDENT
+              key: 'snmp.interfaces.type[{#NAME}]'
+              history: 7d
+              trends: '0'
+              valuemap:
+                name: 'Interface Types'
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.2.2.1.3.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Type
           trigger_prototypes:
             - uuid: f7ac6e903d5d4c9fa6bdb6a0a4bdf5ad
               expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN})'
               name: 'Interface ({#NAME}: {#ALIAS}) Discards >= {$INTER_DISCARD_WARN} Within {$INTER_DISCARD_WARN_TIME}'
               priority: WARNING
+              manual_close: 'YES'
               tags:
                 - tag: Interface
                   value: '{#NAME}'
@@ -4826,6 +4899,7 @@ zabbix_export:
               expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN})'
               name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME}'
               priority: WARNING
+              manual_close: 'YES'
               tags:
                 - tag: Interface
                   value: '{#NAME}'
@@ -4835,6 +4909,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.in.usage[{#NAME}])>={$INTER_USAGE_WARN} or last(/BA - MIB - Interfaces/snmp.interfaces.out.usage[{#NAME}])>={$INTER_USAGE_WARN}'
               name: 'Interface ({#NAME}: {#ALIAS}) Usage >= {$INTER_USAGE_WARN}%'
               priority: WARNING
+              manual_close: 'YES'
               tags:
                 - tag: Interface
                   value: '{#NAME}'
@@ -4887,6 +4962,9 @@ zabbix_export:
                 - '{#ASTATUS}'
                 - .1.3.6.1.2.1.2.2.1.7
                 - '0'
+                - '{#TYPE}'
+                - .1.3.6.1.2.1.2.2.1.3
+                - '0'
             - type: JAVASCRIPT
               parameters:
                 - |
@@ -4906,6 +4984,17 @@ zabbix_export:
                 - operator: LIKE
                   value: Alias
                   discover: NO_DISCOVER
+            - name: 'No Errors Trigger on WiFi'
+              step: '2'
+              filter:
+                conditions:
+                  - macro: '{#TYPE}'
+                    value: '71'
+              operations:
+                - operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Errors
+                  status: DISABLED
       tags:
         - tag: Type
           value: MIB
@@ -4940,6 +5029,27 @@ zabbix_export:
               newvalue: 'False'
             - value: '1'
               newvalue: 'True'
+        - uuid: 5694b665ff254cd0b49e02e3d7a9baec
+          name: 'Interface Types'
+          mappings:
+            - value: '1'
+              newvalue: other
+            - value: '6'
+              newvalue: ethernetCsmacd
+            - value: '24'
+              newvalue: softwareLoopback
+            - value: '53'
+              newvalue: propVirtual
+            - value: '54'
+              newvalue: propMultiplexor
+            - value: '71'
+              newvalue: ieee80211
+            - value: '131'
+              newvalue: tunnel
+            - value: '135'
+              newvalue: l2vlan
+            - value: '258'
+              newvalue: vmwareVirtualNic
         - uuid: 042dd6004ca744328459b83d571efd02
           name: 'Operational Status'
           mappings:
@@ -5003,6 +5113,7 @@ zabbix_export:
                   name: 'Interface ({#NAME}: {#ALIAS}) Loop Detected'
                   priority: HIGH
                   description: 'A loop has been detected on this port!'
+                  manual_close: 'YES'
                   tags:
                     - tag: Interface
                       value: '{#NAME}'
@@ -5338,6 +5449,7 @@ zabbix_export:
               discover: NO_DISCOVER
               priority: INFO
               description: 'This interface has an un-managed device connected.'
+              manual_close: 'YES'
           master_item:
             key: snmp.interfaces.mac.count.discovery.json
           overrides:
@@ -5480,6 +5592,7 @@ zabbix_export:
                   expression: 'last(/BA - MIB - Interfaces POE/snmp.interfaces.poe.dstatus[{#NAME}])=4 or last(/BA - MIB - Interfaces POE/snmp.interfaces.poe.dstatus[{#NAME}])=6'
                   name: 'Interface ({#NAME}: {#ALIAS}) POE Detection Fault'
                   priority: WARNING
+                  manual_close: 'YES'
                   tags:
                     - tag: Interface
                       value: '{#NAME}'
@@ -5838,6 +5951,7 @@ zabbix_export:
               expression: 'find(/BA - MIB - MikroTik/ros.bl.version,#1,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
               name: 'RouterOS Bootloader Version Out of Date'
               priority: WARNING
+              manual_close: 'YES'
               dependencies:
                 - name: 'RouterOS Version Out of Date'
                   expression: 'find(/BA - MIB - MikroTik/ros.version,#1,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
@@ -5903,6 +6017,7 @@ zabbix_export:
               expression: 'find(/BA - MIB - MikroTik/ros.version,#1,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
               name: 'RouterOS Version Out of Date'
               priority: WARNING
+              manual_close: 'YES'
               tags:
                 - tag: RouterOS
                 - tag: Type
@@ -5944,6 +6059,7 @@ zabbix_export:
                   expression: 'last(/BA - MIB - MikroTik/ros.gauge.value[{#SNMPINDEX}])>={$TEMP_C_WARN}'
                   name: 'Gauge ({#NAME}) {#UNIT} Temperature >= {$TEMP_C_WARN}C'
                   priority: AVERAGE
+                  manual_close: 'YES'
                   tags:
                     - tag: Guage
                       value: '{#NAME}'
@@ -6161,6 +6277,7 @@ zabbix_export:
                 There is an alarm on this UPS.
                 
                 The battery may need replaced, or there is another fault.
+              manual_close: 'YES'
               tags:
                 - tag: Type
                   value: Alarms
@@ -6207,6 +6324,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - UPS/snmp.ups.ups.status)<>3'
               name: 'UPS Status not Normal'
               priority: WARNING
+              manual_close: 'YES'
               tags:
                 - tag: Type
                   value: Status
@@ -6360,6 +6478,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=300'
               name: 'CPU Subscription >= 300%'
               priority: INFO
+              manual_close: 'YES'
               dependencies:
                 - name: 'CPU Subscription >= 400%'
                   expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=400'
@@ -6373,6 +6492,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=400'
               name: 'CPU Subscription >= 400%'
               priority: WARNING
+              manual_close: 'YES'
               dependencies:
                 - name: 'CPU Subscription >= 500%'
                   expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
@@ -6384,6 +6504,7 @@ zabbix_export:
               expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
               name: 'CPU Subscription >= 500%'
               priority: AVERAGE
+              manual_close: 'YES'
               tags:
                 - tag: CPU
                 - tag: Type
@@ -6556,9 +6677,10 @@ zabbix_export:
                   expression: 'last(/BA - MIB - Windows/windows.services.status[{#NAME}])<>1'
                   name: 'Windows Service ({#NAME}) Not Active'
                   priority: AVERAGE
+                  manual_close: 'YES'
                   dependencies:
                     - name: 'Device offline'
-                      expression: 'last(/BA - Generic - ICMP/icmpping[{HOST.HOST}])=0'
+                      expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
                   tags:
                     - tag: Service
                       value: '{#NAME}'
@@ -6801,11 +6923,12 @@ zabbix_export:
               name: 'Could not retrieve device parameters via ONVIF'
               priority: WARNING
               description: 'Please check the password on the device.'
+              manual_close: 'YES'
               dependencies:
                 - name: 'Device offline'
-                  expression: 'last(/BA - Generic - ICMP/icmpping[{HOST.HOST}])=0'
+                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
                 - name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
-                  expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},10,50,1000,500],#3)>={$ICMP_HIGH_LOSS_WARN}'
+                  expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
               tags:
                 - tag: Type
                   value: ONVIF
@@ -7105,6 +7228,7 @@ zabbix_export:
                 This device name matches another device with a different IP.
                 
                 Please ensure that the device names are unique.
+              manual_close: 'YES'
               tags:
                 - tag: Type
                   value: Procedure
@@ -7484,6 +7608,7 @@ zabbix_export:
                   expression: 'changecount(/BA - Profile - iLO/snmp.interfaces.operstatus[{#NAME}],{$INTER_FLAP_WARN_TIME},"dec")>={$INTER_FLAP_WARN_COUNT}'
                   name: 'Interface ({#NAME}: {#ALIAS}) Flapped >= {$INTER_FLAP_WARN_COUNT}x Within {$INTER_FLAP_WARN_TIME}'
                   priority: WARNING
+                  manual_close: 'YES'
                   tags:
                     - tag: Interface
                       value: '{#NAME}'
@@ -7568,6 +7693,7 @@ zabbix_export:
               expression: 'sum(/BA - Profile - iLO/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - Profile - iLO/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN}'
               name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME}'
               priority: WARNING
+              manual_close: 'YES'
               tags:
                 - tag: Interface
                   value: '{#NAME}'
@@ -7577,6 +7703,7 @@ zabbix_export:
               expression: 'last(/BA - Profile - iLO/snmp.interfaces.in.usage[{#NAME}])>={$INTER_USAGE_WARN} or last(/BA - Profile - iLO/snmp.interfaces.out.usage[{#NAME}])>={$INTER_USAGE_WARN}'
               name: 'Interface ({#NAME}: {#ALIAS}) Usage >= {$INTER_USAGE_WARN}%'
               priority: WARNING
+              manual_close: 'YES'
               tags:
                 - tag: Interface
                   value: '{#NAME}'
@@ -7847,9 +7974,10 @@ zabbix_export:
               expression: 'last(/BA - SSH/net.tcp.service[ssh,,])<>1'
               name: 'SSH Status != Up'
               priority: WARNING
+              manual_close: 'YES'
               dependencies:
                 - name: 'Device offline'
-                  expression: 'last(/BA - Generic - ICMP/icmpping[{HOST.HOST}])=0'
+                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: SSH
                 - tag: Type
@@ -7908,9 +8036,10 @@ zabbix_export:
               name: 'Could not retrieve configuration via SSH'
               priority: WARNING
               description: 'Check that the SSH user can login to back the configuration up.'
+              manual_close: 'YES'
               dependencies:
                 - name: 'Device offline'
-                  expression: 'last(/BA - Generic - ICMP/icmpping[{HOST.HOST}])=0'
+                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: Config
       tags:
@@ -8018,6 +8147,7 @@ zabbix_export:
                   expression: 'last(/BA - SSH - UPS/ssh.nut.ups.charge[{#NAME}])<100'
                   name: 'UPS ({#NAME}) Charge < 100%'
                   priority: WARNING
+                  manual_close: 'YES'
                   tags:
                     - tag: Type
                       value: Charge
@@ -8088,6 +8218,7 @@ zabbix_export:
                   expression: 'last(/BA - SSH - UPS/ssh.nut.ups.status[{#NAME}])=0'
                   name: 'UPS ({#NAME}) Status = Offline'
                   priority: HIGH
+                  manual_close: 'YES'
                   tags:
                     - tag: Type
                       value: Status
@@ -8216,6 +8347,7 @@ zabbix_export:
       name: 'Configuration not saved'
       priority: WARNING
       description: 'The startup config does not match the running config. Please save the running config to flash.'
+      manual_close: 'YES'
       tags:
         - tag: Type
           value: SHA
@@ -8320,14 +8452,14 @@ zabbix_export:
           calc_fnc: ALL
           item:
             host: 'BA - Generic - ICMP'
-            key: 'icmppingsec[{HOST.HOST}]'
+            key: 'icmppingsec[{HOST.HOST},1]'
         - sortorder: '1'
           color: F63100
           yaxisside: RIGHT
           calc_fnc: ALL
           item:
             host: 'BA - Generic - ICMP'
-            key: 'icmppingloss[{HOST.HOST},10,50,1000,500]'
+            key: 'icmppingloss[{HOST.HOST},5,1000]'
     - uuid: ed8a0c441e524003aaec8356435e5237
       name: Jitter
       graph_items:
