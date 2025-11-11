@@ -20,7 +20,7 @@ jobs:
        uses: actions/checkout@v5
        with:
          branch: main
-     - name: Run Script
+     - name: Download Templates
        shell: pwsh
        run: '&Scripts/Export-ZabbixTemplates.ps1'
        env:
@@ -28,10 +28,12 @@ jobs:
          ZBX_INSTANCE: ${{ vars.ZBX_INSTANCE }}
      - name: Set Git Config
        run: |
-         git config --global user.email dylan@belowaverage.org
+         git config --global user.email automation@belowaverage.org
          git config --global user.name "GitHub Runner"
-     - name: Commit
-       run: 'git commit -a -m "Downloaded from workflow."'
+     - name: Add & Commit
+       run: |
+         git add .
+         git commit -a -m "Downloaded from workflow."
      - name: Push
        run: 'git push'
 
