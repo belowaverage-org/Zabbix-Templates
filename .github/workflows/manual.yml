@@ -27,7 +27,7 @@ jobs:
          ZBX_APIKEY: ${{ secrets.ZBX_APIKEY }}
          ZBX_INSTANCE: ${{ vars.ZBX_INSTANCE }}
      - name: Commit
-       run: 'git commit "Downloaded from workflow."'
+       run: 'git commit -m "Downloaded from workflow."'
      - name: Push
        run: 'git push'
 
