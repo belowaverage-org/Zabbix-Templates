@@ -8346,6 +8346,11 @@ zabbix_export:
               newvalue: Offline
             - value: '1'
               newvalue: Online
+    - uuid: 683460cacd3b470295e7c46235af6fb7
+      template: test
+      name: test
+      groups:
+        - name: BA/Generic
   triggers:
     - uuid: 0cb2f24a7f724fad988e17ed41f374ee
       expression: 'last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.startup)<>last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.running)'
