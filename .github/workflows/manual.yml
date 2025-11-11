@@ -25,7 +25,7 @@ jobs:
        run: 'gci env:'
        env:
          ZBX_APIKEY: ${{ secrets.ZBX_APIKEY }}
-         ZBX_INSTANCE: ${{ secrets.ZBX_INSTANCE }}
+         ZBX_INSTANCE: ${{ env.ZBX_INSTANCE }}
      - name: Run Script
        shell: pwsh
        run: '&Scripts/Export-ZabbixTemplates.ps1'
