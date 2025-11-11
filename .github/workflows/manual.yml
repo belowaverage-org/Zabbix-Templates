@@ -29,7 +29,7 @@ jobs:
      - name: Set Git Config
        run: |
          git config --global user.email automation@belowaverage.org
-         git config --global user.name "GitHub Runner"
+         git config --global user.name "GitHub Workflow"
      - name: Add & Commit
        run: |
          git add .
