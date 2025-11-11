@@ -6,7 +6,7 @@ if (
     $env:ZBX_INSTANCE = Read-Host -Prompt "Enter the instance URL"
 }
 $api = "$env:ZBX_INSTANCE/api_jsonrpc.php"
-
+"Starting..."
 $templates = Invoke-WebRequest -UseBasicParsing -Uri $api -Method Post -Headers @{
     "Content-Type" = "application/json-rpc"
     "Authorization" = "Bearer $env:ZBX_APIKEY"
@@ -39,6 +39,7 @@ $template.result | Out-File -FilePath "combined.yaml" -Encoding utf8
 $templates.result | ForEach-Object {
     $id = $_.templateid
     $name = $_.name
+    "Downloading $name..."
     $template = Invoke-WebRequest -UseBasicParsing -Uri $api -Method Post -Headers @{
         "Content-Type" = "application/json-rpc"
         "Authorization" = "Bearer $env:ZBX_APIKEY"
