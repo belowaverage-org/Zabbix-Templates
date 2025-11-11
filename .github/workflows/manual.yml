@@ -19,7 +19,6 @@ jobs:
        uses: actions/checkout@v5
        with:
          branch: main
-     - name: Powershell
-       uses: Azure/powershell@v2
-       with:
-         inlineScript: '&Scripts/Export-ZabbixTemplates.ps1'
+     - name: Run Script
+       run: 'pwsh -File "Scripts/Export-ZabbixTemplates.ps1"'
+
