@@ -32,7 +32,7 @@ jobs:
          git config --global user.name "GitHub Workflow"
      - name: Add & Commit
        run: |
-         git add .
+         git add -A
          git commit -a -m "Downloaded from workflow."
      - name: Push
        run: 'git push'
