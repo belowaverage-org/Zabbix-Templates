@@ -1,0 +1,12 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 2d74333e7c9d46ee9fd27559f11a7d0e
+      name: BA/Generic
+  templates:
+    - uuid: 683460cacd3b470295e7c46235af6fb7
+      template: test2
+      name: test2
+      groups:
+        - name: BA/Generic
+

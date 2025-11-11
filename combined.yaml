@@ -8347,8 +8347,8 @@ zabbix_export:
             - value: '1'
               newvalue: Online
     - uuid: 683460cacd3b470295e7c46235af6fb7
-      template: test
-      name: test
+      template: test2
+      name: test2
       groups:
         - name: BA/Generic
   triggers:
