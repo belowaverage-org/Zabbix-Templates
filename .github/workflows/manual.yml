@@ -26,7 +26,8 @@ jobs:
        env:
          ZBX_APIKEY: ${{ secrets.ZBX_APIKEY }}
          ZBX_INSTANCE: ${{ vars.ZBX_INSTANCE }}
-     - name: Show Results
-       shell: pwsh
-       run: 'gci'
+     - name: Commit
+       run: 'git commit "Downloaded from workflow."'
+     - name: Push
+       run: 'git push'
 
