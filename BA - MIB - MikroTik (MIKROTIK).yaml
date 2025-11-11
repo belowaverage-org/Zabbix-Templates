@@ -1,0 +1,275 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: ad0d2cf3f7e84ff09f74ec148818c46d
+      template: 'BA - MIB - MikroTik'
+      name: 'BA - MIB - MikroTik (MIKROTIK)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: f93c713711ba42f28ec5c9f3b75abf28
+          name: 'RouterOS Bootloader Version'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.14988.1.1.7.4.0
+          key: ros.bl.version
+          history: 1h
+          value_type: CHAR
+          tags:
+            - tag: RouterOS
+            - tag: Type
+              value: Version
+          triggers:
+            - uuid: dce23b47174b41ef81218013175425f0
+              expression: 'find(/BA - MIB - MikroTik/ros.bl.version,#1,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
+              name: 'RouterOS Bootloader Version Out of Date'
+              priority: WARNING
+              manual_close: 'YES'
+              dependencies:
+                - name: 'RouterOS Version Out of Date'
+                  expression: 'find(/BA - MIB - MikroTik/ros.version,#1,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
+              tags:
+                - tag: RouterOS
+                - tag: Type
+                  value: Version
+        - uuid: dcdf53f894a043bf83bef95f341c33c8
+          name: 'RouterOS Board Name'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.14988.1.1.7.8.0
+          key: ros.boardname
+          delay: 12h
+          history: 30d
+          value_type: CHAR
+          inventory_link: MODEL
+          tags:
+            - tag: RouterOS
+            - tag: Type
+              value: Model
+        - uuid: 2422b180ee304cadb7b3848987545857
+          name: 'CPU Frequency'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.14988.1.1.3.14.0
+          key: ros.cpufreq
+          history: 7d
+          units: Hz
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '1000000'
+          tags:
+            - tag: CPU
+            - tag: Type
+              value: Frequency
+        - uuid: 7d2ce0e43616493cbf1106fbe2a5063f
+          name: 'RouterOS Serial'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.14988.1.1.7.3.0
+          key: ros.serial
+          delay: 12h
+          history: 90d
+          value_type: CHAR
+          inventory_link: SERIALNO_A
+          tags:
+            - tag: RouterOS
+            - tag: Type
+              value: Serial
+        - uuid: d98aae57d9454c6a8836fab035873f83
+          name: 'RouterOS Version'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.14988.1.1.4.4.0
+          key: ros.version
+          history: 1h
+          value_type: CHAR
+          inventory_link: SOFTWARE
+          tags:
+            - tag: RouterOS
+            - tag: Type
+              value: Version
+          triggers:
+            - uuid: 23f1bc1096ff49728e3c340164fbe352
+              expression: 'find(/BA - MIB - MikroTik/ros.version,#1,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
+              name: 'RouterOS Version Out of Date'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: RouterOS
+                - tag: Type
+                  value: Version
+      discovery_rules:
+        - uuid: a218d20f379642fd83b0472df43663e8
+          name: 'ROS Gauge Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#NAME}, .1.3.6.1.4.1.14988.1.1.3.100.1.2, {#UNIT}, .1.3.6.1.4.1.14988.1.1.3.100.1.4]'
+          key: ros.gauge.discovery
+          delay: 1h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: efd1a5d94ceb4b098f839bb24c403889
+              name: 'Gauge ({#NAME}) {#UNIT}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.14988.1.1.3.100.1.3.{#SNMPINDEX}'
+              key: 'ros.gauge.value[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              value_type: FLOAT
+              units: '{#UNIT}'
+              preprocessing:
+                - type: JAVASCRIPT
+                  parameters:
+                    - |
+                      if ('{#UNIT}' == 'Volts') return value / 10;
+                      if ('{#UNIT}' == 'Watts') return value / 10;
+                      if ('{#UNIT}' == 'Amps') return value / 10;
+                      return value;
+              tags:
+                - tag: Gauge
+                  value: '{#NAME}'
+                - tag: Type
+                  value: '{#UNIT}'
+              trigger_prototypes:
+                - uuid: 8bbeacb4fa7b429aa0cc8c0e917c0991
+                  expression: 'last(/BA - MIB - MikroTik/ros.gauge.value[{#SNMPINDEX}])>={$TEMP_C_WARN}'
+                  name: 'Gauge ({#NAME}) {#UNIT} Temperature >= {$TEMP_C_WARN}C'
+                  priority: AVERAGE
+                  manual_close: 'YES'
+                  tags:
+                    - tag: Guage
+                      value: '{#NAME}'
+                    - tag: Type
+                      value: '{#UNIT}'
+          graph_prototypes:
+            - uuid: b15abde9dac841bca795548194e9345e
+              name: 'Gauge ({#NAME}) {#UNIT}'
+              graph_items:
+                - drawtype: GRADIENT_LINE
+                  color: EF6C00
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - MikroTik'
+                    key: 'ros.gauge.value[{#SNMPINDEX}]'
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var data = JSON.parse(value);
+                  data.forEach(function(v, k) {
+                      if (data[k]['{#UNIT}'] == 1) { data[k]['{#UNIT}'] = 'Celsius'; }
+                      if (data[k]['{#UNIT}'] == 2) { data[k]['{#UNIT}'] = 'RPM'; }
+                      if (data[k]['{#UNIT}'] == 3) { data[k]['{#UNIT}'] = 'Volts'; }
+                      if (data[k]['{#UNIT}'] == 4) { data[k]['{#UNIT}'] = 'Amps'; }
+                      if (data[k]['{#UNIT}'] == 5) { data[k]['{#UNIT}'] = 'Watts'; }
+                      if (data[k]['{#UNIT}'] == 6) { data[k]['{#UNIT}'] = 'Status'; }
+                  });
+                  return JSON.stringify(data);
+          overrides:
+            - name: CPU
+              step: '1'
+              operations:
+                - operator: LIKE
+                  value: cpu
+                  tags:
+                    - tag: CPU
+            - name: 'Not Celsius'
+              step: '2'
+              filter:
+                conditions:
+                  - macro: '{#UNIT}'
+                    value: Celsius
+                    operator: NOT_MATCHES_REGEX
+              operations:
+                - operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Temperature
+                  discover: NO_DISCOVER
+      tags:
+        - tag: Type
+          value: MIB
+      dashboards:
+        - uuid: 64178c330b0846e59eebe2be6abb18be
+          name: RouterOS
+          pages:
+            - widgets:
+                - type: item
+                  width: '12'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - MikroTik'
+                        key: ros.boardname
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: item
+                  'y': '2'
+                  width: '12'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - MikroTik'
+                        key: ros.version
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: item
+                  'y': '4'
+                  width: '12'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - MikroTik'
+                        key: ros.serial
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: graphprototype
+                  'y': '6'
+                  width: '72'
+                  height: '7'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '3'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - MikroTik'
+                        name: 'Gauge ({#NAME}) {#UNIT}'
+                    - type: STRING
+                      name: reference
+                      value: AAAAT
+                    - type: INTEGER
+                      name: rows
+                      value: '2'
+                - type: graph
+                  x: '12'
+                  width: '60'
+                  height: '6'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - MikroTik'
+                        name: 'CPU Frequency'
+                    - type: STRING
+                      name: reference
+                      value: AAAAU
+  graphs:
+    - uuid: 621c306af3f44412a3e0a9d1988d6a3c
+      name: 'CPU Frequency'
+      graph_items:
+        - drawtype: GRADIENT_LINE
+          color: 1976D2
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - MikroTik'
+            key: ros.cpufreq
+

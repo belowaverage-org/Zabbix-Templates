@@ -1,0 +1,28 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 83b7b6180c974b1680cca7fa1fbac757
+      name: BA/Profiles/Cameras
+  templates:
+    - uuid: dd62fc36b98043b98668524c168b3787
+      template: 'BA - Profile - Axis'
+      name: 'BA - Profile - Axis'
+      wizard_ready: 'YES'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - HTTP - Axis'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - Procedure - Update Name'
+      groups:
+        - name: BA/Profiles/Cameras
+      tags:
+        - tag: Type
+          value: Profile
+        - tag: Type
+          value: Surveillance
+        - tag: Vendor
+          value: Axis
+

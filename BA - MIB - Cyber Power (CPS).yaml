@@ -1,0 +1,343 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: e5761accf2dd4f6180e536fbc1d19612
+      template: 'BA - MIB - Cyber Power'
+      name: 'BA - MIB - Cyber Power (CPS)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: 0330598b770a48c8834ca5d8a413905d
+          name: 'Battery Charge'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.3808.1.1.1.2.2.1.0
+          key: snmp.cps.battery.charge
+          delay: 5m
+          history: 30d
+          units: '%'
+          tags:
+            - tag: Type
+              value: Charge
+        - uuid: 05f89524723b42268c9675e966d78330
+          name: 'Battery Last Replacement Date'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.3808.1.1.1.2.1.3.0
+          key: snmp.cps.battery.replaced
+          delay: 6h
+          history: 30d
+          value_type: CHAR
+          description: 'Last time the battery was replaced.'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: Type
+              value: Age
+        - uuid: dd6892088b68483899e2e58a81bd2b72
+          name: 'Battery Replacement Status'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.3808.1.1.1.2.2.5.0
+          key: snmp.cps.battery.replacementstat
+          delay: 5m
+          history: 30d
+          valuemap:
+            name: 'Battery Replace Indicator'
+          tags:
+            - tag: Type
+              value: Status
+          triggers:
+            - uuid: 51859a6d64964de989b2ee50cdc2de14
+              expression: 'last(/BA - MIB - Cyber Power/snmp.cps.battery.replacementstat)<>1'
+              name: 'Battery Replacement Status not OK'
+              priority: AVERAGE
+              description: 'The battery in this UPS needs replaced.'
+              manual_close: 'YES'
+              tags:
+                - tag: Type
+                  value: Status
+        - uuid: 42ab4ab29fc24a94909bb478dd260058
+          name: 'Battery Runtime'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.3808.1.1.1.2.2.4.0
+          key: snmp.cps.battery.runtime
+          delay: 5m
+          history: 30d
+          units: s
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+          tags:
+            - tag: Type
+              value: Runtime
+        - uuid: 82a0e47ebf8041e7b11c331020a30a26
+          name: 'Battery Status'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.3808.1.1.1.2.1.1.0
+          key: snmp.cps.battery.status
+          delay: 5m
+          history: 30d
+          valuemap:
+            name: 'Battery Status'
+          tags:
+            - tag: Type
+              value: Status
+        - uuid: 8de781b3dede4bc3b6366470d3b141a4
+          name: 'Battery Temperature'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.3808.1.1.1.2.2.3.0
+          key: snmp.cps.battery.temperature
+          delay: 5m
+          history: 30d
+          units: C
+          tags:
+            - tag: Type
+              value: Temperature
+        - uuid: 8b9caea167324421a35130dbeb493ef4
+          name: Model
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.3808.1.1.1.1.1.1.0
+          key: snmp.cps.model
+          delay: 6h
+          history: 30d
+          value_type: CHAR
+          inventory_link: MODEL
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: Type
+              value: Model
+        - uuid: c07237c22ccc4366a6ab66f4a556a1b1
+          name: Serial
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.3808.1.1.1.1.2.3.0
+          key: snmp.cps.serial
+          delay: 6h
+          history: 30d
+          value_type: CHAR
+          inventory_link: SERIALNO_A
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: Type
+              value: Serial
+        - uuid: fd0a96096d3645ed9728ecdde84484ee
+          name: 'UPS Input Frequency'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.3808.1.1.1.3.2.4.0
+          key: snmp.cps.ups.inputfreq
+          delay: 5m
+          history: 30d
+          units: Hertz
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.1'
+          tags:
+            - tag: Type
+              value: Hertz
+        - uuid: 940103e8330148a2960fec819cfd2b0a
+          name: 'UPS Input Voltage'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.3808.1.1.1.3.2.1.0
+          key: snmp.cps.ups.inputvoltage
+          delay: 5m
+          history: 30d
+          units: Volts
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.1'
+          tags:
+            - tag: Type
+              value: Voltage
+        - uuid: 48885bf925b7466aaeec73ae70d1dddd
+          name: 'UPS Status'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.3808.1.1.1.4.1.1.0
+          key: snmp.cps.ups.status
+          delay: 5m
+          history: 30d
+          valuemap:
+            name: 'UPS Status'
+          tags:
+            - tag: Type
+              value: Status
+          triggers:
+            - uuid: aa2be7bb37e14efb931ac865bfb27385
+              expression: 'last(/BA - MIB - Cyber Power/snmp.cps.ups.status)<>2'
+              name: 'UPS Status not Online'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: Type
+                  value: Status
+      tags:
+        - tag: Type
+          value: MIB
+      dashboards:
+        - uuid: 0b0ad3476602407c83ddac095017661d
+          name: APC
+          pages:
+            - widgets:
+                - type: item
+                  width: '24'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Cyber Power'
+                        key: snmp.cps.ups.status
+                - type: graph
+                  'y': '2'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Cyber Power'
+                        name: 'Battery Charge'
+                    - type: STRING
+                      name: reference
+                      value: AAAAG
+                - type: graph
+                  'y': '7'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Cyber Power'
+                        name: 'UPS Input'
+                    - type: STRING
+                      name: reference
+                      value: AAAAH
+                - type: graph
+                  'y': '12'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Cyber Power'
+                        key: snmp.cps.battery.temperature
+                    - type: STRING
+                      name: reference
+                      value: AAAAI
+                    - type: INTEGER
+                      name: source_type
+                      value: '1'
+                - type: item
+                  x: '24'
+                  width: '24'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Cyber Power'
+                        key: snmp.cps.model
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: item
+                  x: '48'
+                  width: '24'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Cyber Power'
+                        key: snmp.cps.serial
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+      valuemaps:
+        - uuid: d2ffc6a43eb34045b9d1c2d8b90bef59
+          name: 'Battery Replace Indicator'
+          mappings:
+            - value: '1'
+              newvalue: 'No Battery Needs Replacing'
+            - value: '2'
+              newvalue: 'Battery Needs Replacing'
+        - uuid: 9b3c5fea6a9844d0b75e1d302e95bfec
+          name: 'Battery Status'
+          mappings:
+            - value: '1'
+              newvalue: Unkown
+            - value: '2'
+              newvalue: 'Battery Normal'
+            - value: '3'
+              newvalue: 'Battery Low'
+        - uuid: 01175c0c673f4b69a0b5232570fad142
+          name: 'UPS Status'
+          mappings:
+            - value: '1'
+              newvalue: Unknown
+            - value: '2'
+              newvalue: Online
+            - value: '3'
+              newvalue: 'On Battery'
+            - value: '4'
+              newvalue: 'On Smart Boost'
+            - value: '5'
+              newvalue: 'Timed Sleeping'
+            - value: '6'
+              newvalue: 'Software Bypass'
+            - value: '7'
+              newvalue: 'Off'
+            - value: '8'
+              newvalue: Rebooting
+            - value: '9'
+              newvalue: 'Switched Bypass'
+            - value: '10'
+              newvalue: 'Hardware Failure Bypass'
+            - value: '11'
+              newvalue: 'Sleeping Unit Power Return'
+            - value: '12'
+              newvalue: 'On Smart Trim'
+  graphs:
+    - uuid: ffb6d4eea7c749868407affdda162187
+      name: 'Battery Charge'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - Cyber Power'
+            key: snmp.cps.battery.charge
+        - sortorder: '1'
+          color: F63100
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - Cyber Power'
+            key: snmp.cps.battery.runtime
+    - uuid: ef6e9c90d3c94313ba1856fdfdbf0944
+      name: 'UPS Input'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - Cyber Power'
+            key: snmp.cps.ups.inputfreq
+        - sortorder: '1'
+          color: F63100
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - Cyber Power'
+            key: snmp.cps.ups.inputvoltage
+

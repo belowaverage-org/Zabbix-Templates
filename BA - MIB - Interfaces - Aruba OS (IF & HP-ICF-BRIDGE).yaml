@@ -1,0 +1,79 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: c978731e458f4899bad556a58a4f7722
+      template: 'BA - MIB - Interfaces - Aruba OS'
+      name: 'BA - MIB - Interfaces - Aruba OS (IF & HP-ICF-BRIDGE)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      discovery_rules:
+        - uuid: 42af4ec9d263413a81306b4b6c2bfcef
+          name: 'Interfaces Loop Protect Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#ENABLED}, .1.3.6.1.4.1.11.2.14.11.5.1.12.1.5.2.1.1.1, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
+          key: snmp.interfaces.loopprotect.discovery
+          delay: 1h
+          filter:
+            evaltype: AND
+            conditions:
+              - macro: '{#ALIAS}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#ENABLED}'
+                value: '1'
+              - macro: '{#ENABLED}'
+                operator: EXISTS
+              - macro: '{#NAME}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#NAME}'
+                value: '^(Vl|Bl|Nu).*$'
+                operator: NOT_MATCHES_REGEX
+          lifetime: 1d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 6f074bb7eaf6440b9f60faae0eba55cb
+              name: 'Interface ({#NAME}: {#ALIAS}) Loop Detection Count'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.11.2.14.11.5.1.12.1.5.2.1.1.4.{#SNMPINDEX}'
+              key: 'snmp.interfaces.aruba.loopdetected.status[{#NAME}]'
+              history: 7d
+              valuemap:
+                name: 'Loop Detected'
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: 'Loop Detection'
+                - tag: Type
+                  value: Count
+              trigger_prototypes:
+                - uuid: 3add992e000848a29c0808061e524b72
+                  expression: 'changecount(/BA - MIB - Interfaces - Aruba OS/snmp.interfaces.aruba.loopdetected.status[{#NAME}],{$LOOP_PROTECT_TIMER_WARN},"inc")>0'
+                  name: 'Interface ({#NAME}: {#ALIAS}) Loop Detected'
+                  priority: HIGH
+                  description: 'A loop has been detected on this port!'
+                  manual_close: 'YES'
+                  tags:
+                    - tag: Interface
+                      value: '{#NAME}'
+                    - tag: 'Loop Detected'
+                    - tag: Type
+                      value: Status
+      tags:
+        - tag: Type
+          value: MIB
+      valuemaps:
+        - uuid: e2de721ce9284480becb8755327cfbe0
+          name: 'Loop Detected'
+          mappings:
+            - value: '1'
+              newvalue: 'Yes'
+            - value: '2'
+              newvalue: 'No'
+

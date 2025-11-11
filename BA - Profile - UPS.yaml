@@ -1,0 +1,29 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: b384f4b048b0408a9adfeae61f5574ae
+      name: BA/Profiles
+  templates:
+    - uuid: a84485143ea944d39947bc6beb5c8dee
+      template: 'BA - Profile - UPS'
+      name: 'BA - Profile - UPS'
+      wizard_ready: 'YES'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - MIB - Generic'
+        - name: 'BA - MIB - UPS'
+        - name: 'BA - Procedure - Update Name'
+      groups:
+        - name: BA/Profiles
+      tags:
+        - tag: Type
+          value: Power
+        - tag: Type
+          value: Profile
+        - tag: Vendor
+          value: Generic
+

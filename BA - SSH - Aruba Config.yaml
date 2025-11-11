@@ -1,0 +1,59 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 08afccc1647440e2bdf5025bd5f4b3e0
+      name: BA/SSH
+  templates:
+    - uuid: ed7b2d0bb3bc487f85dd64fe636c783e
+      template: 'BA - SSH - Aruba Config'
+      name: 'BA - SSH - Aruba Config'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/SSH
+      items:
+        - uuid: 4cdfa361733045b8820676671cb01643
+          name: 'Aruba Config'
+          type: HTTP_AGENT
+          key: ssh.config
+          delay: 6h
+          history: 90d
+          value_type: TEXT
+          inventory_link: SOFTWARE_FULL
+          preprocessing:
+            - type: REGEX
+              parameters:
+                - '[\s\S]*(Running|Current) configuration:\R{1,2}([\s\S]*)\R{1,2}'
+                - \2
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          timeout: 60s
+          url: '{$SSH_SHIM_URL}'
+          posts: |
+            hostname={HOST.HOST}&username={$ARUBA_SSH_USER}&password={$ARUBA_SSH_PASS}&commands=
+            {"Expect":"#"}
+            no page
+            show run
+            @@@
+            {"Expect":"# @@@"}
+          request_method: POST
+          tags:
+            - tag: Config
+          triggers:
+            - uuid: 2fe56d78b3254bbb9535028f50f83ca9
+              expression: 'nodata(/BA - SSH - Aruba Config/ssh.config,3d)=1'
+              name: 'Could not retrieve configuration via SSH'
+              priority: WARNING
+              description: 'Check that the SSH user can login to back the configuration up.'
+              manual_close: 'YES'
+              dependencies:
+                - name: 'Device offline'
+                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
+              tags:
+                - tag: Config
+      tags:
+        - tag: Type
+          value: SSH
+

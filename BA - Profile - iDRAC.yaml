@@ -1,0 +1,29 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 2128cf518279432187a98490d555a270
+      name: BA/Profiles/Servers
+  templates:
+    - uuid: cba898d4d6af47ccbf5bd0c8c5340c96
+      template: 'BA - Profile - iDRAC'
+      name: 'BA - Profile - iDRAC'
+      wizard_ready: 'YES'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - MIB - Generic'
+        - name: 'BA - MIB - iDRAC'
+        - name: 'BA - Procedure - Update Name'
+      groups:
+        - name: BA/Profiles/Servers
+      tags:
+        - tag: Type
+          value: Profile
+        - tag: Type
+          value: Servers
+        - tag: Vendor
+          value: iDRAC
+

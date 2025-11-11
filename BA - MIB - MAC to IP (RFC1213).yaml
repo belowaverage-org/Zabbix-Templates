@@ -1,0 +1,106 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: 81e18df8f00146508669b18575a0d3f6
+      template: 'BA - MIB - MAC to IP - RFC1213'
+      name: 'BA - MIB - MAC to IP (RFC1213)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: 06a95ceb13e54dbfa69a010d0f34ac37
+          name: 'MAC to IP Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#MAC}, .1.3.6.1.2.1.4.22.1.2, {#IP}, .1.3.6.1.2.1.4.22.1.3]'
+          key: m2i.discovery.json
+          delay: 15m
+          history: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var data = JSON.parse(value);
+                  data.forEach(function(v, k) {
+                      var newAddrParts = [];
+                      var addr = v['{#MAC}'].substring(0, 17).replace(/\s/g, ':').toLowerCase();
+                      var addrParts = addr.split(':');
+                      addrParts.forEach(function(v) {
+                          if (v.length == 1) v = '0' + v;
+                          newAddrParts.push(v);
+                      });
+                      data[k]['{#MAC}'] = newAddrParts.join(':');
+                  });
+                  return JSON.stringify(data);
+          tags:
+            - tag: 'MAC to IP'
+            - tag: Type
+              value: Discovery
+      discovery_rules:
+        - uuid: e61723274ec84ee2b405252948f3ded2
+          name: 'MAC to IP Discovery'
+          type: DEPENDENT
+          key: m2i.discovery
+          filter:
+            evaltype: AND
+            conditions:
+              - macro: '{#MAC}'
+                value: ^$
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#MAC}'
+                value: '^00:00:00:00:00:00$'
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#MAC}'
+                value: '^ff:ff:ff:ff:ff:ff$'
+                operator: NOT_MATCHES_REGEX
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: e1412500b2fe46dcaf99788b070e295d
+              name: 'MAC: {#MAC}, IP: {#IP}'
+              type: DEPENDENT
+              key: 'm2i.status[{#MAC}:{#IP}]'
+              history: 7d
+              trends: 30d
+              valuemap:
+                name: 'MAC to IP Status'
+              preprocessing:
+                - type: MATCHES_REGEX
+                  parameters:
+                    - '"{.MAC}":"{#MAC}","{.IP}":"{#IP}"'
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+                - type: JAVASCRIPT
+                  parameters:
+                    - |
+                      if (value == 0) return value;
+                      return 1;
+              master_item:
+                key: m2i.discovery.json
+              tags:
+                - tag: IP
+                  value: '{#IP}'
+                - tag: MAC
+                  value: '{#MAC}'
+                - tag: 'MAC to IP'
+                - tag: Type
+                  value: Status
+          master_item:
+            key: m2i.discovery.json
+      tags:
+        - tag: Type
+          value: MIB
+      valuemaps:
+        - uuid: 2d9af5c47ed84c44aa09dc5133cb1002
+          name: 'MAC to IP Status'
+          mappings:
+            - value: '0'
+              newvalue: Stale
+            - value: '1'
+              newvalue: Active
+

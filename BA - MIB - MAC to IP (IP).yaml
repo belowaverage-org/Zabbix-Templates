@@ -1,0 +1,145 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: e062d321550c42d9bdce4b4c23a365e3
+      template: 'BA - MIB - MAC to IP - IP'
+      name: 'BA - MIB - MAC to IP (IP)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: 6f39fc0fe41f4d91ac1f0eb612fc88c4
+          name: 'MAC to IP Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#MAC}, .1.3.6.1.2.1.4.35.1.4]'
+          key: m2i.discovery.json
+          delay: 15m
+          history: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var data = JSON.parse(value);
+                  data.forEach(function(record, r_index) {
+                      var snmp_index = record['{#SNMPINDEX}'];
+                      var raw_mac = record['{#MAC}'];
+                      var index_parts = snmp_index.split('.');
+                      raw_mac = raw_mac.substr(0, 17);
+                      raw_mac = raw_mac.replace(/ /g, ':');
+                      var newAddrParts = [];
+                      var addr = raw_mac.toLowerCase();
+                      var addrParts = addr.split(':');
+                      addrParts.forEach(function(v) {
+                          if (v.length == 1) v = '0' + v;
+                          newAddrParts.push(v);
+                      });
+                      var mac = newAddrParts.join(':');
+                      var ip = '';
+                      if (index_parts[1] == 1) { //IPV4
+                          ip = index_parts.slice(3, 7).join('.');
+                      }
+                      if (index_parts[1] == 2) { //IPV6
+                          var ip_part = '';
+                          var ip_parts = index_parts.slice(3);
+                          var compressed = false;
+                          var compressing = false;
+                          ip_parts.forEach(function(part, p_index) {
+                              var ip_byte = Number.parseInt(part).toString(16);
+                              if (ip_byte.length == 1) ip_byte = '0' + ip_byte;
+                              ip_part += ip_byte;
+                              if (ip_part.length == 4) {
+                                  ip_part = ip_part.replace(/^0000|^000|^00|^0/, '');
+                                  if (!compressed && ip_part == '') {
+                                      compressing = true;
+                                  }
+                                  if (!compressing && ip_part == '') ip_part = '0';
+                                  if (compressed || ip_part !== '') {
+                                      if (!compressed && compressing) {
+                                          ip += ':';
+                                          compressed = true;
+                                          compressing = false;
+                                      }
+                                      if (p_index !== 1) ip_part = ':' + ip_part;
+                                      ip += ip_part;
+                                  }
+                                  ip_part = '';
+                              } 
+                          });
+                      }
+                      data[r_index]['{#IP}'] = ip;
+                      data[r_index]['{#MAC}'] = mac;
+                  });
+                  return JSON.stringify(data);
+          tags:
+            - tag: 'MAC to IP'
+            - tag: Type
+              value: Discovery
+      discovery_rules:
+        - uuid: 517f02751b524658a4c505ad3996b7a6
+          name: 'MAC to IP Discovery'
+          type: DEPENDENT
+          key: m2i.discovery
+          filter:
+            evaltype: AND
+            conditions:
+              - macro: '{#MAC}'
+                value: ^$
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#MAC}'
+                value: '^00:00:00:00:00:00$'
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#MAC}'
+                value: '^ff:ff:ff:ff:ff:ff$'
+                operator: NOT_MATCHES_REGEX
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 8f42984ce1a84b209699e231ba07a9de
+              name: 'MAC: {#MAC}, IP: {#IP}'
+              type: DEPENDENT
+              key: 'm2i.status[{#MAC}:{#IP}]'
+              history: 7d
+              trends: 30d
+              valuemap:
+                name: 'MAC to IP State'
+              preprocessing:
+                - type: MATCHES_REGEX
+                  parameters:
+                    - '{.SNMPINDEX}":"{#SNMPINDEX}","{.MAC}":"{#MAC}"'
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+                - type: JAVASCRIPT
+                  parameters:
+                    - |
+                      if (value == 0) return value;
+                      return 1;
+              master_item:
+                key: m2i.discovery.json
+              tags:
+                - tag: IP
+                  value: '{#IP}'
+                - tag: MAC
+                  value: '{#MAC}'
+                - tag: 'MAC to IP'
+                - tag: Type
+                  value: Status
+          master_item:
+            key: m2i.discovery.json
+      tags:
+        - tag: Type
+          value: MIB
+      valuemaps:
+        - uuid: 1364b8e394e74294a3c6107eef28d797
+          name: 'MAC to IP State'
+          mappings:
+            - value: '0'
+              newvalue: Stale
+            - value: '1'
+              newvalue: Active
+

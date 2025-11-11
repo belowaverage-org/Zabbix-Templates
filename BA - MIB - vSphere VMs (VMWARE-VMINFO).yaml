@@ -1,0 +1,185 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: dbe9320a85944279b7d9a7a9e887c146
+      template: 'BA - MIB - vSphere VMs'
+      name: 'BA - MIB - vSphere VMs (VMWARE-VMINFO)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: 059f8c28dd144f05b792288a14ee9951
+          name: 'CPUs Allocated'
+          type: CALCULATED
+          key: vsphere.cpus.allocated
+          delay: 1h
+          history: 7d
+          params: 'sum(last_foreach(//vsphere.vm.cpus[*]))'
+          tags:
+            - tag: CPU
+            - tag: Type
+              value: Count
+        - uuid: befdbfd5a25d4e038bc2f53eedab5c98
+          name: 'CPU Subscription'
+          type: CALCULATED
+          key: vsphere.cpus.subscription
+          delay: 1h
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          params: last(//vsphere.cpus.allocated)/last(//cpu.count)
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '100'
+          tags:
+            - tag: CPU
+            - tag: Type
+              value: Subscription
+          triggers:
+            - uuid: f9883375c125492abab9ce4181caf353
+              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=300'
+              name: 'CPU Subscription >= 300%'
+              priority: INFO
+              manual_close: 'YES'
+              dependencies:
+                - name: 'CPU Subscription >= 400%'
+                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=400'
+                - name: 'CPU Subscription >= 500%'
+                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
+              tags:
+                - tag: CPU
+                - tag: Type
+                  value: Usage
+            - uuid: 885272fd23404a5b9fe53aef2b7de707
+              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=400'
+              name: 'CPU Subscription >= 400%'
+              priority: WARNING
+              manual_close: 'YES'
+              dependencies:
+                - name: 'CPU Subscription >= 500%'
+                  expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
+              tags:
+                - tag: CPU
+                - tag: Type
+                  value: Usage
+            - uuid: 881639b9a7284eac98a5c31b649b4e6c
+              expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
+              name: 'CPU Subscription >= 500%'
+              priority: AVERAGE
+              manual_close: 'YES'
+              tags:
+                - tag: CPU
+                - tag: Type
+                  value: Usage
+        - uuid: 55e4078646824cb18348e0194b551123
+          name: 'VM Count'
+          type: CALCULATED
+          key: vsphere.vm.count
+          delay: 1h
+          history: 7d
+          params: 'sum(exists_foreach(//vsphere.vm.state[*]))'
+          tags:
+            - tag: Type
+              value: Count
+            - tag: VM
+      discovery_rules:
+        - uuid: a6fd7567cc30408d9711e1bab1030c56
+          name: 'VM Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#NAME}, .1.3.6.1.4.1.6876.2.1.1.2]'
+          key: vsphere.vm.discovery
+          delay: 1h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 07a6e276f6cf485b8febeca4d71c9eaa
+              name: 'VM ({#NAME}) CPUs'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.9.{#SNMPINDEX}'
+              key: 'vsphere.vm.cpus[{#SNMPINDEX}]'
+              delay: 1h
+              history: 7d
+              tags:
+                - tag: CPU
+                - tag: Type
+                  value: Count
+                - tag: VM
+                  value: '{#NAME}'
+            - uuid: 3f58ca558b094184ad0c7022480c2287
+              name: 'VM ({#NAME}) Guest OS'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.4.{#SNMPINDEX}'
+              key: 'vsphere.vm.guestos[{#SNMPINDEX}]'
+              delay: 1h
+              history: 365d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: Type
+                  value: 'Guest OS'
+                - tag: VM
+                  value: '{#NAME}'
+            - uuid: bfbddf7840304b6183eda41be9e29098
+              name: 'VM ({#NAME}) Guest State'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.8.{#SNMPINDEX}'
+              key: 'vsphere.vm.gueststate[{#SNMPINDEX}]'
+              delay: 5m
+              history: 365d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: Type
+                  value: State
+                - tag: VM
+                  value: '{#NAME}'
+            - uuid: fb84d9e71e484a9f8951ee113847eac0
+              name: 'VM ({#NAME}) Memory Size'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.5.{#SNMPINDEX}'
+              key: 'vsphere.vm.memsize[{#SNMPINDEX}]'
+              delay: 6h
+              history: 7d
+              units: B
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '1048576'
+              tags:
+                - tag: Type
+                  value: Size
+                - tag: VM
+                  value: '{#NAME}'
+            - uuid: bd3e8bd3fd2e4123a7659b62bc4951ed
+              name: 'VM ({#NAME}) Power State'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.6876.2.1.1.6.{#SNMPINDEX}'
+              key: 'vsphere.vm.state[{#SNMPINDEX}]'
+              delay: 5m
+              history: 365d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: Type
+                  value: State
+                - tag: VM
+                  value: '{#NAME}'
+      tags:
+        - tag: Type
+          value: MIB
+

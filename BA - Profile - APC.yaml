@@ -1,0 +1,27 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: b384f4b048b0408a9adfeae61f5574ae
+      name: BA/Profiles
+  templates:
+    - uuid: 46224c7ee9ab40cf8fc1807cc2965f2d
+      template: 'BA - Profile - APC'
+      name: 'BA - Profile - APC'
+      wizard_ready: 'YES'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - MIB - APC'
+        - name: 'BA - MIB - Generic'
+        - name: 'BA - Procedure - Update Name'
+      groups:
+        - name: BA/Profiles
+      tags:
+        - tag: Type
+          value: Profile
+        - tag: Vendor
+          value: APC
+

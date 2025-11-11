@@ -1,0 +1,272 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 2128cf518279432187a98490d555a270
+      name: BA/Profiles/Servers
+  templates:
+    - uuid: 6e39e8aa1a0848f3b2454a082094ecde
+      template: 'BA - Profile - iLO'
+      name: 'BA - Profile - iLO'
+      wizard_ready: 'YES'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - MIB - Generic'
+        - name: 'BA - MIB - iLO'
+        - name: 'BA - Procedure - Update Name'
+      groups:
+        - name: BA/Profiles/Servers
+      discovery_rules:
+        - uuid: a0ac4f59e6544118bd355f3c61bc18c2
+          name: 'Interfaces Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18, {#OSTATUS}, .1.3.6.1.2.1.2.2.1.8, {#ASTATUS}, .1.3.6.1.2.1.2.2.1.7]'
+          key: snmp.interfaces.discovery
+          delay: 1h
+          filter:
+            conditions:
+              - macro: '{#ALIAS}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#ASTATUS}'
+                value: '2'
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#NAME}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#OSTATUS}'
+                value: '6'
+                operator: NOT_MATCHES_REGEX
+          lifetime: 1d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: ef92486394574885983d2c02b1f3d264
+              name: 'Interface ({#NAME}: {#ALIAS}) Alias'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.31.1.1.1.18.{#SNMPINDEX}'
+              key: 'snmp.interfaces.alias[{#NAME}]'
+              delay: 1h
+              history: 90d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 24h
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Alias
+            - uuid: 94c1d5de306a47c4963e149a3afb8504
+              name: 'Interface ({#NAME}: {#ALIAS}) In Errors'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.2.2.1.14.{#SNMPINDEX}'
+              key: 'snmp.interfaces.in.errors[{#NAME}]'
+              delay: 5m
+              history: 7d
+              units: bps
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+                - type: CHANGE_PER_SECOND
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Errors
+            - uuid: 5e9b33dcc76645e19d581a89fb396ee9
+              name: 'Interface ({#NAME}: {#ALIAS}) In Usage'
+              type: CALCULATED
+              key: 'snmp.interfaces.in.usage[{#NAME}]'
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//snmp.interfaces.in[{#SNMPINDEX}])/last(//snmp.interfaces.speed[{#SNMPINDEX}])'
+              preprocessing:
+                - type: CHECK_NOT_SUPPORTED
+                  parameters:
+                    - '-1'
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+                - type: MULTIPLIER
+                  parameters:
+                    - '100'
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Usage
+            - uuid: 767871d53c9a4cbbb0900393193c979a
+              name: 'Interface ({#NAME}: {#ALIAS}) In Rate'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.2.2.1.10.{#SNMPINDEX}'
+              key: 'snmp.interfaces.in[{#NAME}]'
+              history: 7d
+              units: bps
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+                - type: CHANGE_PER_SECOND
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Rate
+            - uuid: 210a3f40ad024e85964468495d7f151d
+              name: 'Interface ({#NAME}: {#ALIAS}) Operational Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.2.2.1.8.{#SNMPINDEX}'
+              key: 'snmp.interfaces.operstatus[{#NAME}]'
+              delay: 2m
+              history: 7d
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Status
+              trigger_prototypes:
+                - uuid: 673bf191003144baa7b159524e4b4b2f
+                  expression: 'changecount(/BA - Profile - iLO/snmp.interfaces.operstatus[{#NAME}],{$INTER_FLAP_WARN_TIME},"dec")>={$INTER_FLAP_WARN_COUNT}'
+                  name: 'Interface ({#NAME}: {#ALIAS}) Flapped >= {$INTER_FLAP_WARN_COUNT}x Within {$INTER_FLAP_WARN_TIME}'
+                  priority: WARNING
+                  manual_close: 'YES'
+                  tags:
+                    - tag: Interface
+                      value: '{#NAME}'
+                    - tag: Type
+                      value: Status
+            - uuid: d819c44d41fc4a6bbc5fbe319a7587d1
+              name: 'Interface ({#NAME}: {#ALIAS}) Out Errors'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.2.2.1.20.{#SNMPINDEX}'
+              key: 'snmp.interfaces.out.errors[{#NAME}]'
+              delay: 5m
+              history: 7d
+              units: bps
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+                - type: CHANGE_PER_SECOND
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Errors
+            - uuid: fd552c5cbaa34e37b1264fad7fefa1e5
+              name: 'Interface ({#NAME}: {#ALIAS}) Out Usage'
+              type: CALCULATED
+              key: 'snmp.interfaces.out.usage[{#NAME}]'
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//snmp.interfaces.out[{#SNMPINDEX}])/last(//snmp.interfaces.speed[{#SNMPINDEX}])'
+              preprocessing:
+                - type: CHECK_NOT_SUPPORTED
+                  parameters:
+                    - '-1'
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+                - type: MULTIPLIER
+                  parameters:
+                    - '100'
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Usage
+            - uuid: d75af8046ed14fb0a8f8a2da62ef7494
+              name: 'Interface ({#NAME}: {#ALIAS}) Out Rate'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.2.2.1.16.{#SNMPINDEX}'
+              key: 'snmp.interfaces.out[{#NAME}]'
+              history: 7d
+              units: bps
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+                - type: CHANGE_PER_SECOND
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Rate
+            - uuid: eb017fd94d134c4fa097ad10d59eaa35
+              name: 'Interface ({#NAME}: {#ALIAS}) Speed'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.31.1.1.1.15.{#SNMPINDEX}'
+              key: 'snmp.interfaces.speed[{#NAME}]'
+              delay: 1h
+              history: 7d
+              units: bps
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '1000000'
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Speed
+          trigger_prototypes:
+            - uuid: 182e84fa895940ac91884d0df513d3c0
+              expression: 'sum(/BA - Profile - iLO/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - Profile - iLO/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN}'
+              name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME}'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Errors
+            - uuid: 5d4224b75fcc401c8ba547399806ab0c
+              expression: 'last(/BA - Profile - iLO/snmp.interfaces.in.usage[{#NAME}])>={$INTER_USAGE_WARN} or last(/BA - Profile - iLO/snmp.interfaces.out.usage[{#NAME}])>={$INTER_USAGE_WARN}'
+              name: 'Interface ({#NAME}: {#ALIAS}) Usage >= {$INTER_USAGE_WARN}%'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: Interface
+                  value: '{#NAME}'
+                - tag: Type
+                  value: Usage
+          graph_prototypes:
+            - uuid: 0be5ec8ae812460ead772320312a3630
+              name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
+              graph_items:
+                - color: 1E88E5
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - Profile - iLO'
+                    key: 'snmp.interfaces.in[{#NAME}]'
+                - sortorder: '1'
+                  color: 2E7D32
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - Profile - iLO'
+                    key: 'snmp.interfaces.out[{#NAME}]'
+                - sortorder: '2'
+                  color: FF5722
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - Profile - iLO'
+                    key: 'snmp.interfaces.in.errors[{#NAME}]'
+                - sortorder: '3'
+                  color: FFA726
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - Profile - iLO'
+                    key: 'snmp.interfaces.out.errors[{#NAME}]'
+      tags:
+        - tag: Type
+          value: Profile
+        - tag: Type
+          value: Servers
+        - tag: Vendor
+          value: iLO
+
