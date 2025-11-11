@@ -20,16 +20,13 @@ jobs:
        uses: actions/checkout@v5
        with:
          branch: main
-     - name: Output Variables
-       shell: pwsh
-       run: 'gci env:'
-       env:
-         ZBX_APIKEY: ${{ secrets.ZBX_APIKEY }}
-         ZBX_INSTANCE: ${{ vars.ZBX_INSTANCE }}
      - name: Run Script
        shell: pwsh
        run: '&Scripts/Export-ZabbixTemplates.ps1'
        env:
          ZBX_APIKEY: ${{ secrets.ZBX_APIKEY }}
          ZBX_INSTANCE: ${{ vars.ZBX_INSTANCE }}
+     - name: Show Results
+       shell: pwsh
+       run: 'gci'
 
