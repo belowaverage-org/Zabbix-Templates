@@ -16,10 +16,14 @@ jobs:
     environment: Zabbix
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-     #- name: Checkout
-     #  uses: actions/checkout@v5
-     #  with:
-     #    branch: main
+     - name: Checkout
+       uses: actions/checkout@v5
+       with:
+         branch: main
+     - name: Output Variables
+       shell: pwsh
+       run: 'gci env:'
      - name: Run Script
-       run: 'pwsh -File "Scripts/Export-ZabbixTemplates.ps1"'
+       shell: pwsh
+       run: '&Scripts/Export-ZabbixTemplates.ps1'
 
