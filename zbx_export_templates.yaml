@@ -7175,38 +7175,41 @@ zabbix_export:
           type: SCRIPT
           key: update.via.inventory
           delay: 12h
-          history: 1d
-          value_type: TEXT
+          history: 7d
           status: DISABLED
           params: |
-            var params = JSON.parse(value);
-            var wr = new HttpRequest();
-            wr.addHeader('Content-Type: application/json-rpc');
-            var raw_resp = wr.post(params.api, JSON.stringify({
-                "jsonrpc": "2.0",
-                "method": "host.get",
-                "params": {
-                    "selectInventory": [ "name" ],
-                    "filter": {
-                        "host": [ params.host ]
-                    }
-                },
-                "id": 1,
-                "auth": params.key
-            }));
-            var response = JSON.parse(raw_resp);
-            var name = response.result[0].inventory.name.split('.')[0].toUpperCase();
-            var result = wr.post(params.api, JSON.stringify({
-                "jsonrpc": "2.0",
-                "method": "host.update",
-                "params": {
-                    "hostid": response.result[0].hostid,
-                    "name": name  + ' (' + params.host + ')'
-                },
-                "id": 1,
-                "auth": params.key
-            }));
-            return result;
+            try {
+            	var params = JSON.parse(value);
+            	var wr = new HttpRequest();
+            	wr.addHeader('Content-Type: application/json-rpc');
+            	wr.addHeader('Authorization: Bearer ' + params.key);
+            	var raw_resp = wr.post(params.api, JSON.stringify({
+              		"jsonrpc": "2.0",
+             		"method": "host.get",
+             		"params": {
+                			"selectInventory": [ "name" ],
+            				"filter": {
+            				"host": [ params.host ]
+            		}},
+            		"id": 1
+            	}));
+            	var response = JSON.parse(raw_resp);
+            	var name = response.result[0].inventory.name.split('.')[0].toUpperCase();
+            	var result = wr.post(params.api, JSON.stringify({
+              	  "jsonrpc": "2.0",
+             	   "method": "host.update",
+             	   "params": {
+             	       "hostid": response.result[0].hostid,
+             	       "name": name  + ' (' + params.host + ')'
+            	    },
+            	    "id": 1
+            	}));
+            	return 0;
+            } catch(e) {
+            	return 1;
+            }
+          valuemap:
+            name: 'Exit Code'
           timeout: 30s
           parameters:
             - name: api
@@ -7219,22 +7222,24 @@ zabbix_export:
             - tag: Type
               value: Procedure
           triggers:
-            - uuid: cf94790245f74d69803a9680c0032f02
-              expression: 'find(/BA - Procedure - Update Name/update.via.inventory,,"regexp","^.*Host with the same visible name.*$")=1'
-              name: 'Device name not unique'
-              status: DISABLED
+            - uuid: 97394f77de1142e7b8df29b84909b773
+              expression: 'last(/BA - Procedure - Update Name/update.via.inventory)>0'
+              name: 'Device name could not be updated'
               priority: INFO
-              description: |
-                This device name matches another device with a different IP.
-                
-                Please ensure that the device names are unique.
-              manual_close: 'YES'
               tags:
                 - tag: Type
                   value: Procedure
       tags:
         - tag: Type
           value: Procedure
+      valuemaps:
+        - uuid: 92c7e19c79934776b660d8ccb6ad3a1f
+          name: 'Exit Code'
+          mappings:
+            - value: '0'
+              newvalue: Success
+            - value: '1'
+              newvalue: Failed
     - uuid: 46224c7ee9ab40cf8fc1807cc2965f2d
       template: 'BA - Profile - APC'
       name: 'BA - Profile - APC'
