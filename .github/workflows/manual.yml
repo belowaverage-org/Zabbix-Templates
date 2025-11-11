@@ -31,7 +31,7 @@ jobs:
          git config --global user.email dylan@belowaverage.org
          git config --global user.name "GitHub Runner"
      - name: Commit
-       run: 'git commit -m "Downloaded from workflow."'
+       run: 'git commit -a -m "Downloaded from workflow."'
      - name: Push
        run: 'git push'
 
