@@ -20,6 +20,8 @@ jobs:
        uses: actions/checkout@v5
        with:
          branch: main
+     - name: Purge Old YAML
+       run: rm *.yaml
      - name: Download Templates
        shell: pwsh
        run: '&Scripts/Export-ZabbixTemplates.ps1'
@@ -35,5 +37,5 @@ jobs:
          git add -A
          git commit -a -m "Downloaded from workflow."
      - name: Push
-       run: 'git push'
+       run: git push
 
