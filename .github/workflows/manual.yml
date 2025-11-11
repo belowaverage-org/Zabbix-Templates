@@ -31,5 +31,5 @@ jobs:
        run: '&Scripts/Export-ZabbixTemplates.ps1'
        env:
          ZBX_APIKEY: ${{ secrets.ZBX_APIKEY }}
-         ZBX_INSTANCE: ${{ secrets.ZBX_INSTANCE }}
+         ZBX_INSTANCE: ${{ env.ZBX_INSTANCE }}
 
