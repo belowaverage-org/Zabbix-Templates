@@ -43,12 +43,13 @@ zabbix_export:
               delay: 1h
               history: 7d
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: PVID
-                - tag: VLAN
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
 

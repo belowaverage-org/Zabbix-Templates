@@ -22,7 +22,7 @@ zabbix_export:
           history: 30d
           units: '%'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Charge
         - uuid: 5ec4f24eb4e340778d4d2d8aa33dda35
           name: 'Battery Runtime'
@@ -37,7 +37,7 @@ zabbix_export:
               parameters:
                 - '60'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Runtime
         - uuid: c63347bfd19348328c1fdf8a624bf2bf
           name: 'Battery Status'
@@ -49,7 +49,7 @@ zabbix_export:
           valuemap:
             name: 'Battery Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
         - uuid: 69e69d3b217c49fcaa798d4c17e0fffa
           name: 'Battery Temperature'
@@ -60,7 +60,7 @@ zabbix_export:
           history: 30d
           units: C
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Temperature
         - uuid: 79c701aeac944703b61efe8365e75c9c
           name: Model
@@ -76,7 +76,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: b97b642cc9e644f5bf444104d2fa184f
           name: 'UPS Alarms'
@@ -86,7 +86,7 @@ zabbix_export:
           delay: 5m
           history: 30d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Alarms
           triggers:
             - uuid: 889f353b257f49d28ec3f6264efce1fe
@@ -99,8 +99,8 @@ zabbix_export:
                 The battery may need replaced, or there is another fault.
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Alarms
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: 88f48d62d7ae42ff846cf7d3e0e75d4f
           name: 'UPS Input Frequency'
           type: SNMP_AGENT
@@ -114,7 +114,7 @@ zabbix_export:
               parameters:
                 - '0.1'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Hertz
         - uuid: 0407dae901c64220a4383c73877e767d
           name: 'UPS Input Voltage'
@@ -125,7 +125,7 @@ zabbix_export:
           history: 30d
           units: Volts
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Voltage
         - uuid: dc34e74a1ef946cab41ce9b33094cb89
           name: 'UPS Status'
@@ -137,7 +137,7 @@ zabbix_export:
           valuemap:
             name: 'UPS Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 9b574a1e3ecf4b39b0705847d47cb8aa
@@ -146,11 +146,13 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 090b575c82c24738bb3326672240eae0
           name: UPS

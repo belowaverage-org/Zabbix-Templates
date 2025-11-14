@@ -24,8 +24,7 @@ zabbix_export:
             name: Status
           timeout: 3s
           tags:
-            - tag: SSH
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 344b160afc1e49868c8771f72adcf4a2
@@ -37,12 +36,13 @@ zabbix_export:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
-                - tag: SSH
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       tags:
-        - tag: Type
-          value: SSH
+        - tag: Agent
+          value: TCP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 9087ccbefa71490f85ed356ccb3fc705
           name: Status

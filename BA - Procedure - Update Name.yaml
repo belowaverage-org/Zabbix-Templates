@@ -62,7 +62,7 @@ zabbix_export:
             - name: key
               value: '{$ZABSELFKEY}'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Procedure
           triggers:
             - uuid: 97394f77de1142e7b8df29b84909b773
@@ -70,10 +70,10 @@ zabbix_export:
               name: 'Device name could not be updated'
               priority: INFO
               tags:
-                - tag: Type
-                  value: Procedure
+                - tag: 'Trigger Type'
+                  value: Recent
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Procedure
       valuemaps:
         - uuid: 92c7e19c79934776b660d8ccb6ad3a1f

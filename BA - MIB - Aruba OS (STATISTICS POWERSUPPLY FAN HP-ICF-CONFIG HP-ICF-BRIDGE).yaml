@@ -21,8 +21,7 @@ zabbix_export:
           history: 7d
           units: '%'
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Usage
           triggers:
             - uuid: 6b1079669c50408998310050e7d208b4
@@ -31,9 +30,8 @@ zabbix_export:
               priority: AVERAGE
               manual_close: 'YES'
               tags:
-                - tag: CPU
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: 2fa7b638fe4d4da8bef7ff8c58974a88
           name: 'Memory Size'
           type: SNMP_AGENT
@@ -47,8 +45,7 @@ zabbix_export:
               parameters:
                 - '$.*.[''{#SIZE}''].sum()'
           tags:
-            - tag: Memory
-            - tag: Type
+            - tag: 'Item Type'
               value: Size
         - uuid: 525480a2f9a542f29cbc5a626c8e65bd
           name: 'Memory Usage'
@@ -63,8 +60,7 @@ zabbix_export:
               parameters:
                 - '100'
           tags:
-            - tag: Memory
-            - tag: Type
+            - tag: 'Item Type'
               value: Usage
           triggers:
             - uuid: af7039dacfbc4facbe0677c9b402d06e
@@ -73,9 +69,8 @@ zabbix_export:
               priority: AVERAGE
               manual_close: 'YES'
               tags:
-                - tag: Memory
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: eb706ca0daea468595ef2a0b6ca09275
           name: 'Memory Used'
           type: SNMP_AGENT
@@ -88,8 +83,7 @@ zabbix_export:
               parameters:
                 - '$.*.[''{#FREE}''].sum()'
           tags:
-            - tag: Memory
-            - tag: Type
+            - tag: 'Item Type'
               value: Used
         - uuid: 5e4b2dafd1994d47b8604d26a2d75af9
           name: 'Running Config SHA'
@@ -104,7 +98,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: SHA
         - uuid: 9c9386c0f5c04abd99c9b6ebc5cc2508
           name: 'Startup Config SHA'
@@ -119,7 +113,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: SHA
         - uuid: 3c14903dbe254135bd2c2d29f5c7a650
           name: 'Flash Version'
@@ -131,10 +125,10 @@ zabbix_export:
           value_type: CHAR
           inventory_link: OS_SHORT
           tags:
+            - tag: 'Item Type'
+              value: Version
             - tag: Software
               value: Flash
-            - tag: Type
-              value: Version
           triggers:
             - uuid: c3fe47015dbf41609e4f6b5fec1af2d1
               expression: 'find(/BA - MIB - Aruba OS/snmp.aruba.flash.version,,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
@@ -143,10 +137,8 @@ zabbix_export:
               description: 'Please update the software on this device.'
               manual_close: 'YES'
               tags:
-                - tag: Software
-                  value: Flash
-                - tag: Type
-                  value: Version
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 393faa601d5d4bc8bb6c0b3e5f41b39b
           name: 'Loop Protect Status'
           type: SNMP_AGENT
@@ -164,7 +156,7 @@ zabbix_export:
           tags:
             - tag: Config
               value: 'Loop Protect'
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: ace8b81ed191423eb5c11ef7dcb577c4
@@ -174,10 +166,8 @@ zabbix_export:
               priority: INFO
               manual_close: 'YES'
               tags:
-                - tag: Config
-                  value: 'Loop Protect'
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 7d4f92aaf4d24a6d9897fe7a55b4e91b
           name: 'Loop Protect Timer'
           type: SNMP_AGENT
@@ -189,7 +179,7 @@ zabbix_export:
           tags:
             - tag: Config
               value: 'Loop Protect'
-            - tag: Type
+            - tag: 'Item Type'
               value: Seconds
           triggers:
             - uuid: b4e904ee82e5466bbf04d14ae07954ef
@@ -199,10 +189,8 @@ zabbix_export:
               description: 'Loop Protect Timer is not set to {$LOOP_PROTECT_TIMER} seconds.'
               manual_close: 'YES'
               tags:
-                - tag: Config
-                  value: 'Loop Protect'
-                - tag: Type
-                  value: Seconds
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 98e32926ace9445b9694a8b13559a1a1
           name: 'Spanning Tree Status'
           type: SNMP_AGENT
@@ -216,7 +204,7 @@ zabbix_export:
           tags:
             - tag: Config
               value: 'Spanning Tree'
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: c138a27225a84c9a9e7115c542fa80d6
@@ -226,10 +214,8 @@ zabbix_export:
               priority: INFO
               manual_close: 'YES'
               tags:
-                - tag: Config
-                  value: 'Spanning Tree'
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       discovery_rules:
         - uuid: 02c13eb8b1d14ff4bbf1687ac279c71b
           name: 'Aruba Fan Discovery'
@@ -252,7 +238,7 @@ zabbix_export:
               tags:
                 - tag: Fan
                   value: '{#SNMPINDEX}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 2623bf6494cd42fa8bc84c04e93b1291
@@ -261,10 +247,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Fan
-                      value: '{#SNMPINDEX}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
         - uuid: ebf3d7bbf6bc407493285c95101d29fb
           name: 'Aruba PSU Discovery'
           type: SNMP_AGENT
@@ -284,10 +268,10 @@ zabbix_export:
               valuemap:
                 name: 'PSU Status'
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: PSU
                   value: '{#SNMPINDEX}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: e061727ff41e4d1da6d54acc47a88027
                   expression: |
@@ -299,10 +283,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: PSU
-                      value: '{#SNMPINDEX}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 7eb98047105a4bc1a84e4d9230ed9a54
               name: 'Aruba PSU ({#SNMPINDEX}) Temperature'
               type: SNMP_AGENT
@@ -312,10 +294,10 @@ zabbix_export:
               history: 7d
               units: Celsius
               tags:
+                - tag: 'Item Type'
+                  value: Celsius
                 - tag: PSU
                   value: '{#SNMPINDEX}'
-                - tag: Type
-                  value: Celsius
               trigger_prototypes:
                 - uuid: a8d0b6bb5c5343a2a130dd8bc39a0f33
                   expression: 'last(/BA - MIB - Aruba OS/aruba.psu.temp[{#SNMPINDEX}])>={$TEMP_C_WARN}'
@@ -323,10 +305,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: PSU
-                      value: '{#SNMPINDEX}'
-                    - tag: Type
-                      value: Celsius
+                    - tag: 'Trigger Type'
+                      value: Threshold
           overrides:
             - name: 'No Temp'
               step: '1'
@@ -345,8 +325,10 @@ zabbix_export:
                   value: Temperature
                   discover: NO_DISCOVER
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 5a74a2692f494cf1ae093a9fc4141824
           name: Aruba
@@ -501,8 +483,8 @@ zabbix_export:
       description: 'The startup config does not match the running config. Please save the running config to flash.'
       manual_close: 'YES'
       tags:
-        - tag: Type
-          value: SHA
+        - tag: 'Trigger Type'
+          value: State
   graphs:
     - uuid: 9cdb0e17c038481daca833f565fc1536
       name: 'CPU Usage'

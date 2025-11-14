@@ -47,10 +47,9 @@ zabbix_export:
               valuemap:
                 name: 'Loop Detected'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: 'Loop Detection'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Count
               trigger_prototypes:
                 - uuid: 3add992e000848a29c0808061e524b72
@@ -60,14 +59,13 @@ zabbix_export:
                   description: 'A loop has been detected on this port!'
                   manual_close: 'YES'
                   tags:
-                    - tag: Interface
-                      value: '{#NAME}'
-                    - tag: 'Loop Detected'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: e2de721ce9284480becb8755327cfbe0
           name: 'Loop Detected'

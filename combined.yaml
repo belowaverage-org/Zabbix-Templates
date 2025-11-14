@@ -42,8 +42,7 @@ zabbix_export:
           value_type: FLOAT
           units: '%'
           tags:
-            - tag: ICMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Loss
           triggers:
             - uuid: 7e3ebb73a3e4415a8f69c2ddb2d40edb
@@ -55,7 +54,8 @@ zabbix_export:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
-                - tag: ICMP
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: 157c0a57578f4b6fa626c497c413b7ff
           name: 'ICMP Ping'
           type: SIMPLE
@@ -65,8 +65,7 @@ zabbix_export:
           valuemap:
             name: 'Ping Status'
           tags:
-            - tag: ICMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 77f9ed9ba5d44b938fd34d222cd5c502
@@ -75,7 +74,8 @@ zabbix_export:
               priority: HIGH
               manual_close: 'YES'
               tags:
-                - tag: ICMP
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 8b397b5e4de74806b3d4814da8ca7497
           name: 'ICMP Latency'
           type: SIMPLE
@@ -88,8 +88,7 @@ zabbix_export:
               parameters:
                 - '1000'
           tags:
-            - tag: ICMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Latency
           triggers:
             - uuid: 0b6fa791e1cc4993bd779488cc08fe64
@@ -101,10 +100,13 @@ zabbix_export:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
-                - tag: ICMP
+                - tag: 'Trigger Type'
+                  value: Threshold
       tags:
-        - tag: Type
-          value: Generic
+        - tag: Agent
+          value: ICMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: fd7f3696289d4db0a96b6e8a9b22bd76
           name: 'ICMP Statistics'
@@ -219,7 +221,7 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Firmware
         - uuid: b55cd1f3182b449c95525eaf00cac1c8
           name: 'Device Model'
@@ -239,7 +241,7 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: d9a3aac2a16745529f93a65b78f0c274
           name: 'Device Name'
@@ -259,7 +261,7 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Name
         - uuid: 95ddd29e014c4505b55c8fb1cd604c0b
           name: 'Device MAC'
@@ -279,7 +281,7 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: MAC
         - uuid: ec385938d1354e08876f86565f5d7ccf
           name: 'Device Parameters'
@@ -294,7 +296,7 @@ zabbix_export:
           timeout: 30s
           url: 'http://{HOST.IP}/axis-cgi/admin/paramlist.cgi'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: HTTP
           triggers:
             - uuid: d3e13913f3cc4d7381e6be130c70ca79
@@ -309,8 +311,8 @@ zabbix_export:
                 - name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
                   expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
               tags:
-                - tag: Type
-                  value: HTTP
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: ab21bc5de5734e6e8aa6f20a243fa019
           name: 'Device Sensor'
           type: DEPENDENT
@@ -329,7 +331,7 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Sensor
         - uuid: 1e7e44b7fcb34b32abd25100f9748166
           name: 'Device Serial'
@@ -349,11 +351,13 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
       tags:
-        - tag: Type
+        - tag: Agent
           value: HTTP
+        - tag: 'Template Type'
+          value: Poller
     - uuid: 71a9ea72563b48cb961485c969d43129
       template: 'BA - HTTP - Center Click NTP'
       name: 'BA - HTTP - Center Click NTP'
@@ -377,7 +381,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: CPU
         - uuid: fbed91825cc84f93801184e6727c122a
           name: 'Center Click - Jitter'
@@ -393,7 +397,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Jitter
         - uuid: 78f82cd1af2045bbb7fcea02f63a0557
           name: 'Center Click - Termperature'
@@ -409,7 +413,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Temperature
         - uuid: 7d1f983cfd1045b28228c95b1f146d90
           name: 'Center Click JSON'
@@ -419,7 +423,7 @@ zabbix_export:
           value_type: TEXT
           url: 'http://{HOST.HOST}/json'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: JSON
         - uuid: 684e7bee8d4245a7ae0fdaf70b1d37a4
           name: 'GPS - Satellites Seen'
@@ -433,7 +437,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Satellites
         - uuid: 2578c493b7ea438fba81a643b2415eb2
           name: 'GPS - Signal Noise Ratio'
@@ -449,7 +453,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: SNR
         - uuid: d205628662924b51a0ff8fea8b770f18
           name: 'NTP - Clients'
@@ -463,7 +467,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Clients
         - uuid: 3df81ee6c914495abc4fde161bac9d6c
           name: 'NTP - Jitter'
@@ -479,7 +483,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Jitter
         - uuid: 448d42867e524b7a925cd061b544a64a
           name: 'NTP - Recieved PPS'
@@ -497,7 +501,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: PPS
         - uuid: 1390b9485e1a4c47bf3fcea753270aec
           name: 'NTP - Transmitted PPS'
@@ -515,11 +519,13 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: PPS
       tags:
-        - tag: Type
+        - tag: Agent
           value: HTTP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 19ad995e75ec482a8ee86ca1b3a66a18
           name: 'Center Click NTP'
@@ -642,8 +648,7 @@ zabbix_export:
                   return 1;
           url: 'https://video1.earthcam.com/myearthcam/{$ID}.flv/playlist.m3u8'
           tags:
-            - tag: Stream
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 32243d54e53742548d132243527eeef7
@@ -651,9 +656,14 @@ zabbix_export:
               name: 'EarthCam Stream Offline'
               priority: WARNING
               manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: State
       tags:
-        - tag: Type
+        - tag: Agent
           value: HTTP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 56dbdc982f0745749f5f42d68b37a747
           name: Status
@@ -685,8 +695,7 @@ zabbix_export:
               value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0'
           output_format: JSON
           tags:
-            - tag: GitHub
-            - tag: Type
+            - tag: 'Item Type'
               value: JSON
         - uuid: 74aec8f2d7a7454bb52b18f465074216
           name: 'GitHub Releases Total Daily Downloads'
@@ -700,7 +709,7 @@ zabbix_export:
           tags:
             - tag: GitHub
               value: Releases
-            - tag: Type
+            - tag: 'Item Type'
               value: 'Daily Downloads'
         - uuid: e876fb492b964ceb9ad340198e3b0038
           name: 'GitHub Releases Total Downloads'
@@ -716,7 +725,7 @@ zabbix_export:
           tags:
             - tag: GitHub
               value: Releases
-            - tag: Type
+            - tag: 'Item Type'
               value: Downloads
       discovery_rules:
         - uuid: 6496ef3671134bb2b0ac97a2f6123087
@@ -738,11 +747,10 @@ zabbix_export:
               master_item:
                 key: github.releases
               tags:
-                - tag: GitHub
+                - tag: 'Item Type'
+                  value: Downloads
                 - tag: Release
                   value: '{#TAG}'
-                - tag: Type
-                  value: Downloads
             - uuid: f1bab56020924136bea73e33b924b163
               name: 'Github Release ({#TAG}) JSON'
               type: DEPENDENT
@@ -757,11 +765,10 @@ zabbix_export:
               master_item:
                 key: github.releases
               tags:
-                - tag: GitHub
+                - tag: 'Item Type'
+                  value: JSON
                 - tag: Release
                   value: '{#TAG}'
-                - tag: Type
-                  value: JSON
           master_item:
             key: github.releases
           lld_macro_paths:
@@ -774,8 +781,10 @@ zabbix_export:
               parameters:
                 - '$.body.*'
       tags:
-        - tag: Type
+        - tag: Agent
           value: HTTP
+        - tag: 'Template Type'
+          value: Poller
     - uuid: 96d88b30329a4c36b6d42b341295e558
       template: 'BA - HTTP - Veeam'
       name: 'BA - HTTP - Veeam'
@@ -811,9 +820,8 @@ zabbix_export:
             - name: url
               value: 'https://{HOST.HOST}:9419/api/'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Discovery
-            - tag: Veeam
         - uuid: 831492be81dd4b849cd77348b3edd618
           name: 'Veeam Version'
           type: SCRIPT
@@ -844,9 +852,8 @@ zabbix_export:
             - name: url
               value: 'https://{HOST.HOST}:9419/api/'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Version
-            - tag: Veeam
       discovery_rules:
         - uuid: 5b80dbbc2f564807be78cbc079cdcdd8
           name: 'Veeam Jobs Discovery'
@@ -868,11 +875,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Status
-                - tag: Veeam
               trigger_prototypes:
                 - uuid: 5737da01e3e34a1ebeb05a2dac82d549
                   expression: 'last(/BA - HTTP - Veeam/veeam.jobs.lastresult[{#NAME}])<>"Success" and last(/BA - HTTP - Veeam/veeam.jobs.lastresult[{#NAME}])<>"None"'
@@ -881,11 +887,8 @@ zabbix_export:
                   description: 'The last run of this job was not successful.'
                   manual_close: 'YES'
                   tags:
-                    - tag: Job
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: Status
-                    - tag: Veeam
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 77ef2a4ddcfe4854895283fe5ce21e10
               name: 'Veeam Job ({#NAME}) Last Run'
               type: DEPENDENT
@@ -899,11 +902,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Date
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Date
-                - tag: Veeam
             - uuid: 827c77eb38914b65b311f3c3c859a390
               name: 'Veeam Job ({#NAME}) Next Run'
               type: DEPENDENT
@@ -917,11 +919,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Date
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Date
-                - tag: Veeam
             - uuid: feda128672764e18b1a627a0fafb4e73
               name: 'Veeam Job ({#NAME}) Status'
               type: DEPENDENT
@@ -935,11 +936,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Status
-                - tag: Veeam
             - uuid: 4b20b0db8a4d40928192d18ab673daec
               name: 'Veeam Job ({#NAME}) Type'
               type: DEPENDENT
@@ -953,11 +953,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Type
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Type
-                - tag: Veeam
             - uuid: 752c067975ca4b639b1becbbcd31a5e8
               name: 'Veeam Job ({#NAME}) Workload'
               type: DEPENDENT
@@ -971,11 +970,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Type
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Type
-                - tag: Veeam
           master_item:
             key: veeam.jobs
           lld_macro_paths:
@@ -985,6 +983,11 @@ zabbix_export:
             - type: JSONPATH
               parameters:
                 - $.data
+      tags:
+        - tag: Agent
+          value: HTTP
+        - tag: 'Template Type'
+          value: Poller
     - uuid: 02f18dcc823241fe9c718128522f1188
       template: 'BA - Macro - Generic'
       name: 'BA - Macro - Generic'
@@ -994,7 +997,7 @@ zabbix_export:
       groups:
         - name: BA/Macros
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Macro
       macros:
         - macro: '{$CPU_HIGH_AVG_TIME_WARN}'
@@ -1036,7 +1039,7 @@ zabbix_export:
       groups:
         - name: BA/Macros
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Macro
       macros:
         - macro: '{$INTER_DISCARD_WARN}'
@@ -1081,7 +1084,7 @@ zabbix_export:
       groups:
         - name: BA/Macros
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Macro
       macros:
         - macro: '{$WIN_SERVICES}'
@@ -1113,7 +1116,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Age
         - uuid: d549b5471b8548128aa405835e8c5ddc
           name: 'Battery Charge'
@@ -1124,7 +1127,7 @@ zabbix_export:
           history: 30d
           units: '%'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Charge
         - uuid: f9a549dec7d84875b115c585c234d5d4
           name: 'Battery Last Replacement Date'
@@ -1140,7 +1143,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Age
         - uuid: 7ab01e7accb34f0d993b187c2f1fa4d3
           name: 'Battery Replacement Status'
@@ -1152,7 +1155,7 @@ zabbix_export:
           valuemap:
             name: 'Battery Replace Indicator'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: bf6b90a31ea1446a826c79972f9c58cd
@@ -1162,8 +1165,8 @@ zabbix_export:
               description: 'The battery in this UPS needs replaced.'
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 1d613a65a3de4be5b28b9d528844dd48
           name: 'Battery Runtime'
           type: SNMP_AGENT
@@ -1177,7 +1180,7 @@ zabbix_export:
               parameters:
                 - '0.01'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Runtime
         - uuid: 785505c01c9548199ca4e141ef1a73b4
           name: 'Battery Status'
@@ -1189,7 +1192,7 @@ zabbix_export:
           valuemap:
             name: 'Battery Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
         - uuid: 07d861b545bd46b58d2b76d09f8fd914
           name: 'Battery Temperature'
@@ -1200,7 +1203,7 @@ zabbix_export:
           history: 30d
           units: C
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Temperature
         - uuid: 5dce911b6f264f6f8dd4906295f7b2f3
           name: Model
@@ -1216,7 +1219,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: 1a544eeb51b6425cba2bc57bff6ad459
           name: Serial
@@ -1232,7 +1235,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
         - uuid: 53a6d636ce0740f9895d404032755dbe
           name: 'UPS Input Frequency'
@@ -1243,7 +1246,7 @@ zabbix_export:
           history: 30d
           units: Hertz
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Hertz
         - uuid: bc2bbdb6c20b43678dde33349f2c37a0
           name: 'UPS Input Voltage'
@@ -1254,7 +1257,7 @@ zabbix_export:
           history: 30d
           units: Volts
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Voltage
         - uuid: 64d4fe1b663b493d8157f92c8b6be952
           name: 'UPS Status'
@@ -1266,7 +1269,7 @@ zabbix_export:
           valuemap:
             name: 'UPS Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 186e941c59a949c68602aa70525e3549
@@ -1275,8 +1278,8 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       discovery_rules:
         - uuid: f42c8b0552674b92813e17b07d391dc7
           name: 'Battery Packs Discovery'
@@ -1316,7 +1319,7 @@ zabbix_export:
                 bit 10 DisconnectedFrame
                 bit 11 FirmwareMismatch
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 8ee2b3b363194f3b9b53f15b1f298e5b
@@ -1325,11 +1328,13 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 05593197f4914bfcb57afafcfbeb88fd
           name: APC
@@ -1470,8 +1475,7 @@ zabbix_export:
           history: 7d
           units: '%'
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Usage
           triggers:
             - uuid: 6b1079669c50408998310050e7d208b4
@@ -1480,9 +1484,8 @@ zabbix_export:
               priority: AVERAGE
               manual_close: 'YES'
               tags:
-                - tag: CPU
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: 2fa7b638fe4d4da8bef7ff8c58974a88
           name: 'Memory Size'
           type: SNMP_AGENT
@@ -1496,8 +1499,7 @@ zabbix_export:
               parameters:
                 - '$.*.[''{#SIZE}''].sum()'
           tags:
-            - tag: Memory
-            - tag: Type
+            - tag: 'Item Type'
               value: Size
         - uuid: 525480a2f9a542f29cbc5a626c8e65bd
           name: 'Memory Usage'
@@ -1512,8 +1514,7 @@ zabbix_export:
               parameters:
                 - '100'
           tags:
-            - tag: Memory
-            - tag: Type
+            - tag: 'Item Type'
               value: Usage
           triggers:
             - uuid: af7039dacfbc4facbe0677c9b402d06e
@@ -1522,9 +1523,8 @@ zabbix_export:
               priority: AVERAGE
               manual_close: 'YES'
               tags:
-                - tag: Memory
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: eb706ca0daea468595ef2a0b6ca09275
           name: 'Memory Used'
           type: SNMP_AGENT
@@ -1537,8 +1537,7 @@ zabbix_export:
               parameters:
                 - '$.*.[''{#FREE}''].sum()'
           tags:
-            - tag: Memory
-            - tag: Type
+            - tag: 'Item Type'
               value: Used
         - uuid: 5e4b2dafd1994d47b8604d26a2d75af9
           name: 'Running Config SHA'
@@ -1553,7 +1552,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: SHA
         - uuid: 9c9386c0f5c04abd99c9b6ebc5cc2508
           name: 'Startup Config SHA'
@@ -1568,7 +1567,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: SHA
         - uuid: 3c14903dbe254135bd2c2d29f5c7a650
           name: 'Flash Version'
@@ -1580,10 +1579,10 @@ zabbix_export:
           value_type: CHAR
           inventory_link: OS_SHORT
           tags:
+            - tag: 'Item Type'
+              value: Version
             - tag: Software
               value: Flash
-            - tag: Type
-              value: Version
           triggers:
             - uuid: c3fe47015dbf41609e4f6b5fec1af2d1
               expression: 'find(/BA - MIB - Aruba OS/snmp.aruba.flash.version,,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
@@ -1592,10 +1591,8 @@ zabbix_export:
               description: 'Please update the software on this device.'
               manual_close: 'YES'
               tags:
-                - tag: Software
-                  value: Flash
-                - tag: Type
-                  value: Version
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 393faa601d5d4bc8bb6c0b3e5f41b39b
           name: 'Loop Protect Status'
           type: SNMP_AGENT
@@ -1613,7 +1610,7 @@ zabbix_export:
           tags:
             - tag: Config
               value: 'Loop Protect'
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: ace8b81ed191423eb5c11ef7dcb577c4
@@ -1623,10 +1620,8 @@ zabbix_export:
               priority: INFO
               manual_close: 'YES'
               tags:
-                - tag: Config
-                  value: 'Loop Protect'
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 7d4f92aaf4d24a6d9897fe7a55b4e91b
           name: 'Loop Protect Timer'
           type: SNMP_AGENT
@@ -1638,7 +1633,7 @@ zabbix_export:
           tags:
             - tag: Config
               value: 'Loop Protect'
-            - tag: Type
+            - tag: 'Item Type'
               value: Seconds
           triggers:
             - uuid: b4e904ee82e5466bbf04d14ae07954ef
@@ -1648,10 +1643,8 @@ zabbix_export:
               description: 'Loop Protect Timer is not set to {$LOOP_PROTECT_TIMER} seconds.'
               manual_close: 'YES'
               tags:
-                - tag: Config
-                  value: 'Loop Protect'
-                - tag: Type
-                  value: Seconds
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 98e32926ace9445b9694a8b13559a1a1
           name: 'Spanning Tree Status'
           type: SNMP_AGENT
@@ -1665,7 +1658,7 @@ zabbix_export:
           tags:
             - tag: Config
               value: 'Spanning Tree'
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: c138a27225a84c9a9e7115c542fa80d6
@@ -1675,10 +1668,8 @@ zabbix_export:
               priority: INFO
               manual_close: 'YES'
               tags:
-                - tag: Config
-                  value: 'Spanning Tree'
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       discovery_rules:
         - uuid: 02c13eb8b1d14ff4bbf1687ac279c71b
           name: 'Aruba Fan Discovery'
@@ -1701,7 +1692,7 @@ zabbix_export:
               tags:
                 - tag: Fan
                   value: '{#SNMPINDEX}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 2623bf6494cd42fa8bc84c04e93b1291
@@ -1710,10 +1701,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Fan
-                      value: '{#SNMPINDEX}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
         - uuid: ebf3d7bbf6bc407493285c95101d29fb
           name: 'Aruba PSU Discovery'
           type: SNMP_AGENT
@@ -1733,10 +1722,10 @@ zabbix_export:
               valuemap:
                 name: 'PSU Status'
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: PSU
                   value: '{#SNMPINDEX}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: e061727ff41e4d1da6d54acc47a88027
                   expression: |
@@ -1748,10 +1737,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: PSU
-                      value: '{#SNMPINDEX}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 7eb98047105a4bc1a84e4d9230ed9a54
               name: 'Aruba PSU ({#SNMPINDEX}) Temperature'
               type: SNMP_AGENT
@@ -1761,10 +1748,10 @@ zabbix_export:
               history: 7d
               units: Celsius
               tags:
+                - tag: 'Item Type'
+                  value: Celsius
                 - tag: PSU
                   value: '{#SNMPINDEX}'
-                - tag: Type
-                  value: Celsius
               trigger_prototypes:
                 - uuid: a8d0b6bb5c5343a2a130dd8bc39a0f33
                   expression: 'last(/BA - MIB - Aruba OS/aruba.psu.temp[{#SNMPINDEX}])>={$TEMP_C_WARN}'
@@ -1772,10 +1759,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: PSU
-                      value: '{#SNMPINDEX}'
-                    - tag: Type
-                      value: Celsius
+                    - tag: 'Trigger Type'
+                      value: Threshold
           overrides:
             - name: 'No Temp'
               step: '1'
@@ -1794,8 +1779,10 @@ zabbix_export:
                   value: Temperature
                   discover: NO_DISCOVER
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 5a74a2692f494cf1ae093a9fc4141824
           name: Aruba
@@ -1960,7 +1947,7 @@ zabbix_export:
           history: 30d
           units: '%'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Charge
         - uuid: 05f89524723b42268c9675e966d78330
           name: 'Battery Last Replacement Date'
@@ -1976,7 +1963,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Age
         - uuid: dd6892088b68483899e2e58a81bd2b72
           name: 'Battery Replacement Status'
@@ -1988,7 +1975,7 @@ zabbix_export:
           valuemap:
             name: 'Battery Replace Indicator'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 51859a6d64964de989b2ee50cdc2de14
@@ -1998,8 +1985,8 @@ zabbix_export:
               description: 'The battery in this UPS needs replaced.'
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 42ab4ab29fc24a94909bb478dd260058
           name: 'Battery Runtime'
           type: SNMP_AGENT
@@ -2013,7 +2000,7 @@ zabbix_export:
               parameters:
                 - '0.01'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Runtime
         - uuid: 82a0e47ebf8041e7b11c331020a30a26
           name: 'Battery Status'
@@ -2025,7 +2012,7 @@ zabbix_export:
           valuemap:
             name: 'Battery Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
         - uuid: 8de781b3dede4bc3b6366470d3b141a4
           name: 'Battery Temperature'
@@ -2036,7 +2023,7 @@ zabbix_export:
           history: 30d
           units: C
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Temperature
         - uuid: 8b9caea167324421a35130dbeb493ef4
           name: Model
@@ -2052,7 +2039,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: c07237c22ccc4366a6ab66f4a556a1b1
           name: Serial
@@ -2068,7 +2055,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
         - uuid: fd0a96096d3645ed9728ecdde84484ee
           name: 'UPS Input Frequency'
@@ -2083,7 +2070,7 @@ zabbix_export:
               parameters:
                 - '0.1'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Hertz
         - uuid: 940103e8330148a2960fec819cfd2b0a
           name: 'UPS Input Voltage'
@@ -2098,7 +2085,7 @@ zabbix_export:
               parameters:
                 - '0.1'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Voltage
         - uuid: 48885bf925b7466aaeec73ae70d1dddd
           name: 'UPS Status'
@@ -2110,7 +2097,7 @@ zabbix_export:
           valuemap:
             name: 'UPS Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: aa2be7bb37e14efb931ac865bfb27385
@@ -2119,11 +2106,13 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 0b0ad3476602407c83ddac095017661d
           name: APC
@@ -2284,7 +2273,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Alarm
               trigger_prototypes:
                 - uuid: 28d8f5392b4f4a6099d0ee260d504be2
@@ -2294,10 +2283,8 @@ zabbix_export:
                   description: 'An alarm has been triggered!'
                   manual_close: 'YES'
                   tags:
-                    - tag: Entity
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: Alarm
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 2dcd7f640d80439b97e9b0c367465d77
               name: 'Entity ({#NAME}) Class'
               type: SNMP_AGENT
@@ -2310,7 +2297,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Class
             - uuid: 48fbdf1f81504698b8a40c6ae64aa453
               name: 'Entity ({#NAME}) Description'
@@ -2327,7 +2314,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Description
             - uuid: 8ce3cfa23d134747945c774e0ad6e8f8
               name: 'Entity ({#NAME}) Model'
@@ -2344,7 +2331,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Model
             - uuid: f8806d92cf224591bff4b3ed9027e35d
               name: 'Entity ({#NAME}) Sensor Type'
@@ -2358,7 +2345,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Type
             - uuid: af38085e9c464cbb94a5fbf7629aa576
               name: 'Entity ({#NAME}) Sensor Value'
@@ -2369,7 +2356,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Value
             - uuid: b362e9cc210a448f839040e71db6dd96
               name: 'Entity ({#NAME}) Serial'
@@ -2386,7 +2373,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Serial
           graph_prototypes:
             - uuid: 54db887b37754d2ab01476b2e2acdb48
@@ -2502,8 +2489,10 @@ zabbix_export:
                   value: Serial
                   discover: NO_DISCOVER
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 7caa4aac7c634155b5562ff764894989
           name: Alarm
@@ -2608,8 +2597,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Description
         - uuid: 0aac83f830854eedbb489a7623b73dd4
           name: 'SNMP Location'
@@ -2625,8 +2613,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Location
         - uuid: 8f50ac4f2ab2436f88b1f39e6cec1f79
           name: 'SNMP Location Latitude'
@@ -2643,8 +2630,7 @@ zabbix_export:
           master_item:
             key: snmp.location
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Location
         - uuid: abe11bdfb60f4ed9a69151fb46164ce9
           name: 'SNMP Location Longitude'
@@ -2661,8 +2647,7 @@ zabbix_export:
           master_item:
             key: snmp.location
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Location
         - uuid: 892eced5e100486b8e5353fa6ba6fe31
           name: 'SNMP Name'
@@ -2678,8 +2663,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Name
           triggers:
             - uuid: b02a2f213a7b4df28c734ddd3e4415da
@@ -2689,7 +2673,8 @@ zabbix_export:
               priority: INFO
               manual_close: 'YES'
               tags:
-                - tag: SNMP
+                - tag: 'Trigger Type'
+                  value: Recent
         - uuid: 72a2a3118d0d4bdc8196f91d45d06094
           name: 'SNMP Object ID'
           type: SNMP_AGENT
@@ -2704,8 +2689,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: 'Object ID'
         - uuid: 8d6e1a0ceb5f4d52b884d4be397652a8
           name: 'SNMP Uptime'
@@ -2719,8 +2703,7 @@ zabbix_export:
               parameters:
                 - '0.01'
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Uptime
           triggers:
             - uuid: f320509f49d6454e87a36f0499efd9bd
@@ -2732,7 +2715,8 @@ zabbix_export:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
-                - tag: SNMP
+                - tag: 'Trigger Type'
+                  value: State
             - uuid: ed77aa0f513b454d90a231185baef9be
               expression: 'last(/BA - MIB - Generic/snmp.uptime)<=300'
               name: 'Device rebooted'
@@ -2740,10 +2724,13 @@ zabbix_export:
               description: 'This device rebooted within the last 5 minutes.'
               manual_close: 'YES'
               tags:
-                - tag: SNMP
+                - tag: 'Trigger Type'
+                  value: Recent
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 55e89b077abe45588368e83c98c963f1
           name: SNMP
@@ -2839,8 +2826,7 @@ zabbix_export:
           master_item:
             key: snmp.cpu
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Count
         - uuid: 5025fa88f9a7452289629d2d127374e8
           name: 'CPU Usage'
@@ -2861,8 +2847,7 @@ zabbix_export:
           master_item:
             key: snmp.cpu
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Usage
           triggers:
             - uuid: 54befd1674e64270b7bc9876c05d5204
@@ -2871,9 +2856,8 @@ zabbix_export:
               priority: AVERAGE
               manual_close: 'YES'
               tags:
-                - tag: CPU
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: dfe4572fa178448692691e4d75cd44bc
           name: 'Memory Usage'
           type: DEPENDENT
@@ -2920,8 +2904,7 @@ zabbix_export:
           master_item:
             key: snmp.hr.storage
           tags:
-            - tag: Memory
-            - tag: Type
+            - tag: 'Item Type'
               value: Usage
           triggers:
             - uuid: 678770fcf45c4c8a8f617d58c4a77776
@@ -2930,9 +2913,8 @@ zabbix_export:
               priority: AVERAGE
               manual_close: 'YES'
               tags:
-                - tag: Memory
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: 466a0ad4e7d64c64ac813cf42a1a42f6
           name: 'CPU Discovery'
           type: SNMP_AGENT
@@ -2940,6 +2922,9 @@ zabbix_export:
           key: snmp.cpu
           history: '0'
           value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
         - uuid: d6776d1e932247fca27a366c365cd41f
           name: 'Storage Discovery'
           type: SNMP_AGENT
@@ -2947,6 +2932,9 @@ zabbix_export:
           key: snmp.hr.storage
           history: '0'
           value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
       discovery_rules:
         - uuid: 0c403e28a6c4499a9ca25969557b655a
           name: 'Processor Discovery'
@@ -2971,7 +2959,7 @@ zabbix_export:
               tags:
                 - tag: CPU
                   value: '{#SNMPINDEX}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Usage
           master_item:
             key: snmp.cpu
@@ -3016,7 +3004,7 @@ zabbix_export:
               tags:
                 - tag: Disk
                   value: '{#DESC}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Size
             - uuid: d9309c8752944c33ad352b0b23118259
               name: 'Disk ({#DESC}) Usage'
@@ -3034,7 +3022,7 @@ zabbix_export:
               tags:
                 - tag: Disk
                   value: '{#DESC}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Usage
               trigger_prototypes:
                 - uuid: 4e5aa0b34f4745ada32f998ac09fe99e
@@ -3042,6 +3030,9 @@ zabbix_export:
                   name: 'Disk ({#DESC}) Usage >= {$DISK_HIGH_AVG_PERC_WARN}%'
                   priority: HIGH
                   manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: Threshold
             - uuid: d12b45c4665144ab99bcc2b12ee4073d
               name: 'Disk ({#DESC}) Used'
               type: SNMP_AGENT
@@ -3062,7 +3053,7 @@ zabbix_export:
               tags:
                 - tag: Disk
                   value: '{#DESC}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Used
           graph_prototypes:
             - uuid: c257fe03d5424e8485a040c39e920cc0
@@ -3146,10 +3137,10 @@ zabbix_export:
               master_item:
                 key: snmp.hr.storage
               tags:
+                - tag: 'Item Type'
+                  value: Size
                 - tag: Memory
                   value: '{#DESC}'
-                - tag: Type
-                  value: Size
             - uuid: 7dff57c2b11144b791f310ddb854afe0
               name: 'Memory ({#DESC}) Usage'
               type: DEPENDENT
@@ -3163,10 +3154,10 @@ zabbix_export:
               master_item:
                 key: snmp.hr.storage
               tags:
+                - tag: 'Item Type'
+                  value: Usage
                 - tag: Memory
                   value: '{#DESC}'
-                - tag: Type
-                  value: Usage
             - uuid: 27f46f9cff5e4fc1a7699dce1b869cbd
               name: 'Memory ({#DESC}) Used'
               type: DEPENDENT
@@ -3184,10 +3175,10 @@ zabbix_export:
               master_item:
                 key: snmp.hr.storage
               tags:
+                - tag: 'Item Type'
+                  value: Used
                 - tag: Memory
                   value: '{#DESC}'
-                - tag: Type
-                  value: Used
           graph_prototypes:
             - uuid: 8d9417a5eeab4a8487ea550f9ef784fe
               name: 'Memory ({#DESC}) Statistics'
@@ -3251,8 +3242,10 @@ zabbix_export:
                 - .1.3.6.1.2.1.25.2.3.1.6
                 - '0'
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 230ad7e9ab814c76a271c4d937cb0e4f
           name: 'Host Resources'
@@ -3405,7 +3398,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: 9927ce6906e244cea23ebda392226b74
           name: 'Service Tag'
@@ -3421,7 +3414,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: 'Service Tag'
         - uuid: b951924d1d874343b38dd8211ac4cc2e
           name: 'Global Status'
@@ -3432,8 +3425,7 @@ zabbix_export:
           valuemap:
             name: 'Object Status'
           tags:
-            - tag: Global
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: e90c3fc7f46649c0975c3f32feb31023
@@ -3442,9 +3434,8 @@ zabbix_export:
               priority: HIGH
               manual_close: 'YES'
               tags:
-                - tag: Global
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       discovery_rules:
         - uuid: 42d18f824b4a41929333629f1f45d0e6
           name: 'Drive Discovery'
@@ -3470,7 +3461,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Make
             - uuid: 5fed734179be429baab0bd253fcca232
               name: 'Drive ({#DISK}) Model'
@@ -3487,7 +3478,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Model
             - uuid: 19dd14130fde4e189e6bdcdf0dbd72df
               name: 'Drive ({#DISK}) Serial'
@@ -3504,7 +3495,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Serial
             - uuid: b7162973d9aa42a7b118abeb144b58ae
               name: 'Drive ({#DISK}) Size'
@@ -3521,7 +3512,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Size
             - uuid: 39c74ddcf558450590be63665674d40b
               name: 'Drive ({#DISK}) Status'
@@ -3535,7 +3526,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 0227fce3a12e4548b6ef0ddb0c0e0140
@@ -3546,10 +3537,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: Drive
-                      value: '{#DISK}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 4441802ef1f944a5b898af0ec09b42d1
               name: 'Drive ({#DISK}) Type'
               type: SNMP_AGENT
@@ -3562,7 +3551,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Type
         - uuid: ec4335a8bc7f46019fb5760475b77ed6
           name: 'Fan Discovery'
@@ -3584,7 +3573,7 @@ zabbix_export:
               tags:
                 - tag: Fan
                   value: '{#FAN}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: RPM
             - uuid: 1c602031725b413b8083c21630d3b228
               name: 'Fan ({#FAN}) Status'
@@ -3598,7 +3587,7 @@ zabbix_export:
               tags:
                 - tag: Fan
                   value: '{#FAN}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: e6ee458513b64b308e44893bfab0a2d4
@@ -3607,10 +3596,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Fan
-                      value: '{#FAN}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
         - uuid: 1a56ee105c1447a5aa91c7dc3c6d8fdb
           name: 'Memory Discovery'
           type: SNMP_AGENT
@@ -3633,10 +3620,10 @@ zabbix_export:
                   parameters:
                     - '1024'
               tags:
+                - tag: 'Item Type'
+                  value: Size
                 - tag: Memory
                   value: '{#LOCATION}'
-                - tag: Type
-                  value: Size
             - uuid: a595bcdab1e7464db8e98fb1deb32e42
               name: 'Memory ({#LOCATION}) Status'
               type: SNMP_AGENT
@@ -3647,10 +3634,10 @@ zabbix_export:
               valuemap:
                 name: 'Object Status'
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Memory
                   value: '{#LOCATION}'
-                - tag: Type
-                  value: Status
         - uuid: 5a1c95dbdadf4b9cb23a70422f770c02
           name: 'Power Supply Discovery'
           type: SNMP_AGENT
@@ -3670,10 +3657,10 @@ zabbix_export:
               valuemap:
                 name: 'Object Status'
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: 'Power Supply'
                   value: '{#SLOT}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: 992bf6b5677d4a2b968870f8e7a99508
                   expression: 'last(/BA - MIB - iDRAC/snmp.psu.status[{#SLOT}])<>3'
@@ -3681,10 +3668,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: 'Power Supply'
-                      value: '{#SLOT}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: ba4d71e1cf524a06927a3a7258d5c73c
               name: 'Power Supply ({#SLOT}) Input Volts'
               type: SNMP_AGENT
@@ -3693,10 +3678,10 @@ zabbix_export:
               delay: 5m
               history: 30d
               tags:
+                - tag: 'Item Type'
+                  value: Volts
                 - tag: 'Power Supply'
                   value: '{#SLOT}'
-                - tag: Type
-                  value: Volts
         - uuid: e3f42b9ea61e4a1dbd7177e91d693fab
           name: 'Temperature Discovery'
           type: SNMP_AGENT
@@ -3719,10 +3704,10 @@ zabbix_export:
                   parameters:
                     - '0.1'
               tags:
+                - tag: 'Item Type'
+                  value: Celsius
                 - tag: Temperature
                   value: '{#LOCATION}'
-                - tag: Type
-                  value: Celsius
             - uuid: 59fce9c9227640a8894473dab7f6d019
               name: 'Temperature ({#LOCATION}) Status'
               type: SNMP_AGENT
@@ -3733,10 +3718,10 @@ zabbix_export:
               valuemap:
                 name: 'Object Status'
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Temperature
                   value: '{#LOCATION}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: b866a3981892411ebf2cfa9094a563d3
                   expression: 'last(/BA - MIB - iDRAC/snmp.idrac.temp.status[{#LOCATION}])<>3'
@@ -3744,13 +3729,13 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Temperature
-                      value: '{#LOCATION}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: d2d9f956b6ab4cfb909ef6e57e601c2d
           name: iDRAC
@@ -3916,8 +3901,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: BIOS
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 8a90f354f7d8437ebcc6b624f6116407
@@ -3926,9 +3910,8 @@ zabbix_export:
               priority: HIGH
               manual_close: 'YES'
               tags:
-                - tag: iLO
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 73df4e29470f42d59d96b26542526767
           name: 'Health Status'
           type: SNMP_AGENT
@@ -3939,7 +3922,7 @@ zabbix_export:
           valuemap:
             name: Condition
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: f885f35b8aca4be0be3b1c571a34fa5e
@@ -3948,8 +3931,8 @@ zabbix_export:
               priority: HIGH
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 1c023652a69044c7baeac117a853e465
           name: Model
           type: SNMP_AGENT
@@ -3964,7 +3947,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: 5d539a8d1d45450a81bc3caaec350537
           name: Serial
@@ -3980,7 +3963,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
       discovery_rules:
         - uuid: 8082351a93ad426c85a987c28b766b87
@@ -4007,7 +3990,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Model
             - uuid: 6d48ed1d609d474ea8edc0a89e103de7
               name: 'Drive ({#BAY}) Serial'
@@ -4024,7 +4007,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Serial
             - uuid: 66924d8968f548de839cfd1867b0d4eb
               name: 'Drive ({#BAY}) Size'
@@ -4041,7 +4024,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Size
             - uuid: 426d44830dd843bbaca34b43b0ab60c3
               name: 'Drive ({#BAY}) Status'
@@ -4055,7 +4038,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 684d29e15385460f96b9837fce515c27
@@ -4065,10 +4048,8 @@ zabbix_export:
                   description: 'The status of this drive is not OK.'
                   manual_close: 'YES'
                   tags:
-                    - tag: Drive
-                      value: '{#BAY}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 8541b50c6cbb46fbbc118e39eb186c73
               name: 'Drive ({#BAY}) Temperature'
               type: SNMP_AGENT
@@ -4085,7 +4066,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Temperature
             - uuid: c56c65a63b234a578da62b14b334940d
               name: 'Drive ({#BAY}) Type'
@@ -4103,7 +4084,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Type
         - uuid: 259907ba7ffb434db9ab561e915ef699
           name: 'Fan Discovery'
@@ -4135,7 +4116,7 @@ zabbix_export:
               tags:
                 - tag: Fan
                   value: '{#INDEX}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: c0ea2d1cbf594b8e9386b99bb74cef7c
@@ -4144,10 +4125,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Fan
-                      value: '{#INDEX}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
         - uuid: 0e2ce50fc37a42339ecce8ff57b64aff
           name: 'Memory Discovery'
           type: SNMP_AGENT
@@ -4177,10 +4156,10 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Memory
                   value: '{#LOCATION}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: 9756f0986d89482289d228966f731dbf
                   expression: |
@@ -4194,10 +4173,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: Memory
-                      value: '{#LOCATION}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
         - uuid: 1ef1a17f77aa4016b9d4141fd9ac27e4
           name: 'Power Supply Discovery'
           type: SNMP_AGENT
@@ -4222,10 +4199,10 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: 'Power Supply'
                   value: '{#BAY}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: 67085e3c3e4a430d939dfefbb43a9a1a
                   expression: 'last(/BA - MIB - iLO/ilo.psu.status[{#SNMPINDEX}])>=3'
@@ -4233,10 +4210,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: 'Power Supply'
-                      value: '{#BAY}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 86b7a6491c684353b2a1b868bc25ea3d
               name: 'Power Supply ({#BAY}) Input Volts'
               type: SNMP_AGENT
@@ -4246,10 +4221,10 @@ zabbix_export:
               history: 7d
               units: V
               tags:
+                - tag: 'Item Type'
+                  value: Volts
                 - tag: 'Power Supply'
                   value: '{#BAY}'
-                - tag: Type
-                  value: Volts
             - uuid: 0e71a00b711145c4b12e1d5a8d380ff1
               name: 'Power Supply ({#BAY}) Output Watts'
               type: SNMP_AGENT
@@ -4259,10 +4234,10 @@ zabbix_export:
               history: 7d
               units: W
               tags:
+                - tag: 'Item Type'
+                  value: Watts
                 - tag: 'Power Supply'
                   value: '{#BAY}'
-                - tag: Type
-                  value: Watts
           graph_prototypes:
             - uuid: d230d7ac6e5e43dc944c1b624be84fbd
               name: 'Power Supply ({#BAY}) Input Volts / Output Watts'
@@ -4296,10 +4271,10 @@ zabbix_export:
               history: 7d
               units: C
               tags:
+                - tag: 'Item Type'
+                  value: Celsius
                 - tag: Temperature
                   value: '{#LOCALE}'
-                - tag: Type
-                  value: Celsius
             - uuid: 892880b41bc7497e889d3a9901f36947
               name: 'Temperature ({#LOCALE}) Status'
               type: SNMP_AGENT
@@ -4315,10 +4290,10 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Temperature
                   value: '{#LOCALE}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: 74e231598873468e8b3657365506fa40
                   expression: 'last(/BA - MIB - iLO/ilo.temp.status[{#SNMPINDEX}])>=3'
@@ -4326,10 +4301,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: Temperature
-                      value: '{#LOCALE}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
           preprocessing:
             - type: STR_REPLACE
               parameters:
@@ -4384,8 +4357,10 @@ zabbix_export:
                 - '"13"'
                 - '"Bridge Card"'
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: db86ebd68489487fb4664c66286c8d93
           name: iLO
@@ -4576,6 +4551,9 @@ zabbix_export:
           delay: 10s
           history: '0'
           value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
       discovery_rules:
         - uuid: e4cdcd9f67b24b3c93b312a52bf78a11
           name: 'Interfaces Discovery'
@@ -4615,9 +4593,11 @@ zabbix_export:
                   error_handler: CUSTOM_VALUE
                   error_handler_params: '0'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Status
             - uuid: 87b5057634ea44dabc70e8d9a5c71e55
               name: 'Interface ({#NAME}: {#ALIAS}) Alias'
@@ -4636,9 +4616,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Alias
             - uuid: b9691cce3ddf42839e1f3f770ecebefd
               name: 'Interface ({#NAME}: {#ALIAS}) In Discards'
@@ -4655,9 +4637,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Discards
             - uuid: 5760b2886c8640fd9bab2f200c57ce0d
               name: 'Interface ({#NAME}: {#ALIAS}) In Errors'
@@ -4674,9 +4658,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Errors
             - uuid: 6b9bd480242345febbcfc08b18bece36
               name: 'Interface ({#NAME}: {#ALIAS}) In Usage'
@@ -4696,9 +4682,11 @@ zabbix_export:
                   parameters:
                     - '100'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Usage
             - uuid: d41db500945643b6afc4b82015f5f5e6
               name: 'Interface ({#NAME}: {#ALIAS}) In Rate'
@@ -4718,9 +4706,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Rate
             - uuid: b39447b3446c4432a3c66ef3e46fb5a6
               name: 'Interface ({#NAME}: {#ALIAS}) Operational Status'
@@ -4737,9 +4727,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 5436374b9ed946e79cb2bf75e02f30e4
@@ -4749,10 +4741,8 @@ zabbix_export:
                   priority: WARNING
                   manual_close: 'YES'
                   tags:
-                    - tag: Interface
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: Threshold
                 - uuid: 49be460d2f1841e6963d2cfcfd402401
                   expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.operstatus[{#NAME}])<>1'
                   name: 'Interface ({#NAME}: {#ALIAS}) Operational Status != Up'
@@ -4760,10 +4750,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Interface
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 80d88a690e8047e9aa1b627467aa2458
               name: 'Interface ({#NAME}: {#ALIAS}) Out Discards'
               type: DEPENDENT
@@ -4779,9 +4767,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Discards
             - uuid: 8767d44b389a4d39bfa7cdd9bef3e19d
               name: 'Interface ({#NAME}: {#ALIAS}) Out Errors'
@@ -4798,9 +4788,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Errors
             - uuid: 27685ca79f79438f9dcd391306f44291
               name: 'Interface ({#NAME}: {#ALIAS}) Out Usage'
@@ -4820,9 +4812,11 @@ zabbix_export:
                   parameters:
                     - '100'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Usage
             - uuid: 560a80f3986f4daaa67307817be05cda
               name: 'Interface ({#NAME}: {#ALIAS}) Out Rate'
@@ -4842,9 +4836,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Rate
             - uuid: d025c6fb73e04829822ba94aa58f4a45
               name: 'Interface ({#NAME}: {#ALIAS}) Speed'
@@ -4860,30 +4856,12 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Speed
-            - uuid: 17a15d0758b94ad9a5f6002c7523e144
-              name: 'Interface ({#NAME}: {#ALIAS}) Type'
-              type: DEPENDENT
-              key: 'snmp.interfaces.type[{#NAME}]'
-              history: 7d
-              trends: '0'
-              valuemap:
-                name: 'Interface Types'
-              preprocessing:
-                - type: SNMP_WALK_VALUE
-                  parameters:
-                    - '.1.3.6.1.2.1.2.2.1.3.{#SNMPINDEX}'
-                    - '0'
-              master_item:
-                key: snmp.interfaces
-              tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Type
           trigger_prototypes:
             - uuid: f7ac6e903d5d4c9fa6bdb6a0a4bdf5ad
               expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN})'
@@ -4891,30 +4869,24 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Discards
+                - tag: 'Trigger Type'
+                  value: Threshold
             - uuid: 62ed56a4a893446fa8515de4852ca5fa
               expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN})'
               name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME}'
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Errors
+                - tag: 'Trigger Type'
+                  value: Threshold
             - uuid: b429247383cd421db1f0e4471e286c98
               expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.in.usage[{#NAME}])>={$INTER_USAGE_WARN} or last(/BA - MIB - Interfaces/snmp.interfaces.out.usage[{#NAME}])>={$INTER_USAGE_WARN}'
               name: 'Interface ({#NAME}: {#ALIAS}) Usage >= {$INTER_USAGE_WARN}%'
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
           graph_prototypes:
             - uuid: 777a7a1a8c8d49aea746670c7dacd759
               name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
@@ -4973,6 +4945,42 @@ zabbix_export:
                   } else {
                       return value;
                   }
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"1"'
+                - '"{#TYPE}":"other"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"6"'
+                - '"{#TYPE}":"ethernetCsmacd"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"24"'
+                - '"{#TYPE}":"softwareLoopback"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"53"'
+                - '"{#TYPE}":"propVirtual"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"54"'
+                - '"{#TYPE}":"propMultiplexor"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"71"'
+                - '"{#TYPE}":"ieee80211"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"131"'
+                - '"{#TYPE}":"tunnel"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"135"'
+                - '"{#TYPE}":"l2vlan"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"258"'
+                - '"{#TYPE}":"vmwareVirtualNic"'
           overrides:
             - name: 'No Alias'
               step: '1'
@@ -4989,15 +4997,17 @@ zabbix_export:
               filter:
                 conditions:
                   - macro: '{#TYPE}'
-                    value: '71'
+                    value: ^ieee80211$
               operations:
                 - operationobject: TRIGGER_PROTOTYPE
                   operator: LIKE
                   value: Errors
                   status: DISABLED
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 9f66f49a16914a42b4731103a16d816f
           name: Interfaces
@@ -5029,27 +5039,6 @@ zabbix_export:
               newvalue: 'False'
             - value: '1'
               newvalue: 'True'
-        - uuid: 5694b665ff254cd0b49e02e3d7a9baec
-          name: 'Interface Types'
-          mappings:
-            - value: '1'
-              newvalue: other
-            - value: '6'
-              newvalue: ethernetCsmacd
-            - value: '24'
-              newvalue: softwareLoopback
-            - value: '53'
-              newvalue: propVirtual
-            - value: '54'
-              newvalue: propMultiplexor
-            - value: '71'
-              newvalue: ieee80211
-            - value: '131'
-              newvalue: tunnel
-            - value: '135'
-              newvalue: l2vlan
-            - value: '258'
-              newvalue: vmwareVirtualNic
         - uuid: 042dd6004ca744328459b83d571efd02
           name: 'Operational Status'
           mappings:
@@ -5102,10 +5091,9 @@ zabbix_export:
               valuemap:
                 name: 'Loop Detected'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: 'Loop Detection'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Count
               trigger_prototypes:
                 - uuid: 3add992e000848a29c0808061e524b72
@@ -5115,14 +5103,13 @@ zabbix_export:
                   description: 'A loop has been detected on this port!'
                   manual_close: 'YES'
                   tags:
-                    - tag: Interface
-                      value: '{#NAME}'
-                    - tag: 'Loop Detected'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: e2de721ce9284480becb8755327cfbe0
           name: 'Loop Detected'
@@ -5148,6 +5135,9 @@ zabbix_export:
           delay: 15s
           history: '0'
           value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
       discovery_rules:
         - uuid: 792c76d171b54eb2b4308a4f0b4747c7
           name: 'Interfaces LLDP Discovery'
@@ -5184,10 +5174,9 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.lldp
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: LLDP
-                - tag: Type
+                - tag: 'Item Type'
                   value: Description
             - uuid: ac8d2f33e8444fba9e6275d1a531ebb2
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Host'
@@ -5206,10 +5195,9 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.lldp
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: LLDP
-                - tag: Type
+                - tag: 'Item Type'
                   value: Host
             - uuid: 0559d8d6479a4eac8e12a88170d63e89
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Port'
@@ -5228,10 +5216,9 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.lldp
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: LLDP
-                - tag: Type
+                - tag: 'Item Type'
                   value: 'Remote Port'
           master_item:
             key: snmp.interfaces.lldp
@@ -5264,8 +5251,10 @@ zabbix_export:
                   });
                   return JSON.stringify(newData);
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
     - uuid: 6ca02ebb5e5b4ba7a83e37c81d53c44b
       template: 'BA - MIB - Interfaces MAC'
       name: 'BA - MIB - Interfaces MAC (IF & BRIDGE)'
@@ -5306,8 +5295,7 @@ zabbix_export:
                       });
                   return JSON.stringify(results);
           tags:
-            - tag: 'MAC Count'
-            - tag: Type
+            - tag: 'Item Type'
               value: Discovery
         - uuid: 9ebe2ba0750e44d6aba6d54dba1504b4
           name: 'Interfaces MAC Discovery'
@@ -5362,8 +5350,7 @@ zabbix_export:
                   }
                   return JSON.stringify(result);
           tags:
-            - tag: MAC
-            - tag: Type
+            - tag: 'Item Type'
               value: Discovery
       discovery_rules:
         - uuid: b2841a94cb24434798eb25f1bae1be56
@@ -5393,9 +5380,9 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.mac.count.discovery.json
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Count
             - uuid: 8205834112a849e9aaa49a9f929ecb6d
               name: 'Interface ({#NAME}: {#ALIAS}) Managed LLDP Status'
@@ -5415,9 +5402,9 @@ zabbix_export:
                   error_handler: CUSTOM_VALUE
                   error_handler_params: '0'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
             - uuid: 62187cc596264fe4938e8dd2cdc358ba
               name: 'Interface ({#NAME}: {#ALIAS}) Uplink Status'
@@ -5437,9 +5424,9 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.mac.count.discovery.json
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
           trigger_prototypes:
             - uuid: 3ba62eed99da49268e57928089ac4d41
@@ -5450,6 +5437,9 @@ zabbix_export:
               priority: INFO
               description: 'This interface has an un-managed device connected.'
               manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
           master_item:
             key: snmp.interfaces.mac.count.discovery.json
           overrides:
@@ -5496,17 +5486,19 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.mac.discovery.json
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Status
                 - tag: MAC
                   value: '{#MAC}'
-                - tag: Type
-                  value: Status
           master_item:
             key: snmp.interfaces.mac.discovery.json
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 4832488ec33a470b8f7ee84221ceb82b
           name: 'MAC Status'
@@ -5568,10 +5560,9 @@ zabbix_export:
               valuemap:
                 name: 'POE Admin'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: POE
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
             - uuid: 617cdf1c471444099069446bb97565b5
               name: 'Interface ({#NAME}: {#ALIAS}) POE Detection'
@@ -5582,10 +5573,9 @@ zabbix_export:
               valuemap:
                 name: 'POE Status'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: POE
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: c0a0fe136b29476a883a005dddc2a666
@@ -5594,11 +5584,8 @@ zabbix_export:
                   priority: WARNING
                   manual_close: 'YES'
                   tags:
-                    - tag: Interface
-                      value: '{#NAME}'
-                    - tag: POE
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
           preprocessing:
             - type: JAVASCRIPT
               parameters:
@@ -5617,8 +5604,10 @@ zabbix_export:
                   });
                   return JSON.stringify(newData);
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 850c51d7192742ab927fcdf43d7ae8a4
           name: 'POE Admin'
@@ -5681,14 +5670,15 @@ zabbix_export:
               delay: 1h
               history: 7d
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: PVID
-                - tag: VLAN
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
     - uuid: e062d321550c42d9bdce4b4c23a365e3
       template: 'BA - MIB - MAC to IP - IP'
       name: 'BA - MIB - MAC to IP (IP)'
@@ -5762,8 +5752,7 @@ zabbix_export:
                   });
                   return JSON.stringify(data);
           tags:
-            - tag: 'MAC to IP'
-            - tag: Type
+            - tag: 'Item Type'
               value: Discovery
       discovery_rules:
         - uuid: 517f02751b524658a4c505ad3996b7a6
@@ -5809,16 +5798,17 @@ zabbix_export:
               tags:
                 - tag: IP
                   value: '{#IP}'
+                - tag: 'Item Type'
+                  value: Status
                 - tag: MAC
                   value: '{#MAC}'
-                - tag: 'MAC to IP'
-                - tag: Type
-                  value: Status
           master_item:
             key: m2i.discovery.json
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 1364b8e394e74294a3c6107eef28d797
           name: 'MAC to IP State'
@@ -5861,8 +5851,7 @@ zabbix_export:
                   });
                   return JSON.stringify(data);
           tags:
-            - tag: 'MAC to IP'
-            - tag: Type
+            - tag: 'Item Type'
               value: Discovery
       discovery_rules:
         - uuid: e61723274ec84ee2b405252948f3ded2
@@ -5908,16 +5897,17 @@ zabbix_export:
               tags:
                 - tag: IP
                   value: '{#IP}'
+                - tag: 'Item Type'
+                  value: Status
                 - tag: MAC
                   value: '{#MAC}'
-                - tag: 'MAC to IP'
-                - tag: Type
-                  value: Status
           master_item:
             key: m2i.discovery.json
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 2d9af5c47ed84c44aa09dc5133cb1002
           name: 'MAC to IP Status'
@@ -5943,8 +5933,7 @@ zabbix_export:
           history: 1h
           value_type: CHAR
           tags:
-            - tag: RouterOS
-            - tag: Type
+            - tag: 'Item Type'
               value: Version
           triggers:
             - uuid: dce23b47174b41ef81218013175425f0
@@ -5956,9 +5945,8 @@ zabbix_export:
                 - name: 'RouterOS Version Out of Date'
                   expression: 'find(/BA - MIB - MikroTik/ros.version,#1,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
               tags:
-                - tag: RouterOS
-                - tag: Type
-                  value: Version
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: dcdf53f894a043bf83bef95f341c33c8
           name: 'RouterOS Board Name'
           type: SNMP_AGENT
@@ -5969,8 +5957,7 @@ zabbix_export:
           value_type: CHAR
           inventory_link: MODEL
           tags:
-            - tag: RouterOS
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: 2422b180ee304cadb7b3848987545857
           name: 'CPU Frequency'
@@ -5984,8 +5971,7 @@ zabbix_export:
               parameters:
                 - '1000000'
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Frequency
         - uuid: 7d2ce0e43616493cbf1106fbe2a5063f
           name: 'RouterOS Serial'
@@ -5997,8 +5983,7 @@ zabbix_export:
           value_type: CHAR
           inventory_link: SERIALNO_A
           tags:
-            - tag: RouterOS
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
         - uuid: d98aae57d9454c6a8836fab035873f83
           name: 'RouterOS Version'
@@ -6009,8 +5994,7 @@ zabbix_export:
           value_type: CHAR
           inventory_link: SOFTWARE
           tags:
-            - tag: RouterOS
-            - tag: Type
+            - tag: 'Item Type'
               value: Version
           triggers:
             - uuid: 23f1bc1096ff49728e3c340164fbe352
@@ -6019,9 +6003,8 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: RouterOS
-                - tag: Type
-                  value: Version
+                - tag: 'Trigger Type'
+                  value: State
       discovery_rules:
         - uuid: a218d20f379642fd83b0472df43663e8
           name: 'ROS Gauge Discovery'
@@ -6052,7 +6035,7 @@ zabbix_export:
               tags:
                 - tag: Gauge
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: '{#UNIT}'
               trigger_prototypes:
                 - uuid: 8bbeacb4fa7b429aa0cc8c0e917c0991
@@ -6061,10 +6044,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Guage
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: '{#UNIT}'
+                    - tag: 'Trigger Type'
+                      value: Threshold
           graph_prototypes:
             - uuid: b15abde9dac841bca795548194e9345e
               name: 'Gauge ({#NAME}) {#UNIT}'
@@ -6110,8 +6091,10 @@ zabbix_export:
                   value: Temperature
                   discover: NO_DISCOVER
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 64178c330b0846e59eebe2be6abb18be
           name: RouterOS
@@ -6202,7 +6185,7 @@ zabbix_export:
           history: 30d
           units: '%'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Charge
         - uuid: 5ec4f24eb4e340778d4d2d8aa33dda35
           name: 'Battery Runtime'
@@ -6217,7 +6200,7 @@ zabbix_export:
               parameters:
                 - '60'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Runtime
         - uuid: c63347bfd19348328c1fdf8a624bf2bf
           name: 'Battery Status'
@@ -6229,7 +6212,7 @@ zabbix_export:
           valuemap:
             name: 'Battery Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
         - uuid: 69e69d3b217c49fcaa798d4c17e0fffa
           name: 'Battery Temperature'
@@ -6240,7 +6223,7 @@ zabbix_export:
           history: 30d
           units: C
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Temperature
         - uuid: 79c701aeac944703b61efe8365e75c9c
           name: Model
@@ -6256,7 +6239,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: b97b642cc9e644f5bf444104d2fa184f
           name: 'UPS Alarms'
@@ -6266,7 +6249,7 @@ zabbix_export:
           delay: 5m
           history: 30d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Alarms
           triggers:
             - uuid: 889f353b257f49d28ec3f6264efce1fe
@@ -6279,8 +6262,8 @@ zabbix_export:
                 The battery may need replaced, or there is another fault.
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Alarms
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: 88f48d62d7ae42ff846cf7d3e0e75d4f
           name: 'UPS Input Frequency'
           type: SNMP_AGENT
@@ -6294,7 +6277,7 @@ zabbix_export:
               parameters:
                 - '0.1'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Hertz
         - uuid: 0407dae901c64220a4383c73877e767d
           name: 'UPS Input Voltage'
@@ -6305,7 +6288,7 @@ zabbix_export:
           history: 30d
           units: Volts
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Voltage
         - uuid: dc34e74a1ef946cab41ce9b33094cb89
           name: 'UPS Status'
@@ -6317,7 +6300,7 @@ zabbix_export:
           valuemap:
             name: 'UPS Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 9b574a1e3ecf4b39b0705847d47cb8aa
@@ -6326,11 +6309,13 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 090b575c82c24738bb3326672240eae0
           name: UPS
@@ -6453,8 +6438,7 @@ zabbix_export:
           history: 7d
           params: 'sum(last_foreach(//vsphere.vm.cpus[*]))'
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Count
         - uuid: befdbfd5a25d4e038bc2f53eedab5c98
           name: 'CPU Subscription'
@@ -6470,8 +6454,7 @@ zabbix_export:
               parameters:
                 - '100'
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Subscription
           triggers:
             - uuid: f9883375c125492abab9ce4181caf353
@@ -6485,9 +6468,8 @@ zabbix_export:
                 - name: 'CPU Subscription >= 500%'
                   expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
               tags:
-                - tag: CPU
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
             - uuid: 885272fd23404a5b9fe53aef2b7de707
               expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=400'
               name: 'CPU Subscription >= 400%'
@@ -6497,18 +6479,16 @@ zabbix_export:
                 - name: 'CPU Subscription >= 500%'
                   expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
               tags:
-                - tag: CPU
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
             - uuid: 881639b9a7284eac98a5c31b649b4e6c
               expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
               name: 'CPU Subscription >= 500%'
               priority: AVERAGE
               manual_close: 'YES'
               tags:
-                - tag: CPU
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: 55e4078646824cb18348e0194b551123
           name: 'VM Count'
           type: CALCULATED
@@ -6517,9 +6497,8 @@ zabbix_export:
           history: 7d
           params: 'sum(exists_foreach(//vsphere.vm.state[*]))'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Count
-            - tag: VM
       discovery_rules:
         - uuid: a6fd7567cc30408d9711e1bab1030c56
           name: 'VM Discovery'
@@ -6538,8 +6517,7 @@ zabbix_export:
               delay: 1h
               history: 7d
               tags:
-                - tag: CPU
-                - tag: Type
+                - tag: 'Item Type'
                   value: Count
                 - tag: VM
                   value: '{#NAME}'
@@ -6556,7 +6534,7 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: 'Guest OS'
                 - tag: VM
                   value: '{#NAME}'
@@ -6573,7 +6551,7 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: State
                 - tag: VM
                   value: '{#NAME}'
@@ -6590,7 +6568,7 @@ zabbix_export:
                   parameters:
                     - '1048576'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Size
                 - tag: VM
                   value: '{#NAME}'
@@ -6607,13 +6585,15 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: State
                 - tag: VM
                   value: '{#NAME}'
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
     - uuid: 0d5221d8204a4e9eaedc70bb542141d0
       template: 'BA - MIB - Windows'
       name: 'BA - MIB - Windows (LanMgr)'
@@ -6624,12 +6604,15 @@ zabbix_export:
         - name: BA/MIBs
       items:
         - uuid: 6169c6dc8a6c4f27bcfc3c9dba907bdc
-          name: 'Windows Services'
+          name: 'Windows Service Discovery'
           type: SNMP_AGENT
           snmp_oid: 'walk[.1.3.6.1.4.1.77.1.2.3.1.1, .1.3.6.1.4.1.77.1.2.3.1.3]'
           key: windows.services
           history: '0'
           value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
       discovery_rules:
         - uuid: c0fc8e65860e4f4fbd32642e9118db1a
           name: 'Windows Services Discovery'
@@ -6668,10 +6651,10 @@ zabbix_export:
               master_item:
                 key: windows.services
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Service
                   value: '{#NAME}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: 378d1d6f5c8446fb8430042af8a49e04
                   expression: 'last(/BA - MIB - Windows/windows.services.status[{#NAME}])<>1'
@@ -6682,10 +6665,8 @@ zabbix_export:
                     - name: 'Device offline'
                       expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
                   tags:
-                    - tag: Service
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
           master_item:
             key: windows.services
           preprocessing:
@@ -6695,8 +6676,10 @@ zabbix_export:
                 - .1.3.6.1.4.1.77.1.2.3.1.1
                 - '0'
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: e4ec2731c79441a999eb38f3351d62d8
           name: 'Windows Services'
@@ -6778,7 +6761,7 @@ zabbix_export:
           master_item:
             key: camera.scopes
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Firmware
         - uuid: 62c9ab8714064b7f91eddae1ca247b10
           name: 'Device Info'
@@ -6799,7 +6782,7 @@ zabbix_export:
           posts: '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tds="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><soap:Body><tds:GetDeviceInformation /></soap:Body></soap:Envelope>'
           request_method: POST
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: ONVIF
         - uuid: a901ebe015ec41578b6f7265970a7efd
           name: 'Device Media'
@@ -6822,7 +6805,7 @@ zabbix_export:
           posts: '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:trt="http://www.onvif.org/ver10/media/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><soap:Body><trt:GetVideoSources /></soap:Body></soap:Envelope>'
           request_method: POST
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: ONVIF
         - uuid: cd309dfaf45646d681098c866f2ac499
           name: 'Device Model'
@@ -6842,7 +6825,7 @@ zabbix_export:
           master_item:
             key: camera.scopes
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: cbb50b55e58e43799b3619025ea4a604
           name: 'Device Name'
@@ -6870,7 +6853,7 @@ zabbix_export:
           master_item:
             key: camera.scopes
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Name
         - uuid: c569bead71ff46c9990ec6ca6ee6238b
           name: 'Device MAC'
@@ -6894,7 +6877,7 @@ zabbix_export:
           master_item:
             key: camera.scopes
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: MAC
         - uuid: 87a53d70753c474bbb21303663af837f
           name: 'Device Scopes'
@@ -6915,7 +6898,7 @@ zabbix_export:
           posts: '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tds="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><soap:Body><tds:GetScopes /><tds:GetDeviceInformation /></soap:Body></soap:Envelope>'
           request_method: POST
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: ONVIF
           triggers:
             - uuid: 894908c06a4f42738dd16f954756d551
@@ -6930,8 +6913,8 @@ zabbix_export:
                 - name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
                   expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
               tags:
-                - tag: Type
-                  value: ONVIF
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 3eb186a618c14079a2f8d7bc6f5a3f3f
           name: 'Device Sensor'
           type: DEPENDENT
@@ -6959,7 +6942,7 @@ zabbix_export:
           master_item:
             key: camera.media
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Sensor
         - uuid: c469663ea4ea4ad69f8b05bfc4b6e2bb
           name: 'Device Serial'
@@ -6978,11 +6961,13 @@ zabbix_export:
           master_item:
             key: camera.info
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
       tags:
-        - tag: Type
+        - tag: Agent
           value: ONVIF
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 520e80c0f687421cb23e6c0f3df2ed13
           name: Avigilon
@@ -7219,7 +7204,7 @@ zabbix_export:
             - name: key
               value: '{$ZABSELFKEY}'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Procedure
           triggers:
             - uuid: 97394f77de1142e7b8df29b84909b773
@@ -7227,10 +7212,10 @@ zabbix_export:
               name: 'Device name could not be updated'
               priority: INFO
               tags:
-                - tag: Type
-                  value: Procedure
+                - tag: 'Trigger Type'
+                  value: Recent
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Procedure
       valuemaps:
         - uuid: 92c7e19c79934776b660d8ccb6ad3a1f
@@ -7256,7 +7241,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: APC
@@ -7284,9 +7269,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Networking
       tags:
-        - tag: Type
-          value: Network
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: Aruba
@@ -7317,9 +7300,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Networking
       tags:
-        - tag: Type
-          value: Network
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: Aruba
@@ -7338,10 +7319,8 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Cameras
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
-        - tag: Type
-          value: Surveillance
         - tag: Vendor
           value: Avigilon
     - uuid: dd62fc36b98043b98668524c168b3787
@@ -7359,10 +7338,8 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Cameras
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
-        - tag: Type
-          value: Surveillance
         - tag: Vendor
           value: Axis
     - uuid: 90fd64de4ab34783a5d3952e8a7d9f70
@@ -7383,8 +7360,10 @@ zabbix_export:
       groups:
         - name: BA/Profiles
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
+        - tag: Vendor
+          value: 'Center Click'
     - uuid: c14d11008b524874a40ab65d935d01cf
       template: 'BA - Profile - Cisco IOS Switch'
       name: 'BA - Profile - Cisco IOS Switch'
@@ -7404,9 +7383,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Networking
       tags:
-        - tag: Type
-          value: Network
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: Cisco
@@ -7433,9 +7410,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Networking
       tags:
-        - tag: Type
-          value: Network
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: Cisco
@@ -7455,9 +7430,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles
       tags:
-        - tag: Type
-          value: Power
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: 'Cyber Power'
@@ -7477,12 +7450,10 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Servers
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
-        - tag: Type
-          value: Servers
         - tag: Vendor
-          value: iDRAC
+          value: Dell
     - uuid: 6e39e8aa1a0848f3b2454a082094ecde
       template: 'BA - Profile - iLO'
       name: 'BA - Profile - iLO'
@@ -7535,9 +7506,9 @@ zabbix_export:
                   parameters:
                     - 24h
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Alias
             - uuid: 94c1d5de306a47c4963e149a3afb8504
               name: 'Interface ({#NAME}: {#ALIAS}) In Errors'
@@ -7553,9 +7524,9 @@ zabbix_export:
                     - '8'
                 - type: CHANGE_PER_SECOND
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Errors
             - uuid: 5e9b33dcc76645e19d581a89fb396ee9
               name: 'Interface ({#NAME}: {#ALIAS}) In Usage'
@@ -7575,9 +7546,9 @@ zabbix_export:
                   parameters:
                     - '100'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Usage
             - uuid: 767871d53c9a4cbbb0900393193c979a
               name: 'Interface ({#NAME}: {#ALIAS}) In Rate'
@@ -7592,9 +7563,9 @@ zabbix_export:
                     - '8'
                 - type: CHANGE_PER_SECOND
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Rate
             - uuid: 210a3f40ad024e85964468495d7f151d
               name: 'Interface ({#NAME}: {#ALIAS}) Operational Status'
@@ -7604,9 +7575,9 @@ zabbix_export:
               delay: 2m
               history: 7d
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 673bf191003144baa7b159524e4b4b2f
@@ -7615,10 +7586,8 @@ zabbix_export:
                   priority: WARNING
                   manual_close: 'YES'
                   tags:
-                    - tag: Interface
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: Threshold
             - uuid: d819c44d41fc4a6bbc5fbe319a7587d1
               name: 'Interface ({#NAME}: {#ALIAS}) Out Errors'
               type: SNMP_AGENT
@@ -7633,9 +7602,9 @@ zabbix_export:
                     - '8'
                 - type: CHANGE_PER_SECOND
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Errors
             - uuid: fd552c5cbaa34e37b1264fad7fefa1e5
               name: 'Interface ({#NAME}: {#ALIAS}) Out Usage'
@@ -7655,9 +7624,9 @@ zabbix_export:
                   parameters:
                     - '100'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Usage
             - uuid: d75af8046ed14fb0a8f8a2da62ef7494
               name: 'Interface ({#NAME}: {#ALIAS}) Out Rate'
@@ -7672,9 +7641,9 @@ zabbix_export:
                     - '8'
                 - type: CHANGE_PER_SECOND
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Rate
             - uuid: eb017fd94d134c4fa097ad10d59eaa35
               name: 'Interface ({#NAME}: {#ALIAS}) Speed'
@@ -7689,9 +7658,9 @@ zabbix_export:
                   parameters:
                     - '1000000'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Speed
           trigger_prototypes:
             - uuid: 182e84fa895940ac91884d0df513d3c0
@@ -7700,20 +7669,16 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Errors
+                - tag: 'Trigger Type'
+                  value: Threshold
             - uuid: 5d4224b75fcc401c8ba547399806ab0c
               expression: 'last(/BA - Profile - iLO/snmp.interfaces.in.usage[{#NAME}])>={$INTER_USAGE_WARN} or last(/BA - Profile - iLO/snmp.interfaces.out.usage[{#NAME}])>={$INTER_USAGE_WARN}'
               name: 'Interface ({#NAME}: {#ALIAS}) Usage >= {$INTER_USAGE_WARN}%'
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
           graph_prototypes:
             - uuid: 0be5ec8ae812460ead772320312a3630
               name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
@@ -7742,12 +7707,10 @@ zabbix_export:
                     host: 'BA - Profile - iLO'
                     key: 'snmp.interfaces.out.errors[{#NAME}]'
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
-        - tag: Type
-          value: Servers
         - tag: Vendor
-          value: iLO
+          value: HPE
     - uuid: cfc4c512c2c4421599b4703ddae48352
       template: 'BA - Profile - Linux'
       name: 'BA - Profile - Linux'
@@ -7767,10 +7730,8 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Servers
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
-        - tag: Type
-          value: Servers
         - tag: Vendor
           value: Linux
     - uuid: 2d6c963fca534c2eb56112e107ab2e9c
@@ -7798,9 +7759,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Networking
       tags:
-        - tag: Type
-          value: Network
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: MikroTik
@@ -7822,9 +7781,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Networking
       tags:
-        - tag: Type
-          value: Network
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: pfSense
@@ -7846,9 +7803,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles
       tags:
-        - tag: Type
-          value: Network
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: Ruckus
@@ -7869,9 +7824,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Servers
       tags:
-        - tag: Type
-          value: Network
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: Ubiquiti
@@ -7891,9 +7844,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles
       tags:
-        - tag: Type
-          value: Power
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: Generic
@@ -7917,10 +7868,8 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Servers
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
-        - tag: Type
-          value: Servers
         - tag: Vendor
           value: VMWare
     - uuid: 22526bb9690840debbaa02fd6f35d5b0
@@ -7945,12 +7894,10 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Servers
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
-        - tag: Type
-          value: Servers
         - tag: Vendor
-          value: Windows
+          value: Microsoft
     - uuid: c0c1bf70b15f40c89a6787174b3ad3a5
       template: 'BA - SSH'
       name: 'BA - SSH'
@@ -7971,8 +7918,7 @@ zabbix_export:
             name: Status
           timeout: 3s
           tags:
-            - tag: SSH
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 344b160afc1e49868c8771f72adcf4a2
@@ -7984,12 +7930,13 @@ zabbix_export:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
-                - tag: SSH
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       tags:
-        - tag: Type
-          value: SSH
+        - tag: Agent
+          value: TCP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 9087ccbefa71490f85ed356ccb3fc705
           name: Status
@@ -8034,7 +7981,8 @@ zabbix_export:
             {"Expect":"# @@@"}
           request_method: POST
           tags:
-            - tag: Config
+            - tag: 'Item Type'
+              value: Config
           triggers:
             - uuid: 2fe56d78b3254bbb9535028f50f83ca9
               expression: 'nodata(/BA - SSH - Aruba Config/ssh.config,3d)=1'
@@ -8046,10 +7994,13 @@ zabbix_export:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
-                - tag: Config
+                - tag: 'Trigger Type'
+                  value: State
       tags:
-        - tag: Type
+        - tag: Agent
           value: SSH
+        - tag: 'Template Type'
+          value: Poller
     - uuid: ccb9478d71394cbf9ca818e33e887c22
       template: 'BA - SSH - MikroTik Config'
       name: 'BA - SSH - MikroTik Config'
@@ -8071,10 +8022,13 @@ zabbix_export:
           password: '{$ROS_SSH_PASS}'
           inventory_link: SOFTWARE_FULL
           tags:
-            - tag: Config
+            - tag: 'Item Type'
+              value: Config
       tags:
-        - tag: Type
+        - tag: Agent
           value: SSH
+        - tag: 'Template Type'
+          value: Poller
     - uuid: 5363825b8b51440ab13167e282af90de
       template: 'BA - SSH - UPS'
       name: 'BA - SSH - UPS (NUT)'
@@ -8122,6 +8076,9 @@ zabbix_export:
                       mIndex++;
                   });
                   return JSON.stringify(result);
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
       discovery_rules:
         - uuid: aab88f1eccb54af58b4845c52cf5265e
           name: 'UPS Discovery'
@@ -8143,7 +8100,7 @@ zabbix_export:
               master_item:
                 key: 'ssh.run[upsdiscovery]'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Charge
                 - tag: UPS
                   value: '{#NAME}'
@@ -8154,10 +8111,8 @@ zabbix_export:
                   priority: WARNING
                   manual_close: 'YES'
                   tags:
-                    - tag: Type
-                      value: Charge
-                    - tag: UPS
-                      value: '{#NAME}'
+                    - tag: 'Trigger Type'
+                      value: Threshold
             - uuid: caf05ab2f31346d1aee194218fdc3bef
               name: 'UPS ({#NAME}) Load'
               type: DEPENDENT
@@ -8171,7 +8126,7 @@ zabbix_export:
               master_item:
                 key: 'ssh.run[upsdiscovery]'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Load
                 - tag: UPS
                   value: '{#NAME}'
@@ -8188,7 +8143,7 @@ zabbix_export:
               master_item:
                 key: 'ssh.run[upsdiscovery]'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Runtime
                 - tag: UPS
                   value: '{#NAME}'
@@ -8214,7 +8169,7 @@ zabbix_export:
               master_item:
                 key: 'ssh.run[upsdiscovery]'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
                 - tag: UPS
                   value: '{#NAME}'
@@ -8225,10 +8180,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: Type
-                      value: Status
-                    - tag: UPS
-                      value: '{#NAME}'
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 71e2da69276a404c9f3aacd9cac442aa
               name: 'UPS ({#NAME}) Voltage'
               type: DEPENDENT
@@ -8243,12 +8196,17 @@ zabbix_export:
               master_item:
                 key: 'ssh.run[upsdiscovery]'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Voltage
                 - tag: UPS
                   value: '{#NAME}'
           master_item:
             key: 'ssh.run[upsdiscovery]'
+      tags:
+        - tag: Agent
+          value: SSH
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: a867be58c5ef404ebfe3baf24c32b9fd
           name: NUT
@@ -8354,8 +8312,8 @@ zabbix_export:
       description: 'The startup config does not match the running config. Please save the running config to flash.'
       manual_close: 'YES'
       tags:
-        - tag: Type
-          value: SHA
+        - tag: 'Trigger Type'
+          value: State
   graphs:
     - uuid: 13bb88368aab4bd8a4a862360288fc0f
       name: 'Battery Charge'

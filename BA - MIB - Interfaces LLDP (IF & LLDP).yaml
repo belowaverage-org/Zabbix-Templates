@@ -21,6 +21,9 @@ zabbix_export:
           delay: 15s
           history: '0'
           value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
       discovery_rules:
         - uuid: 792c76d171b54eb2b4308a4f0b4747c7
           name: 'Interfaces LLDP Discovery'
@@ -57,10 +60,9 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.lldp
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: LLDP
-                - tag: Type
+                - tag: 'Item Type'
                   value: Description
             - uuid: ac8d2f33e8444fba9e6275d1a531ebb2
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Host'
@@ -79,10 +81,9 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.lldp
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: LLDP
-                - tag: Type
+                - tag: 'Item Type'
                   value: Host
             - uuid: 0559d8d6479a4eac8e12a88170d63e89
               name: 'Interface ({#NAME}: {#ALIAS}) LLDP Remote Port'
@@ -101,10 +102,9 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.lldp
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: LLDP
-                - tag: Type
+                - tag: 'Item Type'
                   value: 'Remote Port'
           master_item:
             key: snmp.interfaces.lldp
@@ -137,6 +137,8 @@ zabbix_export:
                   });
                   return JSON.stringify(newData);
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
 

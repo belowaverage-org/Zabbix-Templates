@@ -27,8 +27,7 @@ zabbix_export:
               value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0'
           output_format: JSON
           tags:
-            - tag: GitHub
-            - tag: Type
+            - tag: 'Item Type'
               value: JSON
         - uuid: 74aec8f2d7a7454bb52b18f465074216
           name: 'GitHub Releases Total Daily Downloads'
@@ -42,7 +41,7 @@ zabbix_export:
           tags:
             - tag: GitHub
               value: Releases
-            - tag: Type
+            - tag: 'Item Type'
               value: 'Daily Downloads'
         - uuid: e876fb492b964ceb9ad340198e3b0038
           name: 'GitHub Releases Total Downloads'
@@ -58,7 +57,7 @@ zabbix_export:
           tags:
             - tag: GitHub
               value: Releases
-            - tag: Type
+            - tag: 'Item Type'
               value: Downloads
       discovery_rules:
         - uuid: 6496ef3671134bb2b0ac97a2f6123087
@@ -80,11 +79,10 @@ zabbix_export:
               master_item:
                 key: github.releases
               tags:
-                - tag: GitHub
+                - tag: 'Item Type'
+                  value: Downloads
                 - tag: Release
                   value: '{#TAG}'
-                - tag: Type
-                  value: Downloads
             - uuid: f1bab56020924136bea73e33b924b163
               name: 'Github Release ({#TAG}) JSON'
               type: DEPENDENT
@@ -99,11 +97,10 @@ zabbix_export:
               master_item:
                 key: github.releases
               tags:
-                - tag: GitHub
+                - tag: 'Item Type'
+                  value: JSON
                 - tag: Release
                   value: '{#TAG}'
-                - tag: Type
-                  value: JSON
           master_item:
             key: github.releases
           lld_macro_paths:
@@ -116,6 +113,8 @@ zabbix_export:
               parameters:
                 - '$.body.*'
       tags:
-        - tag: Type
+        - tag: Agent
           value: HTTP
+        - tag: 'Template Type'
+          value: Poller
 

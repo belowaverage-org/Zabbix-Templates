@@ -13,7 +13,7 @@ zabbix_export:
       groups:
         - name: BA/Macros
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Macro
       macros:
         - macro: '{$INTER_DISCARD_WARN}'

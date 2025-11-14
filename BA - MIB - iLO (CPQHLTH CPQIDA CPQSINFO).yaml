@@ -28,8 +28,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: BIOS
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 8a90f354f7d8437ebcc6b624f6116407
@@ -38,9 +37,8 @@ zabbix_export:
               priority: HIGH
               manual_close: 'YES'
               tags:
-                - tag: iLO
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 73df4e29470f42d59d96b26542526767
           name: 'Health Status'
           type: SNMP_AGENT
@@ -51,7 +49,7 @@ zabbix_export:
           valuemap:
             name: Condition
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: f885f35b8aca4be0be3b1c571a34fa5e
@@ -60,8 +58,8 @@ zabbix_export:
               priority: HIGH
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 1c023652a69044c7baeac117a853e465
           name: Model
           type: SNMP_AGENT
@@ -76,7 +74,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: 5d539a8d1d45450a81bc3caaec350537
           name: Serial
@@ -92,7 +90,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
       discovery_rules:
         - uuid: 8082351a93ad426c85a987c28b766b87
@@ -119,7 +117,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Model
             - uuid: 6d48ed1d609d474ea8edc0a89e103de7
               name: 'Drive ({#BAY}) Serial'
@@ -136,7 +134,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Serial
             - uuid: 66924d8968f548de839cfd1867b0d4eb
               name: 'Drive ({#BAY}) Size'
@@ -153,7 +151,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Size
             - uuid: 426d44830dd843bbaca34b43b0ab60c3
               name: 'Drive ({#BAY}) Status'
@@ -167,7 +165,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 684d29e15385460f96b9837fce515c27
@@ -177,10 +175,8 @@ zabbix_export:
                   description: 'The status of this drive is not OK.'
                   manual_close: 'YES'
                   tags:
-                    - tag: Drive
-                      value: '{#BAY}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 8541b50c6cbb46fbbc118e39eb186c73
               name: 'Drive ({#BAY}) Temperature'
               type: SNMP_AGENT
@@ -197,7 +193,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Temperature
             - uuid: c56c65a63b234a578da62b14b334940d
               name: 'Drive ({#BAY}) Type'
@@ -215,7 +211,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#BAY}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Type
         - uuid: 259907ba7ffb434db9ab561e915ef699
           name: 'Fan Discovery'
@@ -247,7 +243,7 @@ zabbix_export:
               tags:
                 - tag: Fan
                   value: '{#INDEX}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: c0ea2d1cbf594b8e9386b99bb74cef7c
@@ -256,10 +252,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Fan
-                      value: '{#INDEX}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
         - uuid: 0e2ce50fc37a42339ecce8ff57b64aff
           name: 'Memory Discovery'
           type: SNMP_AGENT
@@ -289,10 +283,10 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Memory
                   value: '{#LOCATION}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: 9756f0986d89482289d228966f731dbf
                   expression: |
@@ -306,10 +300,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: Memory
-                      value: '{#LOCATION}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
         - uuid: 1ef1a17f77aa4016b9d4141fd9ac27e4
           name: 'Power Supply Discovery'
           type: SNMP_AGENT
@@ -334,10 +326,10 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: 'Power Supply'
                   value: '{#BAY}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: 67085e3c3e4a430d939dfefbb43a9a1a
                   expression: 'last(/BA - MIB - iLO/ilo.psu.status[{#SNMPINDEX}])>=3'
@@ -345,10 +337,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: 'Power Supply'
-                      value: '{#BAY}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 86b7a6491c684353b2a1b868bc25ea3d
               name: 'Power Supply ({#BAY}) Input Volts'
               type: SNMP_AGENT
@@ -358,10 +348,10 @@ zabbix_export:
               history: 7d
               units: V
               tags:
+                - tag: 'Item Type'
+                  value: Volts
                 - tag: 'Power Supply'
                   value: '{#BAY}'
-                - tag: Type
-                  value: Volts
             - uuid: 0e71a00b711145c4b12e1d5a8d380ff1
               name: 'Power Supply ({#BAY}) Output Watts'
               type: SNMP_AGENT
@@ -371,10 +361,10 @@ zabbix_export:
               history: 7d
               units: W
               tags:
+                - tag: 'Item Type'
+                  value: Watts
                 - tag: 'Power Supply'
                   value: '{#BAY}'
-                - tag: Type
-                  value: Watts
           graph_prototypes:
             - uuid: d230d7ac6e5e43dc944c1b624be84fbd
               name: 'Power Supply ({#BAY}) Input Volts / Output Watts'
@@ -408,10 +398,10 @@ zabbix_export:
               history: 7d
               units: C
               tags:
+                - tag: 'Item Type'
+                  value: Celsius
                 - tag: Temperature
                   value: '{#LOCALE}'
-                - tag: Type
-                  value: Celsius
             - uuid: 892880b41bc7497e889d3a9901f36947
               name: 'Temperature ({#LOCALE}) Status'
               type: SNMP_AGENT
@@ -427,10 +417,10 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Temperature
                   value: '{#LOCALE}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: 74e231598873468e8b3657365506fa40
                   expression: 'last(/BA - MIB - iLO/ilo.temp.status[{#SNMPINDEX}])>=3'
@@ -438,10 +428,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: Temperature
-                      value: '{#LOCALE}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
           preprocessing:
             - type: STR_REPLACE
               parameters:
@@ -496,8 +484,10 @@ zabbix_export:
                 - '"13"'
                 - '"Bridge Card"'
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: db86ebd68489487fb4664c66286c8d93
           name: iLO

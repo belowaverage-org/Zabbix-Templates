@@ -25,8 +25,11 @@ zabbix_export:
           password: '{$ROS_SSH_PASS}'
           inventory_link: SOFTWARE_FULL
           tags:
-            - tag: Config
+            - tag: 'Item Type'
+              value: Config
       tags:
-        - tag: Type
+        - tag: Agent
           value: SSH
+        - tag: 'Template Type'
+          value: Poller
 

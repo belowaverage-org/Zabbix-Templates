@@ -27,7 +27,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Age
         - uuid: d549b5471b8548128aa405835e8c5ddc
           name: 'Battery Charge'
@@ -38,7 +38,7 @@ zabbix_export:
           history: 30d
           units: '%'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Charge
         - uuid: f9a549dec7d84875b115c585c234d5d4
           name: 'Battery Last Replacement Date'
@@ -54,7 +54,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Age
         - uuid: 7ab01e7accb34f0d993b187c2f1fa4d3
           name: 'Battery Replacement Status'
@@ -66,7 +66,7 @@ zabbix_export:
           valuemap:
             name: 'Battery Replace Indicator'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: bf6b90a31ea1446a826c79972f9c58cd
@@ -76,8 +76,8 @@ zabbix_export:
               description: 'The battery in this UPS needs replaced.'
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 1d613a65a3de4be5b28b9d528844dd48
           name: 'Battery Runtime'
           type: SNMP_AGENT
@@ -91,7 +91,7 @@ zabbix_export:
               parameters:
                 - '0.01'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Runtime
         - uuid: 785505c01c9548199ca4e141ef1a73b4
           name: 'Battery Status'
@@ -103,7 +103,7 @@ zabbix_export:
           valuemap:
             name: 'Battery Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
         - uuid: 07d861b545bd46b58d2b76d09f8fd914
           name: 'Battery Temperature'
@@ -114,7 +114,7 @@ zabbix_export:
           history: 30d
           units: C
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Temperature
         - uuid: 5dce911b6f264f6f8dd4906295f7b2f3
           name: Model
@@ -130,7 +130,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: 1a544eeb51b6425cba2bc57bff6ad459
           name: Serial
@@ -146,7 +146,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
         - uuid: 53a6d636ce0740f9895d404032755dbe
           name: 'UPS Input Frequency'
@@ -157,7 +157,7 @@ zabbix_export:
           history: 30d
           units: Hertz
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Hertz
         - uuid: bc2bbdb6c20b43678dde33349f2c37a0
           name: 'UPS Input Voltage'
@@ -168,7 +168,7 @@ zabbix_export:
           history: 30d
           units: Volts
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Voltage
         - uuid: 64d4fe1b663b493d8157f92c8b6be952
           name: 'UPS Status'
@@ -180,7 +180,7 @@ zabbix_export:
           valuemap:
             name: 'UPS Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 186e941c59a949c68602aa70525e3549
@@ -189,8 +189,8 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       discovery_rules:
         - uuid: f42c8b0552674b92813e17b07d391dc7
           name: 'Battery Packs Discovery'
@@ -230,7 +230,7 @@ zabbix_export:
                 bit 10 DisconnectedFrame
                 bit 11 FirmwareMismatch
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 8ee2b3b363194f3b9b53f15b1f298e5b
@@ -239,11 +239,13 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 05593197f4914bfcb57afafcfbeb88fd
           name: APC

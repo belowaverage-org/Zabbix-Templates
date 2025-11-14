@@ -22,6 +22,8 @@ zabbix_export:
       groups:
         - name: BA/Profiles
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
+        - tag: Vendor
+          value: 'Center Click'
 

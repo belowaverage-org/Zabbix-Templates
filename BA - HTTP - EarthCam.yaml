@@ -33,8 +33,7 @@ zabbix_export:
                   return 1;
           url: 'https://video1.earthcam.com/myearthcam/{$ID}.flv/playlist.m3u8'
           tags:
-            - tag: Stream
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 32243d54e53742548d132243527eeef7
@@ -42,9 +41,14 @@ zabbix_export:
               name: 'EarthCam Stream Offline'
               priority: WARNING
               manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: State
       tags:
-        - tag: Type
+        - tag: Agent
           value: HTTP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 56dbdc982f0745749f5f42d68b37a747
           name: Status

@@ -21,6 +21,9 @@ zabbix_export:
           delay: 10s
           history: '0'
           value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
       discovery_rules:
         - uuid: e4cdcd9f67b24b3c93b312a52bf78a11
           name: 'Interfaces Discovery'
@@ -60,9 +63,11 @@ zabbix_export:
                   error_handler: CUSTOM_VALUE
                   error_handler_params: '0'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Status
             - uuid: 87b5057634ea44dabc70e8d9a5c71e55
               name: 'Interface ({#NAME}: {#ALIAS}) Alias'
@@ -81,9 +86,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Alias
             - uuid: b9691cce3ddf42839e1f3f770ecebefd
               name: 'Interface ({#NAME}: {#ALIAS}) In Discards'
@@ -100,9 +107,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Discards
             - uuid: 5760b2886c8640fd9bab2f200c57ce0d
               name: 'Interface ({#NAME}: {#ALIAS}) In Errors'
@@ -119,9 +128,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Errors
             - uuid: 6b9bd480242345febbcfc08b18bece36
               name: 'Interface ({#NAME}: {#ALIAS}) In Usage'
@@ -141,9 +152,11 @@ zabbix_export:
                   parameters:
                     - '100'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Usage
             - uuid: d41db500945643b6afc4b82015f5f5e6
               name: 'Interface ({#NAME}: {#ALIAS}) In Rate'
@@ -163,9 +176,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Rate
             - uuid: b39447b3446c4432a3c66ef3e46fb5a6
               name: 'Interface ({#NAME}: {#ALIAS}) Operational Status'
@@ -182,9 +197,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 5436374b9ed946e79cb2bf75e02f30e4
@@ -194,10 +211,8 @@ zabbix_export:
                   priority: WARNING
                   manual_close: 'YES'
                   tags:
-                    - tag: Interface
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: Threshold
                 - uuid: 49be460d2f1841e6963d2cfcfd402401
                   expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.operstatus[{#NAME}])<>1'
                   name: 'Interface ({#NAME}: {#ALIAS}) Operational Status != Up'
@@ -205,10 +220,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Interface
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 80d88a690e8047e9aa1b627467aa2458
               name: 'Interface ({#NAME}: {#ALIAS}) Out Discards'
               type: DEPENDENT
@@ -224,9 +237,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Discards
             - uuid: 8767d44b389a4d39bfa7cdd9bef3e19d
               name: 'Interface ({#NAME}: {#ALIAS}) Out Errors'
@@ -243,9 +258,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Errors
             - uuid: 27685ca79f79438f9dcd391306f44291
               name: 'Interface ({#NAME}: {#ALIAS}) Out Usage'
@@ -265,9 +282,11 @@ zabbix_export:
                   parameters:
                     - '100'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Usage
             - uuid: 560a80f3986f4daaa67307817be05cda
               name: 'Interface ({#NAME}: {#ALIAS}) Out Rate'
@@ -287,9 +306,11 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Rate
             - uuid: d025c6fb73e04829822ba94aa58f4a45
               name: 'Interface ({#NAME}: {#ALIAS}) Speed'
@@ -305,30 +326,12 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
                   value: Speed
-            - uuid: 17a15d0758b94ad9a5f6002c7523e144
-              name: 'Interface ({#NAME}: {#ALIAS}) Type'
-              type: DEPENDENT
-              key: 'snmp.interfaces.type[{#NAME}]'
-              history: 7d
-              trends: '0'
-              valuemap:
-                name: 'Interface Types'
-              preprocessing:
-                - type: SNMP_WALK_VALUE
-                  parameters:
-                    - '.1.3.6.1.2.1.2.2.1.3.{#SNMPINDEX}'
-                    - '0'
-              master_item:
-                key: snmp.interfaces
-              tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Type
           trigger_prototypes:
             - uuid: f7ac6e903d5d4c9fa6bdb6a0a4bdf5ad
               expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN})'
@@ -336,30 +339,24 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Discards
+                - tag: 'Trigger Type'
+                  value: Threshold
             - uuid: 62ed56a4a893446fa8515de4852ca5fa
               expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN})'
               name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME}'
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Errors
+                - tag: 'Trigger Type'
+                  value: Threshold
             - uuid: b429247383cd421db1f0e4471e286c98
               expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.in.usage[{#NAME}])>={$INTER_USAGE_WARN} or last(/BA - MIB - Interfaces/snmp.interfaces.out.usage[{#NAME}])>={$INTER_USAGE_WARN}'
               name: 'Interface ({#NAME}: {#ALIAS}) Usage >= {$INTER_USAGE_WARN}%'
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
           graph_prototypes:
             - uuid: 777a7a1a8c8d49aea746670c7dacd759
               name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
@@ -418,6 +415,42 @@ zabbix_export:
                   } else {
                       return value;
                   }
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"1"'
+                - '"{#TYPE}":"other"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"6"'
+                - '"{#TYPE}":"ethernetCsmacd"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"24"'
+                - '"{#TYPE}":"softwareLoopback"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"53"'
+                - '"{#TYPE}":"propVirtual"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"54"'
+                - '"{#TYPE}":"propMultiplexor"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"71"'
+                - '"{#TYPE}":"ieee80211"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"131"'
+                - '"{#TYPE}":"tunnel"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"135"'
+                - '"{#TYPE}":"l2vlan"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"258"'
+                - '"{#TYPE}":"vmwareVirtualNic"'
           overrides:
             - name: 'No Alias'
               step: '1'
@@ -434,15 +467,17 @@ zabbix_export:
               filter:
                 conditions:
                   - macro: '{#TYPE}'
-                    value: '71'
+                    value: ^ieee80211$
               operations:
                 - operationobject: TRIGGER_PROTOTYPE
                   operator: LIKE
                   value: Errors
                   status: DISABLED
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 9f66f49a16914a42b4731103a16d816f
           name: Interfaces
@@ -474,27 +509,6 @@ zabbix_export:
               newvalue: 'False'
             - value: '1'
               newvalue: 'True'
-        - uuid: 5694b665ff254cd0b49e02e3d7a9baec
-          name: 'Interface Types'
-          mappings:
-            - value: '1'
-              newvalue: other
-            - value: '6'
-              newvalue: ethernetCsmacd
-            - value: '24'
-              newvalue: softwareLoopback
-            - value: '53'
-              newvalue: propVirtual
-            - value: '54'
-              newvalue: propMultiplexor
-            - value: '71'
-              newvalue: ieee80211
-            - value: '131'
-              newvalue: tunnel
-            - value: '135'
-              newvalue: l2vlan
-            - value: '258'
-              newvalue: vmwareVirtualNic
         - uuid: 042dd6004ca744328459b83d571efd02
           name: 'Operational Status'
           mappings:

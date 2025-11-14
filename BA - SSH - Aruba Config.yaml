@@ -40,7 +40,8 @@ zabbix_export:
             {"Expect":"# @@@"}
           request_method: POST
           tags:
-            - tag: Config
+            - tag: 'Item Type'
+              value: Config
           triggers:
             - uuid: 2fe56d78b3254bbb9535028f50f83ca9
               expression: 'nodata(/BA - SSH - Aruba Config/ssh.config,3d)=1'
@@ -52,8 +53,11 @@ zabbix_export:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
-                - tag: Config
+                - tag: 'Trigger Type'
+                  value: State
       tags:
-        - tag: Type
+        - tag: Agent
           value: SSH
+        - tag: 'Template Type'
+          value: Poller
 

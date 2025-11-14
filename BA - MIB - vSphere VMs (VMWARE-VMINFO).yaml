@@ -21,8 +21,7 @@ zabbix_export:
           history: 7d
           params: 'sum(last_foreach(//vsphere.vm.cpus[*]))'
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Count
         - uuid: befdbfd5a25d4e038bc2f53eedab5c98
           name: 'CPU Subscription'
@@ -38,8 +37,7 @@ zabbix_export:
               parameters:
                 - '100'
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Subscription
           triggers:
             - uuid: f9883375c125492abab9ce4181caf353
@@ -53,9 +51,8 @@ zabbix_export:
                 - name: 'CPU Subscription >= 500%'
                   expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
               tags:
-                - tag: CPU
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
             - uuid: 885272fd23404a5b9fe53aef2b7de707
               expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=400'
               name: 'CPU Subscription >= 400%'
@@ -65,18 +62,16 @@ zabbix_export:
                 - name: 'CPU Subscription >= 500%'
                   expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
               tags:
-                - tag: CPU
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
             - uuid: 881639b9a7284eac98a5c31b649b4e6c
               expression: 'last(/BA - MIB - vSphere VMs/vsphere.cpus.subscription)>=500'
               name: 'CPU Subscription >= 500%'
               priority: AVERAGE
               manual_close: 'YES'
               tags:
-                - tag: CPU
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: 55e4078646824cb18348e0194b551123
           name: 'VM Count'
           type: CALCULATED
@@ -85,9 +80,8 @@ zabbix_export:
           history: 7d
           params: 'sum(exists_foreach(//vsphere.vm.state[*]))'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Count
-            - tag: VM
       discovery_rules:
         - uuid: a6fd7567cc30408d9711e1bab1030c56
           name: 'VM Discovery'
@@ -106,8 +100,7 @@ zabbix_export:
               delay: 1h
               history: 7d
               tags:
-                - tag: CPU
-                - tag: Type
+                - tag: 'Item Type'
                   value: Count
                 - tag: VM
                   value: '{#NAME}'
@@ -124,7 +117,7 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: 'Guest OS'
                 - tag: VM
                   value: '{#NAME}'
@@ -141,7 +134,7 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: State
                 - tag: VM
                   value: '{#NAME}'
@@ -158,7 +151,7 @@ zabbix_export:
                   parameters:
                     - '1048576'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Size
                 - tag: VM
                   value: '{#NAME}'
@@ -175,11 +168,13 @@ zabbix_export:
                   parameters:
                     - 1d
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: State
                 - tag: VM
                   value: '{#NAME}'
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
 

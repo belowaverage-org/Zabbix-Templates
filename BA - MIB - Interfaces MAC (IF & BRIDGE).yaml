@@ -44,8 +44,7 @@ zabbix_export:
                       });
                   return JSON.stringify(results);
           tags:
-            - tag: 'MAC Count'
-            - tag: Type
+            - tag: 'Item Type'
               value: Discovery
         - uuid: 9ebe2ba0750e44d6aba6d54dba1504b4
           name: 'Interfaces MAC Discovery'
@@ -100,8 +99,7 @@ zabbix_export:
                   }
                   return JSON.stringify(result);
           tags:
-            - tag: MAC
-            - tag: Type
+            - tag: 'Item Type'
               value: Discovery
       discovery_rules:
         - uuid: b2841a94cb24434798eb25f1bae1be56
@@ -131,9 +129,9 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.mac.count.discovery.json
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Count
             - uuid: 8205834112a849e9aaa49a9f929ecb6d
               name: 'Interface ({#NAME}: {#ALIAS}) Managed LLDP Status'
@@ -153,9 +151,9 @@ zabbix_export:
                   error_handler: CUSTOM_VALUE
                   error_handler_params: '0'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
             - uuid: 62187cc596264fe4938e8dd2cdc358ba
               name: 'Interface ({#NAME}: {#ALIAS}) Uplink Status'
@@ -175,9 +173,9 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.mac.count.discovery.json
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
           trigger_prototypes:
             - uuid: 3ba62eed99da49268e57928089ac4d41
@@ -188,6 +186,9 @@ zabbix_export:
               priority: INFO
               description: 'This interface has an un-managed device connected.'
               manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
           master_item:
             key: snmp.interfaces.mac.count.discovery.json
           overrides:
@@ -234,17 +235,19 @@ zabbix_export:
               master_item:
                 key: snmp.interfaces.mac.discovery.json
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Status
                 - tag: MAC
                   value: '{#MAC}'
-                - tag: Type
-                  value: Status
           master_item:
             key: snmp.interfaces.mac.discovery.json
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 4832488ec33a470b8f7ee84221ceb82b
           name: 'MAC Status'

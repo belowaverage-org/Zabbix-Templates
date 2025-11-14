@@ -41,7 +41,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Alarm
               trigger_prototypes:
                 - uuid: 28d8f5392b4f4a6099d0ee260d504be2
@@ -51,10 +51,8 @@ zabbix_export:
                   description: 'An alarm has been triggered!'
                   manual_close: 'YES'
                   tags:
-                    - tag: Entity
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: Alarm
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 2dcd7f640d80439b97e9b0c367465d77
               name: 'Entity ({#NAME}) Class'
               type: SNMP_AGENT
@@ -67,7 +65,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Class
             - uuid: 48fbdf1f81504698b8a40c6ae64aa453
               name: 'Entity ({#NAME}) Description'
@@ -84,7 +82,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Description
             - uuid: 8ce3cfa23d134747945c774e0ad6e8f8
               name: 'Entity ({#NAME}) Model'
@@ -101,7 +99,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Model
             - uuid: f8806d92cf224591bff4b3ed9027e35d
               name: 'Entity ({#NAME}) Sensor Type'
@@ -115,7 +113,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Type
             - uuid: af38085e9c464cbb94a5fbf7629aa576
               name: 'Entity ({#NAME}) Sensor Value'
@@ -126,7 +124,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Value
             - uuid: b362e9cc210a448f839040e71db6dd96
               name: 'Entity ({#NAME}) Serial'
@@ -143,7 +141,7 @@ zabbix_export:
               tags:
                 - tag: Entity
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Serial
           graph_prototypes:
             - uuid: 54db887b37754d2ab01476b2e2acdb48
@@ -259,8 +257,10 @@ zabbix_export:
                   value: Serial
                   discover: NO_DISCOVER
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 7caa4aac7c634155b5562ff764894989
           name: Alarm

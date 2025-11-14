@@ -27,7 +27,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: CPU
         - uuid: fbed91825cc84f93801184e6727c122a
           name: 'Center Click - Jitter'
@@ -43,7 +43,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Jitter
         - uuid: 78f82cd1af2045bbb7fcea02f63a0557
           name: 'Center Click - Termperature'
@@ -59,7 +59,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Temperature
         - uuid: 7d1f983cfd1045b28228c95b1f146d90
           name: 'Center Click JSON'
@@ -69,7 +69,7 @@ zabbix_export:
           value_type: TEXT
           url: 'http://{HOST.HOST}/json'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: JSON
         - uuid: 684e7bee8d4245a7ae0fdaf70b1d37a4
           name: 'GPS - Satellites Seen'
@@ -83,7 +83,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Satellites
         - uuid: 2578c493b7ea438fba81a643b2415eb2
           name: 'GPS - Signal Noise Ratio'
@@ -99,7 +99,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: SNR
         - uuid: d205628662924b51a0ff8fea8b770f18
           name: 'NTP - Clients'
@@ -113,7 +113,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Clients
         - uuid: 3df81ee6c914495abc4fde161bac9d6c
           name: 'NTP - Jitter'
@@ -129,7 +129,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Jitter
         - uuid: 448d42867e524b7a925cd061b544a64a
           name: 'NTP - Recieved PPS'
@@ -147,7 +147,7 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: PPS
         - uuid: 1390b9485e1a4c47bf3fcea753270aec
           name: 'NTP - Transmitted PPS'
@@ -165,11 +165,13 @@ zabbix_export:
           master_item:
             key: centerclick.json
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: PPS
       tags:
-        - tag: Type
+        - tag: Agent
           value: HTTP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 19ad995e75ec482a8ee86ca1b3a66a18
           name: 'Center Click NTP'

@@ -21,8 +21,7 @@ zabbix_export:
           history: 1h
           value_type: CHAR
           tags:
-            - tag: RouterOS
-            - tag: Type
+            - tag: 'Item Type'
               value: Version
           triggers:
             - uuid: dce23b47174b41ef81218013175425f0
@@ -34,9 +33,8 @@ zabbix_export:
                 - name: 'RouterOS Version Out of Date'
                   expression: 'find(/BA - MIB - MikroTik/ros.version,#1,"regexp","{$SOFTWARE_VERSION_STRINGS}")=0'
               tags:
-                - tag: RouterOS
-                - tag: Type
-                  value: Version
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: dcdf53f894a043bf83bef95f341c33c8
           name: 'RouterOS Board Name'
           type: SNMP_AGENT
@@ -47,8 +45,7 @@ zabbix_export:
           value_type: CHAR
           inventory_link: MODEL
           tags:
-            - tag: RouterOS
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: 2422b180ee304cadb7b3848987545857
           name: 'CPU Frequency'
@@ -62,8 +59,7 @@ zabbix_export:
               parameters:
                 - '1000000'
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Frequency
         - uuid: 7d2ce0e43616493cbf1106fbe2a5063f
           name: 'RouterOS Serial'
@@ -75,8 +71,7 @@ zabbix_export:
           value_type: CHAR
           inventory_link: SERIALNO_A
           tags:
-            - tag: RouterOS
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
         - uuid: d98aae57d9454c6a8836fab035873f83
           name: 'RouterOS Version'
@@ -87,8 +82,7 @@ zabbix_export:
           value_type: CHAR
           inventory_link: SOFTWARE
           tags:
-            - tag: RouterOS
-            - tag: Type
+            - tag: 'Item Type'
               value: Version
           triggers:
             - uuid: 23f1bc1096ff49728e3c340164fbe352
@@ -97,9 +91,8 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: RouterOS
-                - tag: Type
-                  value: Version
+                - tag: 'Trigger Type'
+                  value: State
       discovery_rules:
         - uuid: a218d20f379642fd83b0472df43663e8
           name: 'ROS Gauge Discovery'
@@ -130,7 +123,7 @@ zabbix_export:
               tags:
                 - tag: Gauge
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: '{#UNIT}'
               trigger_prototypes:
                 - uuid: 8bbeacb4fa7b429aa0cc8c0e917c0991
@@ -139,10 +132,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Guage
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: '{#UNIT}'
+                    - tag: 'Trigger Type'
+                      value: Threshold
           graph_prototypes:
             - uuid: b15abde9dac841bca795548194e9345e
               name: 'Gauge ({#NAME}) {#UNIT}'
@@ -188,8 +179,10 @@ zabbix_export:
                   value: Temperature
                   discover: NO_DISCOVER
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 64178c330b0846e59eebe2be6abb18be
           name: RouterOS

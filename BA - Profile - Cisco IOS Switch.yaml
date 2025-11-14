@@ -23,9 +23,7 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Networking
       tags:
-        - tag: Type
-          value: Network
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
         - tag: Vendor
           value: Cisco

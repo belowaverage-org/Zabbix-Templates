@@ -22,7 +22,7 @@ zabbix_export:
           history: 30d
           units: '%'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Charge
         - uuid: 05f89524723b42268c9675e966d78330
           name: 'Battery Last Replacement Date'
@@ -38,7 +38,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Age
         - uuid: dd6892088b68483899e2e58a81bd2b72
           name: 'Battery Replacement Status'
@@ -50,7 +50,7 @@ zabbix_export:
           valuemap:
             name: 'Battery Replace Indicator'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 51859a6d64964de989b2ee50cdc2de14
@@ -60,8 +60,8 @@ zabbix_export:
               description: 'The battery in this UPS needs replaced.'
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 42ab4ab29fc24a94909bb478dd260058
           name: 'Battery Runtime'
           type: SNMP_AGENT
@@ -75,7 +75,7 @@ zabbix_export:
               parameters:
                 - '0.01'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Runtime
         - uuid: 82a0e47ebf8041e7b11c331020a30a26
           name: 'Battery Status'
@@ -87,7 +87,7 @@ zabbix_export:
           valuemap:
             name: 'Battery Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
         - uuid: 8de781b3dede4bc3b6366470d3b141a4
           name: 'Battery Temperature'
@@ -98,7 +98,7 @@ zabbix_export:
           history: 30d
           units: C
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Temperature
         - uuid: 8b9caea167324421a35130dbeb493ef4
           name: Model
@@ -114,7 +114,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: c07237c22ccc4366a6ab66f4a556a1b1
           name: Serial
@@ -130,7 +130,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
         - uuid: fd0a96096d3645ed9728ecdde84484ee
           name: 'UPS Input Frequency'
@@ -145,7 +145,7 @@ zabbix_export:
               parameters:
                 - '0.1'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Hertz
         - uuid: 940103e8330148a2960fec819cfd2b0a
           name: 'UPS Input Voltage'
@@ -160,7 +160,7 @@ zabbix_export:
               parameters:
                 - '0.1'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Voltage
         - uuid: 48885bf925b7466aaeec73ae70d1dddd
           name: 'UPS Status'
@@ -172,7 +172,7 @@ zabbix_export:
           valuemap:
             name: 'UPS Status'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: aa2be7bb37e14efb931ac865bfb27385
@@ -181,11 +181,13 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 0b0ad3476602407c83ddac095017661d
           name: APC

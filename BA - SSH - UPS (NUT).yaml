@@ -51,6 +51,9 @@ zabbix_export:
                       mIndex++;
                   });
                   return JSON.stringify(result);
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
       discovery_rules:
         - uuid: aab88f1eccb54af58b4845c52cf5265e
           name: 'UPS Discovery'
@@ -72,7 +75,7 @@ zabbix_export:
               master_item:
                 key: 'ssh.run[upsdiscovery]'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Charge
                 - tag: UPS
                   value: '{#NAME}'
@@ -83,10 +86,8 @@ zabbix_export:
                   priority: WARNING
                   manual_close: 'YES'
                   tags:
-                    - tag: Type
-                      value: Charge
-                    - tag: UPS
-                      value: '{#NAME}'
+                    - tag: 'Trigger Type'
+                      value: Threshold
             - uuid: caf05ab2f31346d1aee194218fdc3bef
               name: 'UPS ({#NAME}) Load'
               type: DEPENDENT
@@ -100,7 +101,7 @@ zabbix_export:
               master_item:
                 key: 'ssh.run[upsdiscovery]'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Load
                 - tag: UPS
                   value: '{#NAME}'
@@ -117,7 +118,7 @@ zabbix_export:
               master_item:
                 key: 'ssh.run[upsdiscovery]'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Runtime
                 - tag: UPS
                   value: '{#NAME}'
@@ -143,7 +144,7 @@ zabbix_export:
               master_item:
                 key: 'ssh.run[upsdiscovery]'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
                 - tag: UPS
                   value: '{#NAME}'
@@ -154,10 +155,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: Type
-                      value: Status
-                    - tag: UPS
-                      value: '{#NAME}'
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 71e2da69276a404c9f3aacd9cac442aa
               name: 'UPS ({#NAME}) Voltage'
               type: DEPENDENT
@@ -172,12 +171,17 @@ zabbix_export:
               master_item:
                 key: 'ssh.run[upsdiscovery]'
               tags:
-                - tag: Type
+                - tag: 'Item Type'
                   value: Voltage
                 - tag: UPS
                   value: '{#NAME}'
           master_item:
             key: 'ssh.run[upsdiscovery]'
+      tags:
+        - tag: Agent
+          value: SSH
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: a867be58c5ef404ebfe3baf24c32b9fd
           name: NUT

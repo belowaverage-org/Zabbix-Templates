@@ -31,7 +31,7 @@ zabbix_export:
           master_item:
             key: camera.scopes
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Firmware
         - uuid: 62c9ab8714064b7f91eddae1ca247b10
           name: 'Device Info'
@@ -52,7 +52,7 @@ zabbix_export:
           posts: '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tds="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><soap:Body><tds:GetDeviceInformation /></soap:Body></soap:Envelope>'
           request_method: POST
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: ONVIF
         - uuid: a901ebe015ec41578b6f7265970a7efd
           name: 'Device Media'
@@ -75,7 +75,7 @@ zabbix_export:
           posts: '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:trt="http://www.onvif.org/ver10/media/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><soap:Body><trt:GetVideoSources /></soap:Body></soap:Envelope>'
           request_method: POST
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: ONVIF
         - uuid: cd309dfaf45646d681098c866f2ac499
           name: 'Device Model'
@@ -95,7 +95,7 @@ zabbix_export:
           master_item:
             key: camera.scopes
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: cbb50b55e58e43799b3619025ea4a604
           name: 'Device Name'
@@ -123,7 +123,7 @@ zabbix_export:
           master_item:
             key: camera.scopes
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Name
         - uuid: c569bead71ff46c9990ec6ca6ee6238b
           name: 'Device MAC'
@@ -147,7 +147,7 @@ zabbix_export:
           master_item:
             key: camera.scopes
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: MAC
         - uuid: 87a53d70753c474bbb21303663af837f
           name: 'Device Scopes'
@@ -168,7 +168,7 @@ zabbix_export:
           posts: '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tds="http://www.onvif.org/ver10/device/wsdl" xmlns:tt="http://www.onvif.org/ver10/schema"><soap:Body><tds:GetScopes /><tds:GetDeviceInformation /></soap:Body></soap:Envelope>'
           request_method: POST
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: ONVIF
           triggers:
             - uuid: 894908c06a4f42738dd16f954756d551
@@ -183,8 +183,8 @@ zabbix_export:
                 - name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
                   expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
               tags:
-                - tag: Type
-                  value: ONVIF
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 3eb186a618c14079a2f8d7bc6f5a3f3f
           name: 'Device Sensor'
           type: DEPENDENT
@@ -212,7 +212,7 @@ zabbix_export:
           master_item:
             key: camera.media
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Sensor
         - uuid: c469663ea4ea4ad69f8b05bfc4b6e2bb
           name: 'Device Serial'
@@ -231,11 +231,13 @@ zabbix_export:
           master_item:
             key: camera.info
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
       tags:
-        - tag: Type
+        - tag: Agent
           value: ONVIF
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 520e80c0f687421cb23e6c0f3df2ed13
           name: Avigilon

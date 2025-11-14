@@ -23,10 +23,8 @@ zabbix_export:
       groups:
         - name: BA/Profiles/Servers
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
-        - tag: Type
-          value: Servers
         - tag: Vendor
           value: Linux
 

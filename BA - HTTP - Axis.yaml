@@ -31,7 +31,7 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Firmware
         - uuid: b55cd1f3182b449c95525eaf00cac1c8
           name: 'Device Model'
@@ -51,7 +51,7 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: d9a3aac2a16745529f93a65b78f0c274
           name: 'Device Name'
@@ -71,7 +71,7 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Name
         - uuid: 95ddd29e014c4505b55c8fb1cd604c0b
           name: 'Device MAC'
@@ -91,7 +91,7 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: MAC
         - uuid: ec385938d1354e08876f86565f5d7ccf
           name: 'Device Parameters'
@@ -106,7 +106,7 @@ zabbix_export:
           timeout: 30s
           url: 'http://{HOST.IP}/axis-cgi/admin/paramlist.cgi'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: HTTP
           triggers:
             - uuid: d3e13913f3cc4d7381e6be130c70ca79
@@ -121,8 +121,8 @@ zabbix_export:
                 - name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
                   expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
               tags:
-                - tag: Type
-                  value: HTTP
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: ab21bc5de5734e6e8aa6f20a243fa019
           name: 'Device Sensor'
           type: DEPENDENT
@@ -141,7 +141,7 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Sensor
         - uuid: 1e7e44b7fcb34b32abd25100f9748166
           name: 'Device Serial'
@@ -161,9 +161,11 @@ zabbix_export:
           master_item:
             key: camera.parameters
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Serial
       tags:
-        - tag: Type
+        - tag: Agent
           value: HTTP
+        - tag: 'Template Type'
+          value: Poller
 

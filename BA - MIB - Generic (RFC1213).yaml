@@ -27,8 +27,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Description
         - uuid: 0aac83f830854eedbb489a7623b73dd4
           name: 'SNMP Location'
@@ -44,8 +43,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Location
         - uuid: 8f50ac4f2ab2436f88b1f39e6cec1f79
           name: 'SNMP Location Latitude'
@@ -62,8 +60,7 @@ zabbix_export:
           master_item:
             key: snmp.location
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Location
         - uuid: abe11bdfb60f4ed9a69151fb46164ce9
           name: 'SNMP Location Longitude'
@@ -80,8 +77,7 @@ zabbix_export:
           master_item:
             key: snmp.location
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Location
         - uuid: 892eced5e100486b8e5353fa6ba6fe31
           name: 'SNMP Name'
@@ -97,8 +93,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Name
           triggers:
             - uuid: b02a2f213a7b4df28c734ddd3e4415da
@@ -108,7 +103,8 @@ zabbix_export:
               priority: INFO
               manual_close: 'YES'
               tags:
-                - tag: SNMP
+                - tag: 'Trigger Type'
+                  value: Recent
         - uuid: 72a2a3118d0d4bdc8196f91d45d06094
           name: 'SNMP Object ID'
           type: SNMP_AGENT
@@ -123,8 +119,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: 'Object ID'
         - uuid: 8d6e1a0ceb5f4d52b884d4be397652a8
           name: 'SNMP Uptime'
@@ -138,8 +133,7 @@ zabbix_export:
               parameters:
                 - '0.01'
           tags:
-            - tag: SNMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Uptime
           triggers:
             - uuid: f320509f49d6454e87a36f0499efd9bd
@@ -151,7 +145,8 @@ zabbix_export:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
-                - tag: SNMP
+                - tag: 'Trigger Type'
+                  value: State
             - uuid: ed77aa0f513b454d90a231185baef9be
               expression: 'last(/BA - MIB - Generic/snmp.uptime)<=300'
               name: 'Device rebooted'
@@ -159,10 +154,13 @@ zabbix_export:
               description: 'This device rebooted within the last 5 minutes.'
               manual_close: 'YES'
               tags:
-                - tag: SNMP
+                - tag: 'Trigger Type'
+                  value: Recent
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 55e89b077abe45588368e83c98c963f1
           name: SNMP

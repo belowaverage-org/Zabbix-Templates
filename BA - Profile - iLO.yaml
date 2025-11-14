@@ -56,9 +56,9 @@ zabbix_export:
                   parameters:
                     - 24h
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Alias
             - uuid: 94c1d5de306a47c4963e149a3afb8504
               name: 'Interface ({#NAME}: {#ALIAS}) In Errors'
@@ -74,9 +74,9 @@ zabbix_export:
                     - '8'
                 - type: CHANGE_PER_SECOND
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Errors
             - uuid: 5e9b33dcc76645e19d581a89fb396ee9
               name: 'Interface ({#NAME}: {#ALIAS}) In Usage'
@@ -96,9 +96,9 @@ zabbix_export:
                   parameters:
                     - '100'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Usage
             - uuid: 767871d53c9a4cbbb0900393193c979a
               name: 'Interface ({#NAME}: {#ALIAS}) In Rate'
@@ -113,9 +113,9 @@ zabbix_export:
                     - '8'
                 - type: CHANGE_PER_SECOND
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Rate
             - uuid: 210a3f40ad024e85964468495d7f151d
               name: 'Interface ({#NAME}: {#ALIAS}) Operational Status'
@@ -125,9 +125,9 @@ zabbix_export:
               delay: 2m
               history: 7d
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 673bf191003144baa7b159524e4b4b2f
@@ -136,10 +136,8 @@ zabbix_export:
                   priority: WARNING
                   manual_close: 'YES'
                   tags:
-                    - tag: Interface
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: Threshold
             - uuid: d819c44d41fc4a6bbc5fbe319a7587d1
               name: 'Interface ({#NAME}: {#ALIAS}) Out Errors'
               type: SNMP_AGENT
@@ -154,9 +152,9 @@ zabbix_export:
                     - '8'
                 - type: CHANGE_PER_SECOND
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Errors
             - uuid: fd552c5cbaa34e37b1264fad7fefa1e5
               name: 'Interface ({#NAME}: {#ALIAS}) Out Usage'
@@ -176,9 +174,9 @@ zabbix_export:
                   parameters:
                     - '100'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Usage
             - uuid: d75af8046ed14fb0a8f8a2da62ef7494
               name: 'Interface ({#NAME}: {#ALIAS}) Out Rate'
@@ -193,9 +191,9 @@ zabbix_export:
                     - '8'
                 - type: CHANGE_PER_SECOND
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Rate
             - uuid: eb017fd94d134c4fa097ad10d59eaa35
               name: 'Interface ({#NAME}: {#ALIAS}) Speed'
@@ -210,9 +208,9 @@ zabbix_export:
                   parameters:
                     - '1000000'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Speed
           trigger_prototypes:
             - uuid: 182e84fa895940ac91884d0df513d3c0
@@ -221,20 +219,16 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Errors
+                - tag: 'Trigger Type'
+                  value: Threshold
             - uuid: 5d4224b75fcc401c8ba547399806ab0c
               expression: 'last(/BA - Profile - iLO/snmp.interfaces.in.usage[{#NAME}])>={$INTER_USAGE_WARN} or last(/BA - Profile - iLO/snmp.interfaces.out.usage[{#NAME}])>={$INTER_USAGE_WARN}'
               name: 'Interface ({#NAME}: {#ALIAS}) Usage >= {$INTER_USAGE_WARN}%'
               priority: WARNING
               manual_close: 'YES'
               tags:
-                - tag: Interface
-                  value: '{#NAME}'
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
           graph_prototypes:
             - uuid: 0be5ec8ae812460ead772320312a3630
               name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
@@ -263,10 +257,8 @@ zabbix_export:
                     host: 'BA - Profile - iLO'
                     key: 'snmp.interfaces.out.errors[{#NAME}]'
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Profile
-        - tag: Type
-          value: Servers
         - tag: Vendor
-          value: iLO
+          value: HPE
 

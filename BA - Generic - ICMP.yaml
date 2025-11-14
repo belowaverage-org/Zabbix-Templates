@@ -22,8 +22,7 @@ zabbix_export:
           value_type: FLOAT
           units: '%'
           tags:
-            - tag: ICMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Loss
           triggers:
             - uuid: 7e3ebb73a3e4415a8f69c2ddb2d40edb
@@ -35,7 +34,8 @@ zabbix_export:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
-                - tag: ICMP
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: 157c0a57578f4b6fa626c497c413b7ff
           name: 'ICMP Ping'
           type: SIMPLE
@@ -45,8 +45,7 @@ zabbix_export:
           valuemap:
             name: 'Ping Status'
           tags:
-            - tag: ICMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 77f9ed9ba5d44b938fd34d222cd5c502
@@ -55,7 +54,8 @@ zabbix_export:
               priority: HIGH
               manual_close: 'YES'
               tags:
-                - tag: ICMP
+                - tag: 'Trigger Type'
+                  value: State
         - uuid: 8b397b5e4de74806b3d4814da8ca7497
           name: 'ICMP Latency'
           type: SIMPLE
@@ -68,8 +68,7 @@ zabbix_export:
               parameters:
                 - '1000'
           tags:
-            - tag: ICMP
-            - tag: Type
+            - tag: 'Item Type'
               value: Latency
           triggers:
             - uuid: 0b6fa791e1cc4993bd779488cc08fe64
@@ -81,10 +80,13 @@ zabbix_export:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
-                - tag: ICMP
+                - tag: 'Trigger Type'
+                  value: Threshold
       tags:
-        - tag: Type
-          value: Generic
+        - tag: Agent
+          value: ICMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: fd7f3696289d4db0a96b6e8a9b22bd76
           name: 'ICMP Statistics'

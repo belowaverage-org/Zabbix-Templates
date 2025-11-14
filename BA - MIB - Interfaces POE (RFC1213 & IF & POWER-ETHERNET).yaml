@@ -43,10 +43,9 @@ zabbix_export:
               valuemap:
                 name: 'POE Admin'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: POE
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
             - uuid: 617cdf1c471444099069446bb97565b5
               name: 'Interface ({#NAME}: {#ALIAS}) POE Detection'
@@ -57,10 +56,9 @@ zabbix_export:
               valuemap:
                 name: 'POE Status'
               tags:
-                - tag: Interface
+                - tag: 'Interface Name'
                   value: '{#NAME}'
-                - tag: POE
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: c0a0fe136b29476a883a005dddc2a666
@@ -69,11 +67,8 @@ zabbix_export:
                   priority: WARNING
                   manual_close: 'YES'
                   tags:
-                    - tag: Interface
-                      value: '{#NAME}'
-                    - tag: POE
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
           preprocessing:
             - type: JAVASCRIPT
               parameters:
@@ -92,8 +87,10 @@ zabbix_export:
                   });
                   return JSON.stringify(newData);
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 850c51d7192742ab927fcdf43d7ae8a4
           name: 'POE Admin'

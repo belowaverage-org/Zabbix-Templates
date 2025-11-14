@@ -27,7 +27,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Model
         - uuid: 9927ce6906e244cea23ebda392226b74
           name: 'Service Tag'
@@ -43,7 +43,7 @@ zabbix_export:
               parameters:
                 - 1d
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: 'Service Tag'
         - uuid: b951924d1d874343b38dd8211ac4cc2e
           name: 'Global Status'
@@ -54,8 +54,7 @@ zabbix_export:
           valuemap:
             name: 'Object Status'
           tags:
-            - tag: Global
-            - tag: Type
+            - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: e90c3fc7f46649c0975c3f32feb31023
@@ -64,9 +63,8 @@ zabbix_export:
               priority: HIGH
               manual_close: 'YES'
               tags:
-                - tag: Global
-                - tag: Type
-                  value: Status
+                - tag: 'Trigger Type'
+                  value: State
       discovery_rules:
         - uuid: 42d18f824b4a41929333629f1f45d0e6
           name: 'Drive Discovery'
@@ -92,7 +90,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Make
             - uuid: 5fed734179be429baab0bd253fcca232
               name: 'Drive ({#DISK}) Model'
@@ -109,7 +107,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Model
             - uuid: 19dd14130fde4e189e6bdcdf0dbd72df
               name: 'Drive ({#DISK}) Serial'
@@ -126,7 +124,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Serial
             - uuid: b7162973d9aa42a7b118abeb144b58ae
               name: 'Drive ({#DISK}) Size'
@@ -143,7 +141,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Size
             - uuid: 39c74ddcf558450590be63665674d40b
               name: 'Drive ({#DISK}) Status'
@@ -157,7 +155,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: 0227fce3a12e4548b6ef0ddb0c0e0140
@@ -168,10 +166,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: Drive
-                      value: '{#DISK}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 4441802ef1f944a5b898af0ec09b42d1
               name: 'Drive ({#DISK}) Type'
               type: SNMP_AGENT
@@ -184,7 +180,7 @@ zabbix_export:
               tags:
                 - tag: Drive
                   value: '{#DISK}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Type
         - uuid: ec4335a8bc7f46019fb5760475b77ed6
           name: 'Fan Discovery'
@@ -206,7 +202,7 @@ zabbix_export:
               tags:
                 - tag: Fan
                   value: '{#FAN}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: RPM
             - uuid: 1c602031725b413b8083c21630d3b228
               name: 'Fan ({#FAN}) Status'
@@ -220,7 +216,7 @@ zabbix_export:
               tags:
                 - tag: Fan
                   value: '{#FAN}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Status
               trigger_prototypes:
                 - uuid: e6ee458513b64b308e44893bfab0a2d4
@@ -229,10 +225,8 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Fan
-                      value: '{#FAN}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
         - uuid: 1a56ee105c1447a5aa91c7dc3c6d8fdb
           name: 'Memory Discovery'
           type: SNMP_AGENT
@@ -255,10 +249,10 @@ zabbix_export:
                   parameters:
                     - '1024'
               tags:
+                - tag: 'Item Type'
+                  value: Size
                 - tag: Memory
                   value: '{#LOCATION}'
-                - tag: Type
-                  value: Size
             - uuid: a595bcdab1e7464db8e98fb1deb32e42
               name: 'Memory ({#LOCATION}) Status'
               type: SNMP_AGENT
@@ -269,10 +263,10 @@ zabbix_export:
               valuemap:
                 name: 'Object Status'
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Memory
                   value: '{#LOCATION}'
-                - tag: Type
-                  value: Status
         - uuid: 5a1c95dbdadf4b9cb23a70422f770c02
           name: 'Power Supply Discovery'
           type: SNMP_AGENT
@@ -292,10 +286,10 @@ zabbix_export:
               valuemap:
                 name: 'Object Status'
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: 'Power Supply'
                   value: '{#SLOT}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: 992bf6b5677d4a2b968870f8e7a99508
                   expression: 'last(/BA - MIB - iDRAC/snmp.psu.status[{#SLOT}])<>3'
@@ -303,10 +297,8 @@ zabbix_export:
                   priority: HIGH
                   manual_close: 'YES'
                   tags:
-                    - tag: 'Power Supply'
-                      value: '{#SLOT}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: ba4d71e1cf524a06927a3a7258d5c73c
               name: 'Power Supply ({#SLOT}) Input Volts'
               type: SNMP_AGENT
@@ -315,10 +307,10 @@ zabbix_export:
               delay: 5m
               history: 30d
               tags:
+                - tag: 'Item Type'
+                  value: Volts
                 - tag: 'Power Supply'
                   value: '{#SLOT}'
-                - tag: Type
-                  value: Volts
         - uuid: e3f42b9ea61e4a1dbd7177e91d693fab
           name: 'Temperature Discovery'
           type: SNMP_AGENT
@@ -341,10 +333,10 @@ zabbix_export:
                   parameters:
                     - '0.1'
               tags:
+                - tag: 'Item Type'
+                  value: Celsius
                 - tag: Temperature
                   value: '{#LOCATION}'
-                - tag: Type
-                  value: Celsius
             - uuid: 59fce9c9227640a8894473dab7f6d019
               name: 'Temperature ({#LOCATION}) Status'
               type: SNMP_AGENT
@@ -355,10 +347,10 @@ zabbix_export:
               valuemap:
                 name: 'Object Status'
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Temperature
                   value: '{#LOCATION}'
-                - tag: Type
-                  value: Status
               trigger_prototypes:
                 - uuid: b866a3981892411ebf2cfa9094a563d3
                   expression: 'last(/BA - MIB - iDRAC/snmp.idrac.temp.status[{#LOCATION}])<>3'
@@ -366,13 +358,13 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   tags:
-                    - tag: Temperature
-                      value: '{#LOCATION}'
-                    - tag: Type
-                      value: Status
+                    - tag: 'Trigger Type'
+                      value: State
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: d2d9f956b6ab4cfb909ef6e57e601c2d
           name: iDRAC

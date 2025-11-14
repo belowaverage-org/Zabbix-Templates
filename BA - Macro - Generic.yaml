@@ -13,7 +13,7 @@ zabbix_export:
       groups:
         - name: BA/Macros
       tags:
-        - tag: Type
+        - tag: 'Template Type'
           value: Macro
       macros:
         - macro: '{$CPU_HIGH_AVG_TIME_WARN}'

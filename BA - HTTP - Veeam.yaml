@@ -39,9 +39,8 @@ zabbix_export:
             - name: url
               value: 'https://{HOST.HOST}:9419/api/'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Discovery
-            - tag: Veeam
         - uuid: 831492be81dd4b849cd77348b3edd618
           name: 'Veeam Version'
           type: SCRIPT
@@ -72,9 +71,8 @@ zabbix_export:
             - name: url
               value: 'https://{HOST.HOST}:9419/api/'
           tags:
-            - tag: Type
+            - tag: 'Item Type'
               value: Version
-            - tag: Veeam
       discovery_rules:
         - uuid: 5b80dbbc2f564807be78cbc079cdcdd8
           name: 'Veeam Jobs Discovery'
@@ -96,11 +94,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Status
-                - tag: Veeam
               trigger_prototypes:
                 - uuid: 5737da01e3e34a1ebeb05a2dac82d549
                   expression: 'last(/BA - HTTP - Veeam/veeam.jobs.lastresult[{#NAME}])<>"Success" and last(/BA - HTTP - Veeam/veeam.jobs.lastresult[{#NAME}])<>"None"'
@@ -109,11 +106,8 @@ zabbix_export:
                   description: 'The last run of this job was not successful.'
                   manual_close: 'YES'
                   tags:
-                    - tag: Job
-                      value: '{#NAME}'
-                    - tag: Type
-                      value: Status
-                    - tag: Veeam
+                    - tag: 'Trigger Type'
+                      value: State
             - uuid: 77ef2a4ddcfe4854895283fe5ce21e10
               name: 'Veeam Job ({#NAME}) Last Run'
               type: DEPENDENT
@@ -127,11 +121,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Date
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Date
-                - tag: Veeam
             - uuid: 827c77eb38914b65b311f3c3c859a390
               name: 'Veeam Job ({#NAME}) Next Run'
               type: DEPENDENT
@@ -145,11 +138,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Date
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Date
-                - tag: Veeam
             - uuid: feda128672764e18b1a627a0fafb4e73
               name: 'Veeam Job ({#NAME}) Status'
               type: DEPENDENT
@@ -163,11 +155,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Status
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Status
-                - tag: Veeam
             - uuid: 4b20b0db8a4d40928192d18ab673daec
               name: 'Veeam Job ({#NAME}) Type'
               type: DEPENDENT
@@ -181,11 +172,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Type
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Type
-                - tag: Veeam
             - uuid: 752c067975ca4b639b1becbbcd31a5e8
               name: 'Veeam Job ({#NAME}) Workload'
               type: DEPENDENT
@@ -199,11 +189,10 @@ zabbix_export:
               master_item:
                 key: veeam.jobs
               tags:
+                - tag: 'Item Type'
+                  value: Type
                 - tag: Job
                   value: '{#NAME}'
-                - tag: Type
-                  value: Type
-                - tag: Veeam
           master_item:
             key: veeam.jobs
           lld_macro_paths:
@@ -213,4 +202,9 @@ zabbix_export:
             - type: JSONPATH
               parameters:
                 - $.data
+      tags:
+        - tag: Agent
+          value: HTTP
+        - tag: 'Template Type'
+          value: Poller
 

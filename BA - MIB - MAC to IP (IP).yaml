@@ -77,8 +77,7 @@ zabbix_export:
                   });
                   return JSON.stringify(data);
           tags:
-            - tag: 'MAC to IP'
-            - tag: Type
+            - tag: 'Item Type'
               value: Discovery
       discovery_rules:
         - uuid: 517f02751b524658a4c505ad3996b7a6
@@ -124,16 +123,17 @@ zabbix_export:
               tags:
                 - tag: IP
                   value: '{#IP}'
+                - tag: 'Item Type'
+                  value: Status
                 - tag: MAC
                   value: '{#MAC}'
-                - tag: 'MAC to IP'
-                - tag: Type
-                  value: Status
           master_item:
             key: m2i.discovery.json
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       valuemaps:
         - uuid: 1364b8e394e74294a3c6107eef28d797
           name: 'MAC to IP State'

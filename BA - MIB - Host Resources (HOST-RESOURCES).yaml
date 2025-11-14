@@ -30,8 +30,7 @@ zabbix_export:
           master_item:
             key: snmp.cpu
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Count
         - uuid: 5025fa88f9a7452289629d2d127374e8
           name: 'CPU Usage'
@@ -52,8 +51,7 @@ zabbix_export:
           master_item:
             key: snmp.cpu
           tags:
-            - tag: CPU
-            - tag: Type
+            - tag: 'Item Type'
               value: Usage
           triggers:
             - uuid: 54befd1674e64270b7bc9876c05d5204
@@ -62,9 +60,8 @@ zabbix_export:
               priority: AVERAGE
               manual_close: 'YES'
               tags:
-                - tag: CPU
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: dfe4572fa178448692691e4d75cd44bc
           name: 'Memory Usage'
           type: DEPENDENT
@@ -111,8 +108,7 @@ zabbix_export:
           master_item:
             key: snmp.hr.storage
           tags:
-            - tag: Memory
-            - tag: Type
+            - tag: 'Item Type'
               value: Usage
           triggers:
             - uuid: 678770fcf45c4c8a8f617d58c4a77776
@@ -121,9 +117,8 @@ zabbix_export:
               priority: AVERAGE
               manual_close: 'YES'
               tags:
-                - tag: Memory
-                - tag: Type
-                  value: Usage
+                - tag: 'Trigger Type'
+                  value: Threshold
         - uuid: 466a0ad4e7d64c64ac813cf42a1a42f6
           name: 'CPU Discovery'
           type: SNMP_AGENT
@@ -131,6 +126,9 @@ zabbix_export:
           key: snmp.cpu
           history: '0'
           value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
         - uuid: d6776d1e932247fca27a366c365cd41f
           name: 'Storage Discovery'
           type: SNMP_AGENT
@@ -138,6 +136,9 @@ zabbix_export:
           key: snmp.hr.storage
           history: '0'
           value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
       discovery_rules:
         - uuid: 0c403e28a6c4499a9ca25969557b655a
           name: 'Processor Discovery'
@@ -162,7 +163,7 @@ zabbix_export:
               tags:
                 - tag: CPU
                   value: '{#SNMPINDEX}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Usage
           master_item:
             key: snmp.cpu
@@ -207,7 +208,7 @@ zabbix_export:
               tags:
                 - tag: Disk
                   value: '{#DESC}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Size
             - uuid: d9309c8752944c33ad352b0b23118259
               name: 'Disk ({#DESC}) Usage'
@@ -225,7 +226,7 @@ zabbix_export:
               tags:
                 - tag: Disk
                   value: '{#DESC}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Usage
               trigger_prototypes:
                 - uuid: 4e5aa0b34f4745ada32f998ac09fe99e
@@ -233,6 +234,9 @@ zabbix_export:
                   name: 'Disk ({#DESC}) Usage >= {$DISK_HIGH_AVG_PERC_WARN}%'
                   priority: HIGH
                   manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: Threshold
             - uuid: d12b45c4665144ab99bcc2b12ee4073d
               name: 'Disk ({#DESC}) Used'
               type: SNMP_AGENT
@@ -253,7 +257,7 @@ zabbix_export:
               tags:
                 - tag: Disk
                   value: '{#DESC}'
-                - tag: Type
+                - tag: 'Item Type'
                   value: Used
           graph_prototypes:
             - uuid: c257fe03d5424e8485a040c39e920cc0
@@ -337,10 +341,10 @@ zabbix_export:
               master_item:
                 key: snmp.hr.storage
               tags:
+                - tag: 'Item Type'
+                  value: Size
                 - tag: Memory
                   value: '{#DESC}'
-                - tag: Type
-                  value: Size
             - uuid: 7dff57c2b11144b791f310ddb854afe0
               name: 'Memory ({#DESC}) Usage'
               type: DEPENDENT
@@ -354,10 +358,10 @@ zabbix_export:
               master_item:
                 key: snmp.hr.storage
               tags:
+                - tag: 'Item Type'
+                  value: Usage
                 - tag: Memory
                   value: '{#DESC}'
-                - tag: Type
-                  value: Usage
             - uuid: 27f46f9cff5e4fc1a7699dce1b869cbd
               name: 'Memory ({#DESC}) Used'
               type: DEPENDENT
@@ -375,10 +379,10 @@ zabbix_export:
               master_item:
                 key: snmp.hr.storage
               tags:
+                - tag: 'Item Type'
+                  value: Used
                 - tag: Memory
                   value: '{#DESC}'
-                - tag: Type
-                  value: Used
           graph_prototypes:
             - uuid: 8d9417a5eeab4a8487ea550f9ef784fe
               name: 'Memory ({#DESC}) Statistics'
@@ -442,8 +446,10 @@ zabbix_export:
                 - .1.3.6.1.2.1.25.2.3.1.6
                 - '0'
       tags:
-        - tag: Type
-          value: MIB
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
       dashboards:
         - uuid: 230ad7e9ab814c76a271c4d937cb0e4f
           name: 'Host Resources'
