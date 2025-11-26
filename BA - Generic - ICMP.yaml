@@ -17,17 +17,24 @@ zabbix_export:
         - uuid: 925ec895069249bca0ec0472a970d21a
           name: 'ICMP Loss'
           type: SIMPLE
-          key: 'icmppingloss[{HOST.HOST},5,1000]'
+          key: 'icmppingloss[{HOST.HOST},10,500]'
           history: 7d
           value_type: FLOAT
           units: '%'
+          preprocessing:
+            - type: IN_RANGE
+              parameters:
+                - '0'
+                - '99'
+              error_handler: CUSTOM_VALUE
+              error_handler_params: '0'
           tags:
             - tag: 'Item Type'
               value: Loss
           triggers:
             - uuid: 7e3ebb73a3e4415a8f69c2ddb2d40edb
-              expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
-              name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
+              expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},10,500],{$ICMP_HIGH_LOSS_WARN_PERIOD})>{$ICMP_HIGH_LOSS_WARN}'
+              name: 'ICMP Loss in {$ICMP_HIGH_LOSS_WARN_PERIOD} > {$ICMP_HIGH_LOSS_WARN}%'
               priority: WARNING
               manual_close: 'YES'
               dependencies:
@@ -189,5 +196,5 @@ zabbix_export:
           calc_fnc: ALL
           item:
             host: 'BA - Generic - ICMP'
-            key: 'icmppingloss[{HOST.HOST},5,1000]'
+            key: 'icmppingloss[{HOST.HOST},10,500]'
 

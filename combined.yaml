@@ -37,17 +37,24 @@ zabbix_export:
         - uuid: 925ec895069249bca0ec0472a970d21a
           name: 'ICMP Loss'
           type: SIMPLE
-          key: 'icmppingloss[{HOST.HOST},5,1000]'
+          key: 'icmppingloss[{HOST.HOST},10,500]'
           history: 7d
           value_type: FLOAT
           units: '%'
+          preprocessing:
+            - type: IN_RANGE
+              parameters:
+                - '0'
+                - '99'
+              error_handler: CUSTOM_VALUE
+              error_handler_params: '0'
           tags:
             - tag: 'Item Type'
               value: Loss
           triggers:
             - uuid: 7e3ebb73a3e4415a8f69c2ddb2d40edb
-              expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
-              name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
+              expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},10,500],{$ICMP_HIGH_LOSS_WARN_PERIOD})>{$ICMP_HIGH_LOSS_WARN}'
+              name: 'ICMP Loss in {$ICMP_HIGH_LOSS_WARN_PERIOD} > {$ICMP_HIGH_LOSS_WARN}%'
               priority: WARNING
               manual_close: 'YES'
               dependencies:
@@ -308,8 +315,8 @@ zabbix_export:
               dependencies:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
-                - name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
-                  expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
+                - name: 'ICMP Loss in {$ICMP_HIGH_LOSS_WARN_PERIOD} > {$ICMP_HIGH_LOSS_WARN}%'
+                  expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},10,500],{$ICMP_HIGH_LOSS_WARN_PERIOD})>{$ICMP_HIGH_LOSS_WARN}'
               tags:
                 - tag: 'Trigger Type'
                   value: State
@@ -1013,8 +1020,11 @@ zabbix_export:
           value: '500'
           description: 'Ping time in MS'
         - macro: '{$ICMP_HIGH_LOSS_WARN}'
-          value: '20'
+          value: '0.5'
           description: 'Percentage of ICMP loss to warn.'
+        - macro: '{$ICMP_HIGH_LOSS_WARN_PERIOD}'
+          value: 24h
+          description: 'How far back in time to average loss.'
         - macro: '{$LOOP_PROTECT_TIMER}'
           value: '300'
           description: 'What the loop protect timer should be set too in seconds.'
@@ -6910,8 +6920,8 @@ zabbix_export:
               dependencies:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
-                - name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
-                  expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
+                - name: 'ICMP Loss in {$ICMP_HIGH_LOSS_WARN_PERIOD} > {$ICMP_HIGH_LOSS_WARN}%'
+                  expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},10,500],{$ICMP_HIGH_LOSS_WARN_PERIOD})>{$ICMP_HIGH_LOSS_WARN}'
               tags:
                 - tag: 'Trigger Type'
                   value: State
@@ -8422,7 +8432,7 @@ zabbix_export:
           calc_fnc: ALL
           item:
             host: 'BA - Generic - ICMP'
-            key: 'icmppingloss[{HOST.HOST},5,1000]'
+            key: 'icmppingloss[{HOST.HOST},10,500]'
     - uuid: ed8a0c441e524003aaec8356435e5237
       name: Jitter
       graph_items:

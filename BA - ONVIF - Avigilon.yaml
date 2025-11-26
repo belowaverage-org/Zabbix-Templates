@@ -180,8 +180,8 @@ zabbix_export:
               dependencies:
                 - name: 'Device offline'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
-                - name: 'ICMP Loss >= {$ICMP_HIGH_LOSS_WARN}%'
-                  expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},5,1000],#3)>={$ICMP_HIGH_LOSS_WARN}'
+                - name: 'ICMP Loss in {$ICMP_HIGH_LOSS_WARN_PERIOD} > {$ICMP_HIGH_LOSS_WARN}%'
+                  expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},10,500],{$ICMP_HIGH_LOSS_WARN_PERIOD})>{$ICMP_HIGH_LOSS_WARN}'
               tags:
                 - tag: 'Trigger Type'
                   value: State

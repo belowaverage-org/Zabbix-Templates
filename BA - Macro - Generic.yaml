@@ -29,8 +29,11 @@ zabbix_export:
           value: '500'
           description: 'Ping time in MS'
         - macro: '{$ICMP_HIGH_LOSS_WARN}'
-          value: '20'
+          value: '0.5'
           description: 'Percentage of ICMP loss to warn.'
+        - macro: '{$ICMP_HIGH_LOSS_WARN_PERIOD}'
+          value: 24h
+          description: 'How far back in time to average loss.'
         - macro: '{$LOOP_PROTECT_TIMER}'
           value: '300'
           description: 'What the loop protect timer should be set too in seconds.'
