@@ -998,6 +998,9 @@ zabbix_export:
     - uuid: a285d60e4cac443eabc63a2ea9f8b68d
       template: 'BA - Internal - Zabbix'
       name: 'BA - Internal - Zabbix'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
       groups:
         - name: BA/Generic
       items:
