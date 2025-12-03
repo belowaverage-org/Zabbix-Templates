@@ -336,6 +336,7 @@ zabbix_export:
             - uuid: f7ac6e903d5d4c9fa6bdb6a0a4bdf5ad
               expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN})'
               name: 'Interface ({#NAME}: {#ALIAS}) Discards >= {$INTER_DISCARD_WARN} Within {$INTER_DISCARD_WARN_TIME}'
+              status: DISABLED
               priority: WARNING
               manual_close: 'YES'
               tags:

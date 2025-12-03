@@ -995,6 +995,755 @@ zabbix_export:
           value: HTTP
         - tag: 'Template Type'
           value: Poller
+    - uuid: a285d60e4cac443eabc63a2ea9f8b68d
+      template: 'BA - Internal - Zabbix'
+      name: 'BA - Internal - Zabbix'
+      groups:
+        - name: BA/Generic
+      items:
+        - uuid: d7431dd2b79d40b29a1095d9f338827a
+          name: 'Zabbix - Stats'
+          type: INTERNAL
+          key: 'zabbix[stats]'
+          delay: 10s
+          value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Parent
+        - uuid: abae3e0c9cce479dbb3242429854ec95
+          name: 'Zabbix - Stats - Config Cache - Total'
+          type: DEPENDENT
+          key: zbx.stats.config_cache.total
+          history: 7d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.rcache.total
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Total
+        - uuid: 1cd38f82934c43bbbd3641eb1b10cd66
+          name: 'Zabbix - Stats - Config Cache - Usage'
+          type: DEPENDENT
+          key: zbx.stats.config_cache.usage
+          history: 7d
+          units: '%'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.rcache.pused
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Usage
+          triggers:
+            - uuid: bc1f0bdce8cf43489f0c4b962d440fea
+              expression: 'avg(/BA - Internal - Zabbix/zbx.stats.config_cache.usage,{$PROC_BUSY_WARN_TIME})>={$PROC_BUSY_WARN_THRESHOLD}'
+              name: 'Zabbix - Stats - Config Cache - Usage >= {$PROC_BUSY_WARN_THRESHOLD}% for {$PROC_BUSY_WARN_TIME}'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
+        - uuid: 2704447bc0af423e9f7178da5d9289fe
+          name: 'Zabbix - Stats - Config Cache - Used'
+          type: DEPENDENT
+          key: zbx.stats.config_cache.used
+          history: 7d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.rcache.used
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Used
+        - uuid: 71105447c7fa4d33a902ab299a2748ef
+          name: 'Zabbix - Stats - Hosts'
+          type: DEPENDENT
+          key: zbx.stats.hosts
+          history: 1d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.hosts
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: 0d8277b7c3d34741829ee773526d2774
+          name: 'Zabbix - Stats - Items'
+          type: DEPENDENT
+          key: zbx.stats.items
+          history: 1d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.items
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: a44cbbb26c7040b9aa5d02f4303d051a
+          name: 'Zabbix - Stats - Items Unsupported'
+          type: DEPENDENT
+          key: zbx.stats.items_unsupported
+          history: 1d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.items_unsupported
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: cab71f04a8cf47159b96220a5b78f9c1
+          name: 'Zabbix - Stats - Required Performance'
+          type: DEPENDENT
+          key: zbx.stats.required_performance
+          history: 7d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.requiredperformance
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: VPS
+        - uuid: 1f1fb74abd154825abeb06e2166dfd60
+          name: 'Zabbix - Stats - Triggers'
+          type: DEPENDENT
+          key: zbx.stats.triggers
+          history: 1d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.triggers
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: dcfa352b601345d79ce3e103bf9043b3
+          name: 'Zabbix - Stats - Uptime'
+          type: DEPENDENT
+          key: zbx.stats.uptime
+          history: 7d
+          units: s
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.uptime
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Uptime
+        - uuid: 15f47cef2c1a43d5bf65ce40758a9b5c
+          name: 'Zabbix - Stats - Values - Written'
+          type: DEPENDENT
+          key: zbx.stats.values.written
+          history: 7d
+          units: vps
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.vps.written_total
+            - type: CHANGE_PER_SECOND
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: VPS
+        - uuid: 21d6a28a4df4440487b9c7b4e9c90970
+          name: 'Zabbix - Stats - Value Cache - Buffer - Total'
+          type: DEPENDENT
+          key: zbx.stats.value_cache.buffer.total
+          history: 7d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.vcache.buffer.total
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Total
+        - uuid: d0075ecae6ee48119ffe8c82b34db001
+          name: 'Zabbix - Stats - Value Cache - Buffer - Usage'
+          type: DEPENDENT
+          key: zbx.stats.value_cache.buffer.usage
+          history: 7d
+          units: '%'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.vcache.buffer.pused
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Usage
+          triggers:
+            - uuid: 8cab502cc1d6457884de257dbd700599
+              expression: 'avg(/BA - Internal - Zabbix/zbx.stats.value_cache.buffer.usage,{$PROC_BUSY_WARN_TIME})>={$PROC_BUSY_WARN_THRESHOLD}'
+              name: 'Zabbix - Stats - Value Cache - Buffer - Usage >= {$PROC_BUSY_WARN_THRESHOLD}% for {$PROC_BUSY_WARN_TIME}'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
+        - uuid: c8afbe03857f421a92ae259763633e9c
+          name: 'Zabbix - Stats - Value Cache - Buffer - Used'
+          type: DEPENDENT
+          key: zbx.stats.value_cache.buffer.used
+          history: 7d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.vcache.buffer.used
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Used
+        - uuid: 33f309e7f49548aaac0ece534b625325
+          name: 'Zabbix - Stats - Value Cache - Cache - Hits'
+          type: DEPENDENT
+          key: zbx.stats.value_cache.cache.hits
+          history: 7d
+          units: vps
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.vcache.cache.hits
+            - type: CHANGE_PER_SECOND
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: VPS
+        - uuid: b13f24d6283f41f0a0dccc34bb1f576b
+          name: 'Zabbix - Stats - Value Cache - Cache - Misses'
+          type: DEPENDENT
+          key: zbx.stats.value_cache.cache.misses
+          history: 7d
+          units: vps
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.vcache.cache.misses
+            - type: CHANGE_PER_SECOND
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: VPS
+        - uuid: 79910a646eb94653878d56637ddfd799
+          name: 'Zabbix - Stats - Value Cache - Cache - Requests'
+          type: DEPENDENT
+          key: zbx.stats.value_cache.cache.requests
+          history: 7d
+          units: vps
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.vcache.cache.requests
+            - type: CHANGE_PER_SECOND
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: VPS
+        - uuid: 0fec1258d6444171be55d629425c910e
+          name: 'Zabbix - Stats - Write Cache - History - Total'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.history.total
+          history: 7d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.history.total
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Total
+        - uuid: 222f66b6a2ec40329be75e18125e43e1
+          name: 'Zabbix - Stats - Write Cache - History - Usage'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.history.usage
+          history: 7d
+          units: '%'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.history.pused
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Usage
+          triggers:
+            - uuid: 997055a8785a4a2d870c135cc053cb34
+              expression: 'avg(/BA - Internal - Zabbix/zbx.stats.write_cache.history.usage,{$PROC_BUSY_WARN_TIME})>={$PROC_BUSY_WARN_THRESHOLD}'
+              name: 'Zabbix - Stats - Write Cache - History - Usage >= {$PROC_BUSY_WARN_THRESHOLD}% for {$PROC_BUSY_WARN_TIME}'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
+        - uuid: 174bda0c3180409a8b3cb05c27541a24
+          name: 'Zabbix - Stats - Write Cache - History - Used'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.history.used
+          history: 7d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.history.used
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Used
+        - uuid: ee4234df28364150b72fb7ed15124b77
+          name: 'Zabbix - Stats - Write Cache - Index - Total'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.index.total
+          history: 7d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.index.total
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Total
+        - uuid: b97dcce0ec884eaaa5f04c94c32da81c
+          name: 'Zabbix - Stats - Write Cache - Index - Usage'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.index.usage
+          history: 7d
+          units: '%'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.index.pused
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Usage
+          triggers:
+            - uuid: 55538d7c7976421087165e725c083ac3
+              expression: 'avg(/BA - Internal - Zabbix/zbx.stats.write_cache.index.usage,{$PROC_BUSY_WARN_TIME})>={$PROC_BUSY_WARN_THRESHOLD}'
+              name: 'Zabbix - Stats - Write Cache - Index - Usage >= {$PROC_BUSY_WARN_THRESHOLD}% for {$PROC_BUSY_WARN_TIME}'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
+        - uuid: 661171625b114f90a085236fb8ef64cc
+          name: 'Zabbix - Stats - Write Cache - Index - Used'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.index.used
+          history: 7d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.index.used
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Used
+        - uuid: 52c8f51ed8f84889a3463c5478e79415
+          name: 'Zabbix - Stats - Write Cache - Trend - Total'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.trend.total
+          history: 7d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.trend.total
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Total
+        - uuid: 548771e62e4b4c14a9cc01bd79083b02
+          name: 'Zabbix - Stats - Write Cache - Trend - Usage'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.trend.usage
+          history: 7d
+          units: '%'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.trend.pused
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Usage
+          triggers:
+            - uuid: 99eeb37c4ff94b569d6c3c2e6379c22e
+              expression: 'avg(/BA - Internal - Zabbix/zbx.stats.write_cache.trend.usage,{$PROC_BUSY_WARN_TIME})>={$PROC_BUSY_WARN_THRESHOLD}'
+              name: 'Zabbix - Stats - Write Cache - Trend - Usage >= {$PROC_BUSY_WARN_THRESHOLD}% for {$PROC_BUSY_WARN_TIME}'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
+        - uuid: 47bf7138264d44e3b708adeb18376ea8
+          name: 'Zabbix - Stats - Write Cache - Trend - Used'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.trend.used
+          history: 7d
+          units: B
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.trend.used
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Used
+        - uuid: 33a23b38929f4fe49c9b7dc37e98b23b
+          name: 'Zabbix - Stats - Write Cache - Values - All'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.values.all
+          history: 7d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.values.all
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: 57e925facb39458797017cb061c64f9e
+          name: 'Zabbix - Stats - Write Cache - Values - Binary'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.values.bin
+          history: 7d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.values.bin
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: e10667521d7341979bd348a20c3c617d
+          name: 'Zabbix - Stats - Write Cache - Values - Float'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.values.float
+          history: 7d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.values.float
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: b37c3a1d11e049b4b65c52d7039b02f3
+          name: 'Zabbix - Stats - Write Cache - Values - Log'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.values.log
+          history: 7d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.values.log
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: c02ed05ca893443c81340fb429425c14
+          name: 'Zabbix - Stats - Write Cache - Values - String'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.values.string
+          history: 7d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.values.str
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: 4082b26e4e584356b6fa36eaddef3072
+          name: 'Zabbix - Stats - Write Cache - Values - Text'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.values.text
+          history: 7d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.values.text
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: e942793436614085bee55d3b90da5d58
+          name: 'Zabbix - Stats - Write Cache - Values - Unsigned'
+          type: DEPENDENT
+          key: zbx.stats.write_cache.values.unsigned
+          history: 7d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.wcache.values.uint
+          master_item:
+            key: 'zabbix[stats]'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+      discovery_rules:
+        - uuid: 48ede22b7f4e43d0b93e9e5101ff2300
+          name: 'Zabbix - Stats - Processes'
+          type: DEPENDENT
+          key: zabbix.stats.processes
+          lifetime_type: DELETE_IMMEDIATELY
+          item_prototypes:
+            - uuid: 2999e04c35ab429e9139bcb7c506f288
+              name: 'Zabbix - Stats - Process ({#PROCESSNAME}) - Busy'
+              type: DEPENDENT
+              key: 'zabbix.stats.process.busy[{#PROCESSNAME}]'
+              history: 7d
+              units: '%'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.data.process.["{#PROCESSNAME}"].busy.avg'
+              master_item:
+                key: 'zabbix[stats]'
+              tags:
+                - tag: 'Item Type'
+                  value: Usage
+              trigger_prototypes:
+                - uuid: b060f80a9e274881a23bcf48f5f72209
+                  expression: 'avg(/BA - Internal - Zabbix/zabbix.stats.process.busy[{#PROCESSNAME}],{$PROC_BUSY_WARN_TIME})>={$PROC_BUSY_WARN_THRESHOLD}'
+                  name: 'Zabbix - Stats - Process ({#PROCESSNAME}) - Busy >= {$PROC_BUSY_WARN_THRESHOLD}% for {$PROC_BUSY_WARN_TIME}'
+                  priority: WARNING
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: Threshold
+            - uuid: 88343464b40e48cba27b31b14c44bfa0
+              name: 'Zabbix - Stats - Process ({#PROCESSNAME}) - Count'
+              type: DEPENDENT
+              key: 'zabbix.stats.process.count[{#PROCESSNAME}]'
+              history: 7d
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.data.process.["{#PROCESSNAME}"].count'
+              master_item:
+                key: 'zabbix[stats]'
+              tags:
+                - tag: 'Item Type'
+                  value: Count
+          master_item:
+            key: 'zabbix[stats]'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.data.process
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var result = [];
+                  var data = JSON.parse(value);
+                  var keys = Object.keys(data);
+                  keys.forEach(function(k) {
+                  	result.push({"{#PROCESSNAME}":k})
+                  });
+                  return JSON.stringify(result);
+      tags:
+        - tag: Agent
+          value: Internal
+        - tag: 'Template Type'
+          value: Poller
+      macros:
+        - macro: '{$CACHE_BUSY_WARN_THRESHOLD}'
+          value: '90'
+          description: Percentage
+        - macro: '{$CACHE_BUSY_WARN_TIME}'
+          value: 30m
+          description: Time
+        - macro: '{$PROC_BUSY_WARN_THRESHOLD}'
+          value: '90'
+          description: Percentage
+        - macro: '{$PROC_BUSY_WARN_TIME}'
+          value: 30m
+          description: Time
+      dashboards:
+        - uuid: 2c3b91a6abc741e88dcd9d0893b8adf3
+          name: 'Zabbix Statistics'
+          pages:
+            - widgets:
+                - type: topitems
+                  name: 'Top Usage'
+                  width: '24'
+                  height: '12'
+                  fields:
+                    - type: INTEGER
+                      name: columns.0.decimal_places
+                      value: '0'
+                    - type: INTEGER
+                      name: columns.0.display
+                      value: '3'
+                    - type: STRING
+                      name: columns.0.items.0
+                      value: '*'
+                    - type: INTEGER
+                      name: columns.0.item_tags.0.operator
+                      value: '0'
+                    - type: STRING
+                      name: columns.0.item_tags.0.tag
+                      value: 'Item Type'
+                    - type: STRING
+                      name: columns.0.item_tags.0.value
+                      value: Usage
+                    - type: STRING
+                      name: columns.0.max
+                      value: '100'
+                    - type: STRING
+                      name: columns.0.min
+                      value: '0'
+                    - type: STRING
+                      name: columns.0.thresholds.0.color
+                      value: 0EC9AC
+                    - type: STRING
+                      name: columns.0.thresholds.0.threshold
+                      value: '0'
+                    - type: STRING
+                      name: columns.0.thresholds.1.color
+                      value: FFD54F
+                    - type: STRING
+                      name: columns.0.thresholds.1.threshold
+                      value: '90'
+                    - type: STRING
+                      name: columns.0.thresholds.2.color
+                      value: FF465C
+                    - type: STRING
+                      name: columns.0.thresholds.2.threshold
+                      value: '95'
+                    - type: INTEGER
+                      name: host_ordering_limit
+                      value: '50'
+                    - type: INTEGER
+                      name: item_ordering_limit
+                      value: '50'
+                    - type: INTEGER
+                      name: layout
+                      value: '1'
+                    - type: INTEGER
+                      name: show_column_header
+                      value: '0'
+                - type: topitems
+                  name: 'Top Counts'
+                  x: '24'
+                  width: '24'
+                  height: '6'
+                  fields:
+                    - type: INTEGER
+                      name: columns.0.decimal_places
+                      value: '0'
+                    - type: STRING
+                      name: columns.0.items.0
+                      value: '*'
+                    - type: INTEGER
+                      name: columns.0.item_tags.0.operator
+                      value: '0'
+                    - type: STRING
+                      name: columns.0.item_tags.0.tag
+                      value: 'Item Type'
+                    - type: STRING
+                      name: columns.0.item_tags.0.value
+                      value: Count
+                    - type: INTEGER
+                      name: host_ordering_limit
+                      value: '50'
+                    - type: INTEGER
+                      name: item_ordering_limit
+                      value: '50'
+                    - type: INTEGER
+                      name: layout
+                      value: '1'
+                    - type: INTEGER
+                      name: show_column_header
+                      value: '0'
+                - type: graph
+                  x: '24'
+                  'y': '6'
+                  width: '24'
+                  height: '6'
+                  fields:
+                    - type: GRAPH
+                      name: graphid.0
+                      value:
+                        host: 'BA - Internal - Zabbix'
+                        name: 'Zabbix - Stats - Value Cache - Values'
+                    - type: STRING
+                      name: reference
+                      value: TUMCN
+                - type: graph
+                  x: '48'
+                  width: '24'
+                  height: '6'
+                  fields:
+                    - type: GRAPH
+                      name: graphid.0
+                      value:
+                        host: 'BA - Internal - Zabbix'
+                        name: 'Zabbix - Stats - Write Cache - Usage'
+                    - type: STRING
+                      name: reference
+                      value: WEEWS
+                - type: graph
+                  x: '48'
+                  'y': '6'
+                  width: '24'
+                  height: '6'
+                  fields:
+                    - type: GRAPH
+                      name: graphid.0
+                      value:
+                        host: 'BA - Internal - Zabbix'
+                        name: 'Zabbix - Stats - Write Cache - Values'
+                    - type: STRING
+                      name: reference
+                      value: MTTPE
     - uuid: 02f18dcc823241fe9c718128522f1188
       template: 'BA - Macro - Generic'
       name: 'BA - Macro - Generic'
@@ -4876,6 +5625,7 @@ zabbix_export:
             - uuid: f7ac6e903d5d4c9fa6bdb6a0a4bdf5ad
               expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN})'
               name: 'Interface ({#NAME}: {#ALIAS}) Discards >= {$INTER_DISCARD_WARN} Within {$INTER_DISCARD_WARN_TIME}'
+              status: DISABLED
               priority: WARNING
               manual_close: 'YES'
               tags:
@@ -8522,4 +9272,89 @@ zabbix_export:
           item:
             host: 'BA - MIB - UPS'
             key: snmp.ups.ups.inputvoltage
+    - uuid: 6138e71a911b4de884077cc733857551
+      name: 'Zabbix - Stats - Value Cache - Values'
+      show_work_period: 'NO'
+      show_triggers: 'NO'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.value_cache.cache.hits
+        - sortorder: '1'
+          color: F63100
+          calc_fnc: ALL
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.value_cache.cache.misses
+        - sortorder: '2'
+          color: 2774A4
+          calc_fnc: ALL
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.value_cache.cache.requests
+    - uuid: d2eb49669581412483c33763dc63c9eb
+      name: 'Zabbix - Stats - Write Cache - Usage'
+      yaxismax: '0'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.write_cache.history.usage
+        - sortorder: '1'
+          color: F63100
+          calc_fnc: ALL
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.write_cache.index.usage
+        - sortorder: '2'
+          color: 2774A4
+          calc_fnc: ALL
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.write_cache.trend.usage
+    - uuid: a2018406aac449d6aed261ae519b9eea
+      name: 'Zabbix - Stats - Write Cache - Values'
+      show_work_period: 'NO'
+      show_triggers: 'NO'
+      type: EXPLODED
+      show_3d: 'YES'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: LAST
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.write_cache.values.bin
+        - sortorder: '1'
+          color: F63100
+          calc_fnc: LAST
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.write_cache.values.float
+        - sortorder: '2'
+          color: 2774A4
+          calc_fnc: LAST
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.write_cache.values.log
+        - sortorder: '3'
+          color: F7941D
+          calc_fnc: LAST
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.write_cache.values.string
+        - sortorder: '4'
+          color: FC6EA3
+          calc_fnc: LAST
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.write_cache.values.text
+        - sortorder: '5'
+          color: BA68C8
+          calc_fnc: LAST
+          item:
+            host: 'BA - Internal - Zabbix'
+            key: zbx.stats.write_cache.values.unsigned
 
