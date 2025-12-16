@@ -1,0 +1,345 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: 996e61cf1dd84efe93ea42c66397176d
+      template: 'BA - MIB - Entity'
+      name: 'BA - MIB - Entity (ENTITY & ENTITY-STATE & ENTITY-SENSOR)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      discovery_rules:
+        - uuid: c6d1b1f21d1b4c77a0e97a9db4d210de
+          name: 'Entity Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#NAME}, .1.3.6.1.2.1.47.1.1.1.1.7, {#MODEL}, .1.3.6.1.2.1.47.1.1.1.1.13, {#SERIAL}, .1.3.6.1.2.1.47.1.1.1.1.11, {#CLASS}, .1.3.6.1.2.1.47.1.1.1.1.5, {#SENSORTYPE}, .1.3.6.1.2.1.99.1.1.1.1, {#SENSORVALUE}, .1.3.6.1.2.1.99.1.1.1.4, {#ALARM}, .1.3.6.1.2.1.131.1.1.1.5]'
+          key: entity.discovery
+          delay: 1h
+          filter:
+            evaltype: OR
+            conditions:
+              - macro: '{#CLASS}'
+                value: ^2|5|10$
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#CLASS}'
+                operator: NOT_EXISTS
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: bdd96b4040ef4985abc5c82e9738a33a
+              name: 'Entity ({#NAME}) Alarm'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.131.1.1.1.5.{#SNMPINDEX}'
+              key: 'entity.alarm[{#SNMPINDEX}]'
+              history: 7d
+              valuemap:
+                name: Alarm
+              tags:
+                - tag: Entity
+                  value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Alarm
+              trigger_prototypes:
+                - uuid: 28d8f5392b4f4a6099d0ee260d504be2
+                  expression: 'last(/BA - MIB - Entity/entity.alarm[{#SNMPINDEX}])<>0'
+                  name: 'Entity ({#NAME}) Alarm Fault'
+                  priority: HIGH
+                  description: 'An alarm has been triggered!'
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+            - uuid: 2dcd7f640d80439b97e9b0c367465d77
+              name: 'Entity ({#NAME}) Class'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.5.{#SNMPINDEX}'
+              key: 'entity.class[{#SNMPINDEX}]'
+              delay: 12h
+              history: 7d
+              valuemap:
+                name: Class
+              tags:
+                - tag: Entity
+                  value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Class
+            - uuid: 48fbdf1f81504698b8a40c6ae64aa453
+              name: 'Entity ({#NAME}) Description'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.2.{#SNMPINDEX}'
+              key: 'entity.desc[{#SNMPINDEX}]'
+              delay: 12h
+              history: 365d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: Entity
+                  value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Description
+            - uuid: 8ce3cfa23d134747945c774e0ad6e8f8
+              name: 'Entity ({#NAME}) Model'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.13.{#SNMPINDEX}'
+              key: 'entity.model[{#SNMPINDEX}]'
+              delay: 12h
+              history: 365d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: Entity
+                  value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Model
+            - uuid: f8806d92cf224591bff4b3ed9027e35d
+              name: 'Entity ({#NAME}) Sensor Type'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.99.1.1.1.1.{#SNMPINDEX}'
+              key: 'entity.sensor.type[{#SNMPINDEX}]'
+              delay: 12h
+              history: 7d
+              valuemap:
+                name: 'Sensor Type'
+              tags:
+                - tag: Entity
+                  value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Type
+            - uuid: af38085e9c464cbb94a5fbf7629aa576
+              name: 'Entity ({#NAME}) Sensor Value'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.99.1.1.1.4.{#SNMPINDEX}'
+              key: 'entity.sensor.value[{#SNMPINDEX}]'
+              history: 7d
+              tags:
+                - tag: Entity
+                  value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Value
+            - uuid: b362e9cc210a448f839040e71db6dd96
+              name: 'Entity ({#NAME}) Serial'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.47.1.1.1.1.11.{#SNMPINDEX}'
+              key: 'entity.serial[{#SNMPINDEX}]'
+              delay: 12h
+              history: 365d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: Entity
+                  value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Serial
+          graph_prototypes:
+            - uuid: 54db887b37754d2ab01476b2e2acdb48
+              name: 'Entity ({#NAME}) Sensor Value'
+              graph_items:
+                - color: 1A7C11
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Entity'
+                    key: 'entity.sensor.value[{#SNMPINDEX}]'
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var data = JSON.parse(value);
+                  data.forEach(function(v, k) {
+                      if (data[k]['{#NAME}'] == undefined) {
+                          data[k]['{#NAME}'] = 'Unknown ' + k;
+                      }
+                  });
+                  return JSON.stringify(data);
+          overrides:
+            - name: 'No Class'
+              step: '1'
+              filter:
+                conditions:
+                  - macro: '{#CLASS}'
+                    operator: NOT_EXISTS
+              operations:
+                - operator: LIKE
+                  value: Class
+                  discover: NO_DISCOVER
+            - name: 'No Description'
+              step: '2'
+              filter:
+                evaltype: OR
+                conditions:
+                  - macro: '{#DESCRIPTION}'
+                    value: .+
+                    operator: NOT_MATCHES_REGEX
+                  - macro: '{#DESCRIPTION}'
+                    operator: NOT_EXISTS
+              operations:
+                - operator: LIKE
+                  value: Description
+                  discover: NO_DISCOVER
+            - name: 'No Sensor Type'
+              step: '3'
+              filter:
+                conditions:
+                  - macro: '{#SENSORTYPE}'
+                    operator: NOT_EXISTS
+              operations:
+                - operator: LIKE
+                  value: 'Sensor Type'
+                  discover: NO_DISCOVER
+            - name: 'No Sensor Value'
+              step: '4'
+              filter:
+                conditions:
+                  - macro: '{#SENSORVALUE}'
+                    operator: NOT_EXISTS
+              operations:
+                - operator: LIKE
+                  value: 'Sensor Value'
+                  discover: NO_DISCOVER
+                - operationobject: GRAPH_PROTOTYPE
+                  operator: LIKE
+                  value: 'Sensor Value'
+                  discover: NO_DISCOVER
+            - name: 'No Alarm'
+              step: '5'
+              filter:
+                conditions:
+                  - macro: '{#ALARM}'
+                    value: ^$
+                  - macro: '{#ALARM}'
+                    operator: NOT_EXISTS
+              operations:
+                - operator: LIKE
+                  value: Alarm
+                  discover: NO_DISCOVER
+                - operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Alarm
+                  discover: NO_DISCOVER
+            - name: 'No Model'
+              step: '6'
+              filter:
+                evaltype: OR
+                conditions:
+                  - macro: '{#MODEL}'
+                    value: .+
+                    operator: NOT_MATCHES_REGEX
+                  - macro: '{#MODEL}'
+                    operator: NOT_EXISTS
+              operations:
+                - operator: REGEXP
+                  value: Model
+                  discover: NO_DISCOVER
+            - name: 'No Serial'
+              step: '7'
+              filter:
+                evaltype: OR
+                conditions:
+                  - macro: '{#SERIAL}'
+                    value: .+
+                    operator: NOT_MATCHES_REGEX
+                  - macro: '{#SERIAL}'
+                    operator: NOT_EXISTS
+              operations:
+                - operator: LIKE
+                  value: Serial
+                  discover: NO_DISCOVER
+      tags:
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
+      valuemaps:
+        - uuid: 7caa4aac7c634155b5562ff764894989
+          name: Alarm
+          mappings:
+            - value: '0'
+              newvalue: OK
+            - value: '1'
+              newvalue: 'Under Repair'
+            - value: '2'
+              newvalue: Critical
+            - value: '3'
+              newvalue: Major
+            - value: '4'
+              newvalue: Minor
+            - value: '5'
+              newvalue: Warning
+            - value: '6'
+              newvalue: Indeterminate
+        - uuid: 2d1137ea13da40699b7a2fbdf087254e
+          name: Class
+          mappings:
+            - value: '1'
+              newvalue: Other
+            - value: '2'
+              newvalue: Unknown
+            - value: '3'
+              newvalue: Chassis
+            - value: '4'
+              newvalue: Backplane
+            - value: '5'
+              newvalue: Container
+            - value: '6'
+              newvalue: 'Power Supply'
+            - value: '7'
+              newvalue: Fan
+            - value: '8'
+              newvalue: Sensor
+            - value: '9'
+              newvalue: Module
+            - value: '10'
+              newvalue: Port
+            - value: '11'
+              newvalue: Stack
+            - value: '12'
+              newvalue: CPU
+        - uuid: 3d5438f67c324a56b0e567e68a90a14a
+          name: 'Sensor Status'
+          mappings:
+            - value: '1'
+              newvalue: OK
+            - value: '2'
+              newvalue: Unavailable
+            - value: '3'
+              newvalue: 'Non Operational'
+        - uuid: abc18022ee8a440cb3d5b58ef645fd1c
+          name: 'Sensor Type'
+          mappings:
+            - value: '1'
+              newvalue: Other
+            - value: '2'
+              newvalue: Unknown
+            - value: '3'
+              newvalue: 'Volts AC'
+            - value: '4'
+              newvalue: 'Volts DC'
+            - value: '5'
+              newvalue: Amps
+            - value: '6'
+              newvalue: Watts
+            - value: '7'
+              newvalue: Hertz
+            - value: '8'
+              newvalue: Celsius
+            - value: '9'
+              newvalue: 'Percent Relative Humidity'
+            - value: '10'
+              newvalue: RPM
+            - value: '11'
+              newvalue: 'Cubic Meters per Minute'
+            - value: '12'
+              newvalue: Boolean
+

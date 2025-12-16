@@ -1,0 +1,31 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 2128cf518279432187a98490d555a270
+      name: BA/Profiles/Servers
+  templates:
+    - uuid: 00258b13162c4a3d9283a479b1a10f80
+      template: 'BA - Profile - vSphere'
+      name: 'BA - Profile - vSphere'
+      wizard_ready: 'YES'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - Macro - Interfaces'
+        - name: 'BA - MIB - Entity'
+        - name: 'BA - MIB - Generic'
+        - name: 'BA - MIB - Host Resources'
+        - name: 'BA - MIB - Interfaces'
+        - name: 'BA - MIB - vSphere VMs'
+        - name: 'BA - Procedure - Update Name'
+      groups:
+        - name: BA/Profiles/Servers
+      tags:
+        - tag: 'Template Type'
+          value: Profile
+        - tag: Vendor
+          value: VMWare
+

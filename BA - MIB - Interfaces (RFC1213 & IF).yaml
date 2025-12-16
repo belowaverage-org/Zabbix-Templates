@@ -1,0 +1,555 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: 71e181bbccaf4ac6ad6dbc31f4ef7ffa
+      template: 'BA - MIB - Interfaces'
+      name: 'BA - MIB - Interfaces (RFC1213 & IF)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: 5d6b329a4afc45f29c45346edbb0e29b
+          name: 'Interface Total In Rate'
+          type: CALCULATED
+          key: snmp.interface.rate.in.total
+          delay: 10s
+          history: 7d
+          units: bps
+          params: 'sum(last_foreach(//snmp.interfaces.in[*]))'
+          tags:
+            - tag: 'Item Type'
+              value: Rate
+        - uuid: e77e8e7269004125b13ff6712cce34a7
+          name: 'Interface Total Out Rate'
+          type: CALCULATED
+          key: snmp.interface.rate.out.total
+          delay: 10s
+          history: 7d
+          units: bps
+          params: 'sum(last_foreach(//snmp.interfaces.out[*]))'
+          tags:
+            - tag: 'Item Type'
+              value: Rate
+        - uuid: 6c380650408b474abf5b82e8c3cff075
+          name: 'Interface Total Rate'
+          type: CALCULATED
+          key: snmp.interface.rate.total
+          delay: 10s
+          history: 7d
+          units: bps
+          params: last(//snmp.interface.rate.in.total)+last(//snmp.interface.rate.out.total)
+          tags:
+            - tag: 'Item Type'
+              value: Rate
+        - uuid: 7dbba147f0de468cbc4b1335674c4405
+          name: 'Interfaces Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[.1.3.6.1.2.1.31.1.1.1.1,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.2,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.7,.1.3.6.1.2.1.2.2.1.10,.1.3.6.1.2.1.2.2.1.16,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.14,.1.3.6.1.2.1.2.2.1.20,.1.3.6.1.2.1.2.2.1.5,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.13,.1.3.6.1.2.1.2.2.1.19,.1.3.6.1.2.1.2.2.1.3]'
+          key: snmp.interfaces
+          delay: 10s
+          history: '0'
+          value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
+      discovery_rules:
+        - uuid: e4cdcd9f67b24b3c93b312a52bf78a11
+          name: 'Interfaces Discovery'
+          type: DEPENDENT
+          key: snmp.interfaces.discovery
+          filter:
+            conditions:
+              - macro: '{#ALIAS}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#ASTATUS}'
+                value: '2'
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#NAME}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#OSTATUS}'
+                value: '6'
+                operator: NOT_MATCHES_REGEX
+          lifetime: 1d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: a78b4fcd86c140c8a63b1b1d2bcc8925
+              name: 'Interface ({#NAME}: {#ALIAS}) Alert On Errors'
+              type: CALCULATED
+              key: 'snmp.interfaces.alertonerrors[{#NAME}]'
+              delay: 1h
+              history: 1d
+              trends: '0'
+              params: 'last(//snmp.interfaces.mac.uplinkstatus[{#NAME}])'
+              valuemap:
+                name: 'Alert On Errors'
+              preprocessing:
+                - type: CHECK_NOT_SUPPORTED
+                  parameters:
+                    - '-1'
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Status
+            - uuid: 87b5057634ea44dabc70e8d9a5c71e55
+              name: 'Interface ({#NAME}: {#ALIAS}) Alias'
+              type: DEPENDENT
+              key: 'snmp.interfaces.alias[{#NAME}]'
+              history: 90d
+              value_type: CHAR
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.31.1.1.1.18.{#SNMPINDEX}'
+                    - '0'
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Alias
+            - uuid: b9691cce3ddf42839e1f3f770ecebefd
+              name: 'Interface ({#NAME}: {#ALIAS}) In Discards'
+              type: DEPENDENT
+              key: 'snmp.interfaces.in.discards[{#NAME}]'
+              history: 7d
+              units: pps
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.2.2.1.13.{#SNMPINDEX}'
+                    - '0'
+                - type: CHANGE_PER_SECOND
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Discards
+            - uuid: 5760b2886c8640fd9bab2f200c57ce0d
+              name: 'Interface ({#NAME}: {#ALIAS}) In Errors'
+              type: DEPENDENT
+              key: 'snmp.interfaces.in.errors[{#NAME}]'
+              history: 7d
+              units: pps
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.2.2.1.14.{#SNMPINDEX}'
+                    - '0'
+                - type: CHANGE_PER_SECOND
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Errors
+            - uuid: 6b9bd480242345febbcfc08b18bece36
+              name: 'Interface ({#NAME}: {#ALIAS}) In Usage'
+              type: CALCULATED
+              key: 'snmp.interfaces.in.usage[{#NAME}]'
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//snmp.interfaces.in[{#SNMPINDEX}])/last(//snmp.interfaces.speed[{#SNMPINDEX}])'
+              preprocessing:
+                - type: CHECK_NOT_SUPPORTED
+                  parameters:
+                    - '-1'
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+                - type: MULTIPLIER
+                  parameters:
+                    - '100'
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Usage
+            - uuid: d41db500945643b6afc4b82015f5f5e6
+              name: 'Interface ({#NAME}: {#ALIAS}) In Rate'
+              type: DEPENDENT
+              key: 'snmp.interfaces.in[{#NAME}]'
+              history: 7d
+              units: bps
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.2.2.1.10.{#SNMPINDEX}'
+                    - '0'
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+                - type: CHANGE_PER_SECOND
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Rate
+            - uuid: b39447b3446c4432a3c66ef3e46fb5a6
+              name: 'Interface ({#NAME}: {#ALIAS}) Operational Status'
+              type: DEPENDENT
+              key: 'snmp.interfaces.operstatus[{#NAME}]'
+              history: 7d
+              valuemap:
+                name: 'Operational Status'
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.2.2.1.8.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Status
+              trigger_prototypes:
+                - uuid: 5436374b9ed946e79cb2bf75e02f30e4
+                  expression: 'changecount(/BA - MIB - Interfaces/snmp.interfaces.operstatus[{#NAME}],{$INTER_FLAP_WARN_TIME},"dec")>={$INTER_FLAP_WARN_COUNT}'
+                  name: 'Interface ({#NAME}: {#ALIAS}) Flapped >= {$INTER_FLAP_WARN_COUNT}x Within {$INTER_FLAP_WARN_TIME}'
+                  status: DISABLED
+                  priority: WARNING
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: Threshold
+                - uuid: 49be460d2f1841e6963d2cfcfd402401
+                  expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.operstatus[{#NAME}])<>1'
+                  name: 'Interface ({#NAME}: {#ALIAS}) Operational Status != Up'
+                  status: DISABLED
+                  priority: AVERAGE
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+            - uuid: 80d88a690e8047e9aa1b627467aa2458
+              name: 'Interface ({#NAME}: {#ALIAS}) Out Discards'
+              type: DEPENDENT
+              key: 'snmp.interfaces.out.discards[{#NAME}]'
+              history: 7d
+              units: pps
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.2.2.1.19.{#SNMPINDEX}'
+                    - '0'
+                - type: CHANGE_PER_SECOND
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Discards
+            - uuid: 8767d44b389a4d39bfa7cdd9bef3e19d
+              name: 'Interface ({#NAME}: {#ALIAS}) Out Errors'
+              type: DEPENDENT
+              key: 'snmp.interfaces.out.errors[{#NAME}]'
+              history: 7d
+              units: pps
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.2.2.1.20.{#SNMPINDEX}'
+                    - '0'
+                - type: CHANGE_PER_SECOND
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Errors
+            - uuid: 27685ca79f79438f9dcd391306f44291
+              name: 'Interface ({#NAME}: {#ALIAS}) Out Usage'
+              type: CALCULATED
+              key: 'snmp.interfaces.out.usage[{#NAME}]'
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//snmp.interfaces.out[{#SNMPINDEX}])/last(//snmp.interfaces.speed[{#SNMPINDEX}])'
+              preprocessing:
+                - type: CHECK_NOT_SUPPORTED
+                  parameters:
+                    - '-1'
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+                - type: MULTIPLIER
+                  parameters:
+                    - '100'
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Usage
+            - uuid: 560a80f3986f4daaa67307817be05cda
+              name: 'Interface ({#NAME}: {#ALIAS}) Out Rate'
+              type: DEPENDENT
+              key: 'snmp.interfaces.out[{#NAME}]'
+              history: 7d
+              units: bps
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.2.2.1.16.{#SNMPINDEX}'
+                    - '0'
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
+                - type: CHANGE_PER_SECOND
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Rate
+            - uuid: d025c6fb73e04829822ba94aa58f4a45
+              name: 'Interface ({#NAME}: {#ALIAS}) Speed'
+              type: DEPENDENT
+              key: 'snmp.interfaces.speed[{#NAME}]'
+              history: 7d
+              units: bps
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.2.2.1.5.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: snmp.interfaces
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Interface Type'
+                  value: '{#TYPE}'
+                - tag: 'Item Type'
+                  value: Speed
+          trigger_prototypes:
+            - uuid: f7ac6e903d5d4c9fa6bdb6a0a4bdf5ad
+              expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.discards[{#NAME}],{$INTER_DISCARD_WARN_TIME})>={$INTER_DISCARD_WARN})'
+              name: 'Interface ({#NAME}: {#ALIAS}) Discards >= {$INTER_DISCARD_WARN} Within {$INTER_DISCARD_WARN_TIME}'
+              status: DISABLED
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
+            - uuid: 62ed56a4a893446fa8515de4852ca5fa
+              expression: '(sum(/BA - MIB - Interfaces/snmp.interfaces.in.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN} or sum(/BA - MIB - Interfaces/snmp.interfaces.out.errors[{#NAME}],{$INTER_ERROR_WARN_TIME})>={$INTER_ERROR_WARN})'
+              name: 'Interface ({#NAME}: {#ALIAS}) Errors >= {$INTER_ERROR_WARN} Within {$INTER_ERROR_WARN_TIME}'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
+            - uuid: b429247383cd421db1f0e4471e286c98
+              expression: 'last(/BA - MIB - Interfaces/snmp.interfaces.in.usage[{#NAME}])>={$INTER_USAGE_WARN} or last(/BA - MIB - Interfaces/snmp.interfaces.out.usage[{#NAME}])>={$INTER_USAGE_WARN}'
+              name: 'Interface ({#NAME}: {#ALIAS}) Usage >= {$INTER_USAGE_WARN}%'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
+          graph_prototypes:
+            - uuid: 777a7a1a8c8d49aea746670c7dacd759
+              name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
+              graph_items:
+                - color: 1E88E5
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Interfaces'
+                    key: 'snmp.interfaces.in[{#NAME}]'
+                - sortorder: '1'
+                  color: 2E7D32
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Interfaces'
+                    key: 'snmp.interfaces.out[{#NAME}]'
+                - sortorder: '2'
+                  color: FF5722
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Interfaces'
+                    key: 'snmp.interfaces.in.errors[{#NAME}]'
+                - sortorder: '3'
+                  color: FFA726
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Interfaces'
+                    key: 'snmp.interfaces.out.errors[{#NAME}]'
+          master_item:
+            key: snmp.interfaces
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - '{#NAME}'
+                - .1.3.6.1.2.1.31.1.1.1.1
+                - '0'
+                - '{#ALIAS}'
+                - .1.3.6.1.2.1.31.1.1.1.18
+                - '0'
+                - '{#DESC}'
+                - .1.3.6.1.2.1.2.2.1.2
+                - '0'
+                - '{#OSTATUS}'
+                - .1.3.6.1.2.1.2.2.1.8
+                - '0'
+                - '{#ASTATUS}'
+                - .1.3.6.1.2.1.2.2.1.7
+                - '0'
+                - '{#TYPE}'
+                - .1.3.6.1.2.1.2.2.1.3
+                - '0'
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  if (!value.includes('{#NAME}')) {
+                      return value.replace(/"{#DESC}"/g, '"{#ALIAS}":"","{#NAME}"');
+                  } else {
+                      return value;
+                  }
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"1"'
+                - '"{#TYPE}":"other"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"6"'
+                - '"{#TYPE}":"ethernetCsmacd"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"24"'
+                - '"{#TYPE}":"softwareLoopback"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"53"'
+                - '"{#TYPE}":"propVirtual"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"54"'
+                - '"{#TYPE}":"propMultiplexor"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"71"'
+                - '"{#TYPE}":"ieee80211"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"131"'
+                - '"{#TYPE}":"tunnel"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"135"'
+                - '"{#TYPE}":"l2vlan"'
+            - type: STR_REPLACE
+              parameters:
+                - '"{#TYPE}":"258"'
+                - '"{#TYPE}":"vmwareVirtualNic"'
+          overrides:
+            - name: 'No Alias'
+              step: '1'
+              filter:
+                conditions:
+                  - macro: '{#ALIAS}'
+                    value: ^$
+              operations:
+                - operator: LIKE
+                  value: Alias
+                  discover: NO_DISCOVER
+            - name: 'No Errors Trigger on WiFi'
+              step: '2'
+              filter:
+                conditions:
+                  - macro: '{#TYPE}'
+                    value: ^ieee80211$
+              operations:
+                - operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Errors
+                  status: DISABLED
+      tags:
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
+      dashboards:
+        - uuid: 9f66f49a16914a42b4731103a16d816f
+          name: Interfaces
+          pages:
+            - widgets:
+                - type: graphprototype
+                  width: '72'
+                  height: '38'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '3'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid.0
+                      value:
+                        host: 'BA - MIB - Interfaces'
+                        name: 'Interface ({#NAME}: {#ALIAS}) Statistics'
+                    - type: STRING
+                      name: reference
+                      value: AAAAS
+                    - type: INTEGER
+                      name: rows
+                      value: '8'
+      valuemaps:
+        - uuid: bada8a429d464bfba60f2ca27c549d6f
+          name: 'Alert On Errors'
+          mappings:
+            - value: '0'
+              newvalue: 'False'
+            - value: '1'
+              newvalue: 'True'
+        - uuid: 042dd6004ca744328459b83d571efd02
+          name: 'Operational Status'
+          mappings:
+            - value: '1'
+              newvalue: Up
+            - value: '2'
+              newvalue: Down
+            - value: '3'
+              newvalue: Testing
+

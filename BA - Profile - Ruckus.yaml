@@ -1,0 +1,29 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: b384f4b048b0408a9adfeae61f5574ae
+      name: BA/Profiles
+  templates:
+    - uuid: 59825d81f28447858af5e9f1425cb800
+      template: 'BA - Profile - Ruckus'
+      name: 'BA - Profile - Ruckus'
+      wizard_ready: 'YES'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - Macro - Interfaces'
+        - name: 'BA - MIB - Generic'
+        - name: 'BA - MIB - Interfaces'
+        - name: 'BA - Procedure - Update Name'
+        - name: 'BA - SSH'
+      groups:
+        - name: BA/Profiles
+      tags:
+        - tag: 'Template Type'
+          value: Profile
+        - tag: Vendor
+          value: Ruckus
+

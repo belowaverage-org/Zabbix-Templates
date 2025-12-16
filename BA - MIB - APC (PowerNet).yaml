@@ -1,0 +1,403 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: 65d533f18b41407cbc7556aca81dd27e
+      template: 'BA - MIB - APC'
+      name: 'BA - MIB - APC (PowerNet)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: 31b29a6628354795a998732e896b8654
+          name: 'Manufacture Date'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.1.2.2.0
+          key: snmp.apc.age
+          delay: 6h
+          history: 30d
+          value_type: CHAR
+          inventory_link: DATE_HW_INSTALL
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: 'Item Type'
+              value: Age
+        - uuid: d549b5471b8548128aa405835e8c5ddc
+          name: 'Battery Charge'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.2.2.1.0
+          key: snmp.apc.battery.charge
+          delay: 5m
+          history: 30d
+          units: '%'
+          tags:
+            - tag: 'Item Type'
+              value: Charge
+        - uuid: f9a549dec7d84875b115c585c234d5d4
+          name: 'Battery Last Replacement Date'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.2.1.3.0
+          key: snmp.apc.battery.replaced
+          delay: 6h
+          history: 30d
+          value_type: CHAR
+          description: 'Last time the battery was replaced.'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: 'Item Type'
+              value: Age
+        - uuid: 7ab01e7accb34f0d993b187c2f1fa4d3
+          name: 'Battery Replacement Status'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.2.2.4.0
+          key: snmp.apc.battery.replacementstat
+          delay: 5m
+          history: 30d
+          valuemap:
+            name: 'Battery Replace Indicator'
+          tags:
+            - tag: 'Item Type'
+              value: Status
+          triggers:
+            - uuid: bf6b90a31ea1446a826c79972f9c58cd
+              expression: 'last(/BA - MIB - APC/snmp.apc.battery.replacementstat)<>1'
+              name: 'Battery Replacement Status not OK'
+              priority: AVERAGE
+              description: 'The battery in this UPS needs replaced.'
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: State
+        - uuid: 1d613a65a3de4be5b28b9d528844dd48
+          name: 'Battery Runtime'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.2.2.3.0
+          key: snmp.apc.battery.runtime
+          delay: 5m
+          history: 30d
+          units: s
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+          tags:
+            - tag: 'Item Type'
+              value: Runtime
+        - uuid: 785505c01c9548199ca4e141ef1a73b4
+          name: 'Battery Status'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.2.1.1.0
+          key: snmp.apc.battery.status
+          delay: 5m
+          history: 30d
+          valuemap:
+            name: 'Battery Status'
+          tags:
+            - tag: 'Item Type'
+              value: Status
+        - uuid: 07d861b545bd46b58d2b76d09f8fd914
+          name: 'Battery Temperature'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.2.2.2.0
+          key: snmp.apc.battery.temperature
+          delay: 5m
+          history: 30d
+          units: C
+          tags:
+            - tag: 'Item Type'
+              value: Temperature
+        - uuid: 5dce911b6f264f6f8dd4906295f7b2f3
+          name: Model
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.1.1.1.0
+          key: snmp.apc.model
+          delay: 6h
+          history: 30d
+          value_type: CHAR
+          inventory_link: MODEL
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: 'Item Type'
+              value: Model
+        - uuid: 1a544eeb51b6425cba2bc57bff6ad459
+          name: Serial
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.1.2.3.0
+          key: snmp.apc.serial
+          delay: 6h
+          history: 30d
+          value_type: CHAR
+          inventory_link: SERIALNO_A
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: 'Item Type'
+              value: Serial
+        - uuid: 53a6d636ce0740f9895d404032755dbe
+          name: 'UPS Input Frequency'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.3.2.4.0
+          key: snmp.apc.ups.inputfreq
+          delay: 5m
+          history: 30d
+          units: Hertz
+          tags:
+            - tag: 'Item Type'
+              value: Hertz
+        - uuid: bc2bbdb6c20b43678dde33349f2c37a0
+          name: 'UPS Input Voltage'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.3.2.1.0
+          key: snmp.apc.ups.inputvoltage
+          delay: 5m
+          history: 30d
+          units: Volts
+          tags:
+            - tag: 'Item Type'
+              value: Voltage
+        - uuid: 64d4fe1b663b493d8157f92c8b6be952
+          name: 'UPS Status'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.1.4.1.1.0
+          key: snmp.apc.ups.status
+          delay: 5m
+          history: 30d
+          valuemap:
+            name: 'UPS Status'
+          tags:
+            - tag: 'Item Type'
+              value: Status
+          triggers:
+            - uuid: 186e941c59a949c68602aa70525e3549
+              expression: 'last(/BA - MIB - APC/snmp.apc.ups.status)<>2'
+              name: 'UPS Status not Online'
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: State
+      discovery_rules:
+        - uuid: f42c8b0552674b92813e17b07d391dc7
+          name: 'Battery Packs Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#CARTSTATUS}, .1.3.6.1.4.1.318.1.1.1.2.3.10.2.1.10]'
+          key: snmp.apc.battery.discovery
+          delay: 12h
+          filter:
+            conditions:
+              - macro: '{#CARTSTATUS}'
+                value: ^$
+                operator: NOT_MATCHES_REGEX
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 9b5e9a80135d4b4bbb863731ac7fb21f
+              name: 'Battery ({#SNMPINDEX}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.318.1.1.1.2.3.10.2.1.10.{#SNMPINDEX}'
+              key: 'snmp.apc.battery.status[{#SNMPINDEX}]'
+              delay: 1h
+              history: 30d
+              value_type: CHAR
+              description: |
+                The battery cartridge status.
+                
+                bit 0 Disconnected
+                bit 1 Overvoltage
+                bit 2 NeedsReplacement
+                bit 3 OvertemperatureCritical
+                bit 4 Charger
+                bit 5 TemperatureSensor
+                bit 6 BusSoftStart
+                bit 7 OvertemperatureWarning
+                bit 8 GeneralError
+                bit 9 Communication
+                bit 10 DisconnectedFrame
+                bit 11 FirmwareMismatch
+              tags:
+                - tag: 'Item Type'
+                  value: Status
+              trigger_prototypes:
+                - uuid: 8ee2b3b363194f3b9b53f15b1f298e5b
+                  expression: 'find(/BA - MIB - APC/snmp.apc.battery.status[{#SNMPINDEX}],,"regexp" ,"..1.............")=1'
+                  name: 'Battery ({#SNMPINDEX}) Replacement Status not OK'
+                  priority: AVERAGE
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+      tags:
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
+      dashboards:
+        - uuid: 05593197f4914bfcb57afafcfbeb88fd
+          name: APC
+          pages:
+            - widgets:
+                - type: item
+                  width: '24'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - APC'
+                        key: snmp.apc.ups.status
+                - type: graph
+                  'y': '2'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - APC'
+                        name: 'Battery Charge'
+                    - type: STRING
+                      name: reference
+                      value: AAAAB
+                - type: graph
+                  'y': '7'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - APC'
+                        name: 'UPS Input'
+                    - type: STRING
+                      name: reference
+                      value: AAAAC
+                - type: graph
+                  'y': '12'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - APC'
+                        key: snmp.apc.battery.temperature
+                    - type: STRING
+                      name: reference
+                      value: AAAAD
+                    - type: INTEGER
+                      name: source_type
+                      value: '1'
+                - type: item
+                  x: '24'
+                  width: '24'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - APC'
+                        key: snmp.apc.model
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: item
+                  x: '48'
+                  width: '24'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - APC'
+                        key: snmp.apc.serial
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+      valuemaps:
+        - uuid: c906e884cf7549d6b51f73b35ee7ee42
+          name: 'Battery Replace Indicator'
+          mappings:
+            - value: '1'
+              newvalue: 'No Battery Needs Replacing'
+            - value: '2'
+              newvalue: 'Battery Needs Replacing'
+        - uuid: e82ea3b33488450e9119caec94008573
+          name: 'Battery Status'
+          mappings:
+            - value: '1'
+              newvalue: Unkown
+            - value: '2'
+              newvalue: 'Battery Normal'
+            - value: '3'
+              newvalue: 'Battery Low'
+        - uuid: 83bdd49e6e674d8d8b1b6b397f461643
+          name: 'UPS Status'
+          mappings:
+            - value: '1'
+              newvalue: Unknown
+            - value: '2'
+              newvalue: Online
+            - value: '3'
+              newvalue: 'On Battery'
+            - value: '4'
+              newvalue: 'On Smart Boost'
+            - value: '5'
+              newvalue: 'Timed Sleeping'
+            - value: '6'
+              newvalue: 'Software Bypass'
+            - value: '7'
+              newvalue: 'Off'
+            - value: '8'
+              newvalue: Rebooting
+            - value: '9'
+              newvalue: 'Switched Bypass'
+            - value: '10'
+              newvalue: 'Hardware Failure Bypass'
+            - value: '11'
+              newvalue: 'Sleeping Unit Power Return'
+            - value: '12'
+              newvalue: 'On Smart Trim'
+  graphs:
+    - uuid: 13bb88368aab4bd8a4a862360288fc0f
+      name: 'Battery Charge'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - APC'
+            key: snmp.apc.battery.charge
+        - sortorder: '1'
+          color: F63100
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - APC'
+            key: snmp.apc.battery.runtime
+    - uuid: 2fa77c4a8298408babdd9161a6e49609
+      name: 'UPS Input'
+      graph_items:
+        - color: 199C0D
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - APC'
+            key: snmp.apc.ups.inputfreq
+        - sortorder: '1'
+          color: F63100
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - APC'
+            key: snmp.apc.ups.inputvoltage
+

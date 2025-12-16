@@ -1,0 +1,509 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: 2f56e1feb21d4d4dac7dd9f89b819162
+      template: 'BA - MIB - iDRAC'
+      name: 'BA - MIB - iDRAC (IDRAC)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: e63d7779047a4b279061315c5d418b21
+          name: Model
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.674.10892.5.1.3.12.0
+          key: snmp.idrac.model
+          delay: 6h
+          history: 90d
+          value_type: CHAR
+          inventory_link: MODEL
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: 'Item Type'
+              value: Model
+        - uuid: 9927ce6906e244cea23ebda392226b74
+          name: 'Service Tag'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.674.10892.5.1.3.2.0
+          key: snmp.idrac.servicetag
+          delay: 6h
+          history: 90d
+          value_type: CHAR
+          inventory_link: TAG
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: 'Item Type'
+              value: 'Service Tag'
+        - uuid: b951924d1d874343b38dd8211ac4cc2e
+          name: 'Global Status'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.674.10892.5.2.1.0
+          key: snmp.idrac.status
+          history: 30d
+          valuemap:
+            name: 'Object Status'
+          tags:
+            - tag: 'Item Type'
+              value: Status
+          triggers:
+            - uuid: e90c3fc7f46649c0975c3f32feb31023
+              expression: 'last(/BA - MIB - iDRAC/snmp.idrac.status)<>3'
+              name: 'Global Status not OK'
+              priority: HIGH
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: State
+      discovery_rules:
+        - uuid: 42d18f824b4a41929333629f1f45d0e6
+          name: 'Drive Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#DISK}, .1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.1]'
+          key: snmp.idrac.drive.discovery
+          delay: 6h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: fa2afc17242e459ea4a5f788a3b0beb6
+              name: 'Drive ({#DISK}) Make'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.3.{#SNMPINDEX}'
+              key: 'snmp.idrac.drive.make[{#DISK}]'
+              delay: 6h
+              history: 90d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: Drive
+                  value: '{#DISK}'
+                - tag: 'Item Type'
+                  value: Make
+            - uuid: 5fed734179be429baab0bd253fcca232
+              name: 'Drive ({#DISK}) Model'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.6.{#SNMPINDEX}'
+              key: 'snmp.idrac.drive.model[{#DISK}]'
+              delay: 6h
+              history: 90d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: Drive
+                  value: '{#DISK}'
+                - tag: 'Item Type'
+                  value: Model
+            - uuid: 19dd14130fde4e189e6bdcdf0dbd72df
+              name: 'Drive ({#DISK}) Serial'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.7.{#SNMPINDEX}'
+              key: 'snmp.idrac.drive.serial[{#DISK}]'
+              delay: 6h
+              history: 90d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: Drive
+                  value: '{#DISK}'
+                - tag: 'Item Type'
+                  value: Serial
+            - uuid: b7162973d9aa42a7b118abeb144b58ae
+              name: 'Drive ({#DISK}) Size'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.11.{#SNMPINDEX}'
+              key: 'snmp.idrac.drive.size[{#DISK}]'
+              delay: 6h
+              history: 30d
+              units: B
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '1153024'
+              tags:
+                - tag: Drive
+                  value: '{#DISK}'
+                - tag: 'Item Type'
+                  value: Size
+            - uuid: 39c74ddcf558450590be63665674d40b
+              name: 'Drive ({#DISK}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.4.{#SNMPINDEX}'
+              key: 'snmp.idrac.drive.state[{#DISK}]'
+              delay: 5m
+              history: 30d
+              valuemap:
+                name: 'Drive Status'
+              tags:
+                - tag: Drive
+                  value: '{#DISK}'
+                - tag: 'Item Type'
+                  value: Status
+              trigger_prototypes:
+                - uuid: 0227fce3a12e4548b6ef0ddb0c0e0140
+                  expression: |
+                    last(/BA - MIB - iDRAC/snmp.idrac.drive.state[{#DISK}])<>2
+                    and last(/BA - MIB - iDRAC/snmp.idrac.drive.state[{#DISK}])<>3
+                  name: 'Drive ({#DISK}) Status not OK'
+                  priority: HIGH
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+            - uuid: 4441802ef1f944a5b898af0ec09b42d1
+              name: 'Drive ({#DISK}) Type'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.5.1.20.130.4.1.35.{#SNMPINDEX}'
+              key: 'snmp.idrac.drive.type[{#DISK}]'
+              delay: 6h
+              history: 30d
+              valuemap:
+                name: 'Drive Type'
+              tags:
+                - tag: Drive
+                  value: '{#DISK}'
+                - tag: 'Item Type'
+                  value: Type
+        - uuid: ec4335a8bc7f46019fb5760475b77ed6
+          name: 'Fan Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#FAN}, .1.3.6.1.4.1.674.10892.5.4.700.12.1.2]'
+          key: snmp.idrac.fan.discovery
+          delay: 6h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 2954d6333acf4db0986fa5f537fa49d1
+              name: 'Fan ({#FAN}) RPM'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.4.700.12.1.6.{#SNMPINDEX}'
+              key: 'snmp.idrac.fan.rpm[{#FAN}]'
+              delay: 5m
+              history: 30d
+              units: RPM
+              tags:
+                - tag: Fan
+                  value: '{#FAN}'
+                - tag: 'Item Type'
+                  value: RPM
+            - uuid: 1c602031725b413b8083c21630d3b228
+              name: 'Fan ({#FAN}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.4.700.12.1.5.{#SNMPINDEX}'
+              key: 'snmp.idrac.fan.status[{#FAN}]'
+              delay: 5m
+              history: 30d
+              valuemap:
+                name: 'Object Status'
+              tags:
+                - tag: Fan
+                  value: '{#FAN}'
+                - tag: 'Item Type'
+                  value: Status
+              trigger_prototypes:
+                - uuid: e6ee458513b64b308e44893bfab0a2d4
+                  expression: 'last(/BA - MIB - iDRAC/snmp.idrac.fan.status[{#FAN}])<>3'
+                  name: 'Fan ({#FAN}) Status not OK'
+                  priority: AVERAGE
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+        - uuid: 1a56ee105c1447a5aa91c7dc3c6d8fdb
+          name: 'Memory Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#LOCATION}, .1.3.6.1.4.1.674.10892.5.4.1100.50.1.8]'
+          key: snmp.idrac.memory.discovery
+          delay: 6h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: ec41f97fb2574579a461d7c1b141d663
+              name: 'Memory ({#LOCATION}) Size'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.4.1100.50.1.14.{#SNMPINDEX}'
+              key: 'snmp.idrac.memory.size[{#LOCATION}]'
+              delay: 6h
+              history: 30d
+              units: B
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '1024'
+              tags:
+                - tag: 'Item Type'
+                  value: Size
+                - tag: Memory
+                  value: '{#LOCATION}'
+            - uuid: a595bcdab1e7464db8e98fb1deb32e42
+              name: 'Memory ({#LOCATION}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.4.1100.50.1.5.{#SNMPINDEX}'
+              key: 'snmp.idrac.memory.status[{#LOCATION}]'
+              delay: 5m
+              history: 30d
+              valuemap:
+                name: 'Object Status'
+              tags:
+                - tag: 'Item Type'
+                  value: Status
+                - tag: Memory
+                  value: '{#LOCATION}'
+        - uuid: 5a1c95dbdadf4b9cb23a70422f770c02
+          name: 'Power Supply Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SLOT}, .1.3.6.1.4.1.674.10892.5.4.600.12.1.2]'
+          key: snmp.idrac.psu.discovery
+          delay: 6h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 6b518d142f6749ba9f1d978d175085ab
+              name: 'Power Supply ({#SLOT}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.4.600.12.1.5.{#SNMPINDEX}'
+              key: 'snmp.psu.status[{#SLOT}]'
+              delay: 5m
+              history: 30d
+              valuemap:
+                name: 'Object Status'
+              tags:
+                - tag: 'Item Type'
+                  value: Status
+                - tag: 'Power Supply'
+                  value: '{#SLOT}'
+              trigger_prototypes:
+                - uuid: 992bf6b5677d4a2b968870f8e7a99508
+                  expression: 'last(/BA - MIB - iDRAC/snmp.psu.status[{#SLOT}])<>3'
+                  name: 'Power Supply ({#SLOT}) Status not OK'
+                  priority: HIGH
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+            - uuid: ba4d71e1cf524a06927a3a7258d5c73c
+              name: 'Power Supply ({#SLOT}) Input Volts'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.4.600.12.1.16.{#SNMPINDEX}'
+              key: 'snmp.psu.volts[{#SLOT}]'
+              delay: 5m
+              history: 30d
+              tags:
+                - tag: 'Item Type'
+                  value: Volts
+                - tag: 'Power Supply'
+                  value: '{#SLOT}'
+        - uuid: e3f42b9ea61e4a1dbd7177e91d693fab
+          name: 'Temperature Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#LOCATION}, .1.3.6.1.4.1.674.10892.5.4.700.20.1.8]'
+          key: snmp.idrac.temp.discovery
+          delay: 6h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 4defb8c45dc6400aa3f1371f7998c915
+              name: 'Temperature ({#LOCATION}) Celsius'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.4.700.20.1.6.{#SNMPINDEX}'
+              key: 'snmp.idrac.temp.celsius[{#LOCATION}]'
+              delay: 5m
+              history: 30d
+              units: C
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '0.1'
+              tags:
+                - tag: 'Item Type'
+                  value: Celsius
+                - tag: Temperature
+                  value: '{#LOCATION}'
+            - uuid: 59fce9c9227640a8894473dab7f6d019
+              name: 'Temperature ({#LOCATION}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.674.10892.5.4.700.20.1.5.{#SNMPINDEX}'
+              key: 'snmp.idrac.temp.status[{#LOCATION}]'
+              delay: 5m
+              history: 30d
+              valuemap:
+                name: 'Object Status'
+              tags:
+                - tag: 'Item Type'
+                  value: Status
+                - tag: Temperature
+                  value: '{#LOCATION}'
+              trigger_prototypes:
+                - uuid: b866a3981892411ebf2cfa9094a563d3
+                  expression: 'last(/BA - MIB - iDRAC/snmp.idrac.temp.status[{#LOCATION}])<>3'
+                  name: 'Temperature ({#LOCATION}) Status not OK'
+                  priority: AVERAGE
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+      tags:
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
+      dashboards:
+        - uuid: d2d9f956b6ab4cfb909ef6e57e601c2d
+          name: iDRAC
+          pages:
+            - widgets:
+                - type: item
+                  width: '15'
+                  height: '4'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: snmp.idrac.status
+                - type: graphprototype
+                  'y': '4'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: ITEM_PROTOTYPE
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: 'snmp.psu.volts[{#SLOT}]'
+                    - type: STRING
+                      name: reference
+                      value: AAAAM
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  'y': '9'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '4'
+                    - type: ITEM_PROTOTYPE
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: 'snmp.idrac.temp.celsius[{#LOCATION}]'
+                    - type: STRING
+                      name: reference
+                      value: AAAAN
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  'y': '14'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '4'
+                    - type: ITEM_PROTOTYPE
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: 'snmp.idrac.fan.rpm[{#FAN}]'
+                    - type: STRING
+                      name: reference
+                      value: AAAAO
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: item
+                  x: '15'
+                  width: '57'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: snmp.idrac.model
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: item
+                  x: '15'
+                  'y': '2'
+                  width: '57'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iDRAC'
+                        key: snmp.idrac.servicetag
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+      valuemaps:
+        - uuid: 87528ad19e974197bd45389575d08cc4
+          name: 'Drive Status'
+          mappings:
+            - value: '1'
+              newvalue: Unknown
+            - value: '2'
+              newvalue: Ready
+            - value: '3'
+              newvalue: Online
+            - value: '4'
+              newvalue: Foreign
+            - value: '5'
+              newvalue: Offline
+            - value: '6'
+              newvalue: Blocked
+            - value: '7'
+              newvalue: Failed
+            - value: '8'
+              newvalue: 'Non Raid'
+            - value: '9'
+              newvalue: Removed
+            - value: '10'
+              newvalue: 'Read Only'
+        - uuid: 9bf34b9795194880806b30db0958782a
+          name: 'Drive Type'
+          mappings:
+            - value: '1'
+              newvalue: Unknown
+            - value: '2'
+              newvalue: HDD
+            - value: '3'
+              newvalue: SSD
+        - uuid: 67ac04bbb6a4456080692021506a2dec
+          name: 'Object Status'
+          mappings:
+            - value: '1'
+              newvalue: Other
+            - value: '2'
+              newvalue: Unknown
+            - value: '3'
+              newvalue: OK
+            - value: '4'
+              newvalue: 'Non Critical'
+            - value: '5'
+              newvalue: Critical
+            - value: '6'
+              newvalue: 'Non Recoverable'
+

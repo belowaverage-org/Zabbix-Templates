@@ -1,0 +1,30 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: a9ae9cbb57864537879e36c074d112ca
+      name: BA/Profiles/Networking
+  templates:
+    - uuid: c14d11008b524874a40ab65d935d01cf
+      template: 'BA - Profile - Cisco IOS Switch'
+      name: 'BA - Profile - Cisco IOS Switch'
+      wizard_ready: 'YES'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - Macro - Interfaces'
+        - name: 'BA - MIB - Entity'
+        - name: 'BA - MIB - Generic'
+        - name: 'BA - MIB - Interfaces'
+        - name: 'BA - MIB - MAC to IP - RFC1213'
+        - name: 'BA - Procedure - Update Name'
+      groups:
+        - name: BA/Profiles/Networking
+      tags:
+        - tag: 'Template Type'
+          value: Profile
+        - tag: Vendor
+          value: Cisco
+

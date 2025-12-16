@@ -1,0 +1,664 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: c132e4d556724cb4aab6f04f031d698c
+      template: 'BA - MIB - iLO'
+      name: 'BA - MIB - iLO (CPQHLTH CPQIDA CPQSINFO)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: b82373e1ca9e42958d5134cbd2ee00ac
+          name: 'BIOS Status'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.232.6.2.16.1.0
+          key: ilo.bios.status
+          delay: 30m
+          history: 7d
+          trends: 90d
+          valuemap:
+            name: Condition
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: 'Item Type'
+              value: Status
+          triggers:
+            - uuid: 8a90f354f7d8437ebcc6b624f6116407
+              expression: 'last(/BA - MIB - iLO/ilo.bios.status)>=3'
+              name: 'BIOS Status fault'
+              priority: HIGH
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: State
+        - uuid: 73df4e29470f42d59d96b26542526767
+          name: 'Health Status'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.232.6.1.3.0
+          key: snmp.ilo.health
+          history: 30d
+          description: 'Overall global health of the server.'
+          valuemap:
+            name: Condition
+          tags:
+            - tag: 'Item Type'
+              value: Status
+          triggers:
+            - uuid: f885f35b8aca4be0be3b1c571a34fa5e
+              expression: 'last(/BA - MIB - iLO/snmp.ilo.health)<>2'
+              name: 'Health Status not OK'
+              priority: HIGH
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: State
+        - uuid: 1c023652a69044c7baeac117a853e465
+          name: Model
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.232.2.2.4.2.0
+          key: snmp.ilo.model
+          delay: 6h
+          history: 30d
+          value_type: CHAR
+          inventory_link: MODEL
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: 'Item Type'
+              value: Model
+        - uuid: 5d539a8d1d45450a81bc3caaec350537
+          name: Serial
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.232.2.2.2.1.0
+          key: snmp.ilo.serial
+          delay: 6h
+          history: 30d
+          value_type: CHAR
+          inventory_link: SERIALNO_A
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
+          tags:
+            - tag: 'Item Type'
+              value: Serial
+      discovery_rules:
+        - uuid: 8082351a93ad426c85a987c28b766b87
+          name: 'Drive Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#BAY}, .1.3.6.1.4.1.232.3.2.5.1.1.5]'
+          key: ilo.drive.discovery
+          delay: 1h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: f99a9648f1ef4aabb258ff46d06dad80
+              name: 'Drive ({#BAY}) Model'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.3.2.5.1.1.3.{#SNMPINDEX}'
+              key: 'ilo.drive.model[{#BAY}]'
+              delay: 6h
+              history: 90d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 24h
+              tags:
+                - tag: Drive
+                  value: '{#BAY}'
+                - tag: 'Item Type'
+                  value: Model
+            - uuid: 6d48ed1d609d474ea8edc0a89e103de7
+              name: 'Drive ({#BAY}) Serial'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.3.2.5.1.1.51.{#SNMPINDEX}'
+              key: 'ilo.drive.serial[{#BAY}]'
+              delay: 6h
+              history: 90d
+              value_type: CHAR
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 24h
+              tags:
+                - tag: Drive
+                  value: '{#BAY}'
+                - tag: 'Item Type'
+                  value: Serial
+            - uuid: 66924d8968f548de839cfd1867b0d4eb
+              name: 'Drive ({#BAY}) Size'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.3.2.5.1.1.45.{#SNMPINDEX}'
+              key: 'ilo.drive.size[{#BAY}]'
+              delay: 6h
+              history: 30d
+              units: B
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '1152000'
+              tags:
+                - tag: Drive
+                  value: '{#BAY}'
+                - tag: 'Item Type'
+                  value: Size
+            - uuid: 426d44830dd843bbaca34b43b0ab60c3
+              name: 'Drive ({#BAY}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.3.2.5.1.1.6.{#SNMPINDEX}'
+              key: 'ilo.drive.status[{#BAY}]'
+              delay: 5m
+              history: 30d
+              valuemap:
+                name: 'Drive Status'
+              tags:
+                - tag: Drive
+                  value: '{#BAY}'
+                - tag: 'Item Type'
+                  value: Status
+              trigger_prototypes:
+                - uuid: 684d29e15385460f96b9837fce515c27
+                  expression: 'last(/BA - MIB - iLO/ilo.drive.status[{#BAY}])<>2'
+                  name: 'Drive ({#BAY}) Status not OK'
+                  priority: HIGH
+                  description: 'The status of this drive is not OK.'
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+            - uuid: 8541b50c6cbb46fbbc118e39eb186c73
+              name: 'Drive ({#BAY}) Temperature'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.3.2.5.1.1.70.{#SNMPINDEX}'
+              key: 'ilo.drive.temp[{#BAY}]'
+              delay: 5m
+              history: 30d
+              units: C
+              preprocessing:
+                - type: IN_RANGE
+                  parameters:
+                    - '1'
+                    - '254'
+              tags:
+                - tag: Drive
+                  value: '{#BAY}'
+                - tag: 'Item Type'
+                  value: Temperature
+            - uuid: c56c65a63b234a578da62b14b334940d
+              name: 'Drive ({#BAY}) Type'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.3.2.5.1.1.69.{#SNMPINDEX}'
+              key: 'ilo.drive.type[{#BAY}]'
+              delay: 6h
+              history: 30d
+              valuemap:
+                name: 'Drive Type'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 24h
+              tags:
+                - tag: Drive
+                  value: '{#BAY}'
+                - tag: 'Item Type'
+                  value: Type
+        - uuid: 259907ba7ffb434db9ab561e915ef699
+          name: 'Fan Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#INDEX}, .1.3.6.1.4.1.232.6.2.6.7.1.2, {#PRESENT}, .1.3.6.1.4.1.232.6.2.6.7.1.4]'
+          key: ilo.fan.discovery
+          delay: 1h
+          filter:
+            conditions:
+              - macro: '{#PRESENT}'
+                value: '3'
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: cb685095094047d09132ff16f3cdc909
+              name: 'Fan ({#INDEX}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.6.2.6.7.1.9.{#SNMPINDEX}'
+              key: 'ilo.fan.status[{#SNMPINDEX}]'
+              delay: 15m
+              history: 7d
+              trends: 90d
+              valuemap:
+                name: Condition
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: Fan
+                  value: '{#INDEX}'
+                - tag: 'Item Type'
+                  value: Status
+              trigger_prototypes:
+                - uuid: c0ea2d1cbf594b8e9386b99bb74cef7c
+                  expression: 'last(/BA - MIB - iLO/ilo.fan.status[{#SNMPINDEX}])>=3'
+                  name: 'Fan ({#INDEX}) Status Fault'
+                  priority: AVERAGE
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+        - uuid: 0e2ce50fc37a42339ecce8ff57b64aff
+          name: 'Memory Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#LOCATION}, .1.3.6.1.4.1.232.6.2.14.13.1.13, {#STATUS}, .1.3.6.1.4.1.232.6.2.14.13.1.19]'
+          key: ilo.memory.discovery
+          delay: 1h
+          filter:
+            conditions:
+              - macro: '{#STATUS}'
+                value: '2'
+                operator: NOT_MATCHES_REGEX
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: dbd6d96ebc9c41c38327508e10ad42b2
+              name: 'Memory Module ({#LOCATION}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.6.2.14.13.1.19.{#SNMPINDEX}'
+              key: 'ilo.memory.status[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              trends: 90d
+              valuemap:
+                name: 'Memory Status'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: 'Item Type'
+                  value: Status
+                - tag: Memory
+                  value: '{#LOCATION}'
+              trigger_prototypes:
+                - uuid: 9756f0986d89482289d228966f731dbf
+                  expression: |
+                    last(/BA - MIB - iLO/ilo.memory.status[{#SNMPINDEX}])=8 or last(/BA - MIB - iLO/ilo.memory.status[{#SNMPINDEX}])=9 or
+                    last(/BA - MIB - iLO/ilo.memory.status[{#SNMPINDEX}])=10 or
+                    last(/BA - MIB - iLO/ilo.memory.status[{#SNMPINDEX}])=11 or
+                    last(/BA - MIB - iLO/ilo.memory.status[{#SNMPINDEX}])=13 or
+                    last(/BA - MIB - iLO/ilo.memory.status[{#SNMPINDEX}])=14 or
+                    last(/BA - MIB - iLO/ilo.memory.status[{#SNMPINDEX}])=15
+                  name: 'Memory Module ({#LOCATION}) Status Fault'
+                  priority: HIGH
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+        - uuid: 1ef1a17f77aa4016b9d4141fd9ac27e4
+          name: 'Power Supply Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#BAY}, .1.3.6.1.4.1.232.6.2.9.3.1.2]'
+          key: ilo.psu.discovery
+          delay: 1h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 55c324a536154fa8ada8ad8b17029a04
+              name: 'Power Supply ({#BAY}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.6.2.9.3.1.4.{#SNMPINDEX}'
+              key: 'ilo.psu.status[{#SNMPINDEX}]'
+              delay: 15m
+              history: 7d
+              trends: 90d
+              valuemap:
+                name: Condition
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: 'Item Type'
+                  value: Status
+                - tag: 'Power Supply'
+                  value: '{#BAY}'
+              trigger_prototypes:
+                - uuid: 67085e3c3e4a430d939dfefbb43a9a1a
+                  expression: 'last(/BA - MIB - iLO/ilo.psu.status[{#SNMPINDEX}])>=3'
+                  name: 'Power Supply ({#BAY}) Status Fault'
+                  priority: HIGH
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+            - uuid: 86b7a6491c684353b2a1b868bc25ea3d
+              name: 'Power Supply ({#BAY}) Input Volts'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.6.2.9.3.1.6.{#SNMPINDEX}'
+              key: 'ilo.psu.volts[{#SNMPINDEX}]'
+              delay: 15m
+              history: 7d
+              units: V
+              tags:
+                - tag: 'Item Type'
+                  value: Volts
+                - tag: 'Power Supply'
+                  value: '{#BAY}'
+            - uuid: 0e71a00b711145c4b12e1d5a8d380ff1
+              name: 'Power Supply ({#BAY}) Output Watts'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.6.2.9.3.1.7.{#SNMPINDEX}'
+              key: 'ilo.psu.watts[{#SNMPINDEX}]'
+              delay: 15m
+              history: 7d
+              units: W
+              tags:
+                - tag: 'Item Type'
+                  value: Watts
+                - tag: 'Power Supply'
+                  value: '{#BAY}'
+          graph_prototypes:
+            - uuid: d230d7ac6e5e43dc944c1b624be84fbd
+              name: 'Power Supply ({#BAY}) Input Volts / Output Watts'
+              graph_items:
+                - color: 199C0D
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - iLO'
+                    key: 'ilo.psu.volts[{#SNMPINDEX}]'
+                - sortorder: '1'
+                  color: F63100
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - iLO'
+                    key: 'ilo.psu.watts[{#SNMPINDEX}]'
+        - uuid: a397d83fcc6d4190b8f9bb3d2eb9d414
+          name: 'Temperature Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#LOCALE}, .1.3.6.1.4.1.232.6.2.6.8.1.3]'
+          key: ilo.temp.discovery
+          delay: 1h
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: d8f0505960564bf191f0518f4b9602e6
+              name: 'Temperature ({#LOCALE}) Celsius'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.6.2.6.8.1.4.{#SNMPINDEX}'
+              key: 'ilo.temp.celsius[{#SNMPINDEX}]'
+              delay: 5m
+              history: 7d
+              units: C
+              tags:
+                - tag: 'Item Type'
+                  value: Celsius
+                - tag: Temperature
+                  value: '{#LOCALE}'
+            - uuid: 892880b41bc7497e889d3a9901f36947
+              name: 'Temperature ({#LOCALE}) Status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.232.6.2.6.8.1.6.{#SNMPINDEX}'
+              key: 'ilo.temp.status[{#SNMPINDEX}]'
+              delay: 15m
+              history: 7d
+              trends: 90d
+              valuemap:
+                name: Condition
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
+              tags:
+                - tag: 'Item Type'
+                  value: Status
+                - tag: Temperature
+                  value: '{#LOCALE}'
+              trigger_prototypes:
+                - uuid: 74e231598873468e8b3657365506fa40
+                  expression: 'last(/BA - MIB - iLO/ilo.temp.status[{#SNMPINDEX}])>=3'
+                  name: 'Temperature ({#LOCALE}) Status Fault'
+                  priority: HIGH
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+          preprocessing:
+            - type: STR_REPLACE
+              parameters:
+                - '"1"'
+                - '"Other"'
+            - type: STR_REPLACE
+              parameters:
+                - '"2"'
+                - '"Unknown"'
+            - type: STR_REPLACE
+              parameters:
+                - '"3"'
+                - '"System"'
+            - type: STR_REPLACE
+              parameters:
+                - '"4"'
+                - '"System Board"'
+            - type: STR_REPLACE
+              parameters:
+                - '"5"'
+                - '"IO Board"'
+            - type: STR_REPLACE
+              parameters:
+                - '"6"'
+                - '"CPU"'
+            - type: STR_REPLACE
+              parameters:
+                - '"7"'
+                - '"Memory"'
+            - type: STR_REPLACE
+              parameters:
+                - '"8"'
+                - '"Storage"'
+            - type: STR_REPLACE
+              parameters:
+                - '"9"'
+                - '"Removeable Media"'
+            - type: STR_REPLACE
+              parameters:
+                - '"10"'
+                - '"Power Supply"'
+            - type: STR_REPLACE
+              parameters:
+                - '"11"'
+                - '"Ambient"'
+            - type: STR_REPLACE
+              parameters:
+                - '"12"'
+                - '"Chassis"'
+            - type: STR_REPLACE
+              parameters:
+                - '"13"'
+                - '"Bridge Card"'
+      tags:
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
+      dashboards:
+        - uuid: db86ebd68489487fb4664c66286c8d93
+          name: iLO
+          pages:
+            - widgets:
+                - type: item
+                  width: '15'
+                  height: '4'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: snmp.ilo.health
+                    - type: STRING
+                      name: thresholds.0.color
+                      value: 1B5E20
+                    - type: STRING
+                      name: thresholds.0.threshold
+                      value: '2'
+                - type: graphprototype
+                  'y': '4'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        name: 'Power Supply ({#BAY}) Input Volts / Output Watts'
+                    - type: STRING
+                      name: reference
+                      value: AAAAQ
+                - type: graphprototype
+                  'y': '9'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '4'
+                    - type: ITEM_PROTOTYPE
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: 'ilo.temp.celsius[{#SNMPINDEX}]'
+                    - type: STRING
+                      name: reference
+                      value: AAAAR
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  'y': '14'
+                  width: '72'
+                  height: '5'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '4'
+                    - type: ITEM_PROTOTYPE
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: 'ilo.drive.temp[{#BAY}]'
+                    - type: STRING
+                      name: reference
+                      value: AAAAP
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: item
+                  x: '15'
+                  width: '57'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: snmp.ilo.model
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+                - type: item
+                  x: '15'
+                  'y': '2'
+                  width: '57'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: snmp.ilo.serial
+                    - type: INTEGER
+                      name: show
+                      value: '2'
+      valuemaps:
+        - uuid: 5d0a36b6fc934ec8960c3f2f22ad2338
+          name: Condition
+          mappings:
+            - value: '1'
+              newvalue: Other
+            - value: '2'
+              newvalue: OK
+            - value: '3'
+              newvalue: Degraded
+            - value: '4'
+              newvalue: Failed
+        - uuid: e36970e130a049a19885414304878330
+          name: 'Drive Status'
+          mappings:
+            - value: '1'
+              newvalue: Other
+            - value: '2'
+              newvalue: OK
+            - value: '3'
+              newvalue: Failed
+            - value: '4'
+              newvalue: 'Predictive Failure'
+            - value: '5'
+              newvalue: Erasing
+            - value: '6'
+              newvalue: 'Erasing Done'
+            - value: '7'
+              newvalue: 'Erase Queued'
+            - value: '8'
+              newvalue: 'SSD Wear Out'
+            - value: '9'
+              newvalue: 'Not Authenticated'
+        - uuid: e8755e7be88745a5a927a3fbeb7b6b52
+          name: 'Drive Type'
+          mappings:
+            - value: '1'
+              newvalue: Other
+            - value: '2'
+              newvalue: HDD
+            - value: '3'
+              newvalue: SSD
+            - value: '4'
+              newvalue: SMR
+        - uuid: 8663d7853f594e4a927b2d0d49ec902d
+          name: 'Memory Status'
+          mappings:
+            - value: '1'
+              newvalue: Other
+            - value: '2'
+              newvalue: 'Not Present'
+            - value: '3'
+              newvalue: Present
+            - value: '4'
+              newvalue: Good
+            - value: '5'
+              newvalue: Add
+            - value: '6'
+              newvalue: Upgrade
+            - value: '7'
+              newvalue: Missing
+            - value: '8'
+              newvalue: 'Does Not Match'
+            - value: '9'
+              newvalue: 'Not Supported'
+            - value: '10'
+              newvalue: 'Bad Config'
+            - value: '11'
+              newvalue: Degraded
+            - value: '12'
+              newvalue: Spare
+            - value: '13'
+              newvalue: Partial
+            - value: '14'
+              newvalue: 'Config Error'
+            - value: '15'
+              newvalue: 'Training Failure'
+

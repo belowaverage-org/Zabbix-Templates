@@ -1,0 +1,120 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 8fdb1680986b48c781ac1ea2a485a917
+      name: BA/HTTP
+  templates:
+    - uuid: c515f9575dd94457ae7446052b3b9525
+      template: 'BA - HTTP - GitHub - Repository'
+      name: 'BA - HTTP - GitHub - Repository'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/HTTP
+      items:
+        - uuid: 867dab5e3e384f45a0849e22b54c9e35
+          name: 'GitHub Releases'
+          type: HTTP_AGENT
+          key: github.releases
+          delay: 15m
+          history: '0'
+          value_type: TEXT
+          timeout: 30s
+          url: 'https://api.github.com/repos/{$REPOSITORY}/releases'
+          headers:
+            - name: User-Agent
+              value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0'
+          output_format: JSON
+          tags:
+            - tag: 'Item Type'
+              value: JSON
+        - uuid: 74aec8f2d7a7454bb52b18f465074216
+          name: 'GitHub Releases Total Daily Downloads'
+          type: CALCULATED
+          key: github.releases.totaldailydownloads
+          delay: 1d
+          history: 7d
+          params: last(//github.releases.totaldownloads)
+          preprocessing:
+            - type: SIMPLE_CHANGE
+          tags:
+            - tag: GitHub
+              value: Releases
+            - tag: 'Item Type'
+              value: 'Daily Downloads'
+        - uuid: e876fb492b964ceb9ad340198e3b0038
+          name: 'GitHub Releases Total Downloads'
+          type: DEPENDENT
+          key: github.releases.totaldownloads
+          history: 7d
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - $.body..assets..download_count.sum()
+          master_item:
+            key: github.releases
+          tags:
+            - tag: GitHub
+              value: Releases
+            - tag: 'Item Type'
+              value: Downloads
+      discovery_rules:
+        - uuid: 6496ef3671134bb2b0ac97a2f6123087
+          name: 'GitHub Releases Discovery'
+          type: DEPENDENT
+          key: github.releases.discovery
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: b57ce14845f7460eb478da720a59f347
+              name: 'Github Release ({#TAG}) Downloads'
+              type: DEPENDENT
+              key: 'github.release.downloads[{#ID}]'
+              history: 7d
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.body[?(@.tag_name == "{#TAG}")].assets.*.download_count.sum()'
+              master_item:
+                key: github.releases
+              tags:
+                - tag: 'Item Type'
+                  value: Downloads
+                - tag: Release
+                  value: '{#TAG}'
+            - uuid: f1bab56020924136bea73e33b924b163
+              name: 'Github Release ({#TAG}) JSON'
+              type: DEPENDENT
+              key: 'github.release.json[{#ID}]'
+              history: 30d
+              value_type: TEXT
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$.body[?(@.tag_name == "{#TAG}")]'
+                - type: DISCARD_UNCHANGED
+              master_item:
+                key: github.releases
+              tags:
+                - tag: 'Item Type'
+                  value: JSON
+                - tag: Release
+                  value: '{#TAG}'
+          master_item:
+            key: github.releases
+          lld_macro_paths:
+            - lld_macro: '{#ID}'
+              path: $.id
+            - lld_macro: '{#TAG}'
+              path: $.tag_name
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$.body.*'
+      tags:
+        - tag: Agent
+          value: HTTP
+        - tag: 'Template Type'
+          value: Poller
+

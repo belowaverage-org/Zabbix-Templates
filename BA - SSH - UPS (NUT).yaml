@@ -1,0 +1,282 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 08afccc1647440e2bdf5025bd5f4b3e0
+      name: BA/SSH
+  templates:
+    - uuid: 5363825b8b51440ab13167e282af90de
+      template: 'BA - SSH - UPS'
+      name: 'BA - SSH - UPS (NUT)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/SSH
+      items:
+        - uuid: 5dc8fcd056714c81b6f37ada8fd25263
+          name: 'UPS Discovery'
+          type: SSH
+          key: 'ssh.run[upsdiscovery]'
+          history: '0'
+          value_type: TEXT
+          params: |
+            for ups in $(upsc -l); do
+                echo "#$ups";
+                upsc $ups;
+            done
+          username: '{$SSH_USERNAME}'
+          password: '{$SSH_PASSWORD}'
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var UPSs = value.split('#');
+                  var result = [];
+                  var mIndex = 0;
+                  UPSs.forEach(function(ups) {
+                      if (ups == '') { return; }
+                      var lines = ups.split('\n');
+                      var lIndex = 0;
+                      result[mIndex] = {};
+                      lines.forEach(function(line) {
+                          if (line == '') { return; }
+                          if (lIndex++ == 0) { 
+                              result[mIndex]['{#NAME}'] = line;
+                              result[mIndex]['name'] = line;
+                              return;
+                          }
+                          var kv = line.split(': ');
+                          result[mIndex][kv[0]] = kv[1];
+                      });
+                      mIndex++;
+                  });
+                  return JSON.stringify(result);
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
+      discovery_rules:
+        - uuid: aab88f1eccb54af58b4845c52cf5265e
+          name: 'UPS Discovery'
+          type: DEPENDENT
+          key: ssh.nut.ups.discovery
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 3141f09d1c8547e485b8f90d9dba0f2a
+              name: 'UPS ({#NAME}) Charge'
+              type: DEPENDENT
+              key: 'ssh.nut.ups.charge[{#NAME}]'
+              history: 30d
+              units: '%'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$..[?(@.name==''{#NAME}'')][''battery.charge''].first()'
+              master_item:
+                key: 'ssh.run[upsdiscovery]'
+              tags:
+                - tag: 'Item Type'
+                  value: Charge
+                - tag: UPS
+                  value: '{#NAME}'
+              trigger_prototypes:
+                - uuid: 51af5fe88b8e4eebaae011a3f2022ba8
+                  expression: 'last(/BA - SSH - UPS/ssh.nut.ups.charge[{#NAME}])<100'
+                  name: 'UPS ({#NAME}) Charge < 100%'
+                  priority: WARNING
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: Threshold
+            - uuid: caf05ab2f31346d1aee194218fdc3bef
+              name: 'UPS ({#NAME}) Load'
+              type: DEPENDENT
+              key: 'ssh.nut.ups.load[{#NAME}]'
+              history: 30d
+              units: '%'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$..[?(@.name==''{#NAME}'')][''ups.load''].first()'
+              master_item:
+                key: 'ssh.run[upsdiscovery]'
+              tags:
+                - tag: 'Item Type'
+                  value: Load
+                - tag: UPS
+                  value: '{#NAME}'
+            - uuid: ab90c08feeb4464eaf34dc8a21a1def4
+              name: 'UPS ({#NAME}) Runtime'
+              type: DEPENDENT
+              key: 'ssh.nut.ups.runtime[{#NAME}]'
+              history: 30d
+              units: s
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$..[?(@.name==''{#NAME}'')][''battery.runtime''].first()'
+              master_item:
+                key: 'ssh.run[upsdiscovery]'
+              tags:
+                - tag: 'Item Type'
+                  value: Runtime
+                - tag: UPS
+                  value: '{#NAME}'
+            - uuid: 1178a6cb711e4f1983c69c82eeb5bacb
+              name: 'UPS ({#NAME}) Status'
+              type: DEPENDENT
+              key: 'ssh.nut.ups.status[{#NAME}]'
+              history: 30d
+              valuemap:
+                name: 'UPS Status'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$..[?(@.name==''{#NAME}'')][''ups.status''].first()'
+                - type: JAVASCRIPT
+                  parameters:
+                    - |
+                      if (value.includes('OL')) {
+                          return 1;
+                      } else {
+                          return 0;
+                      }
+              master_item:
+                key: 'ssh.run[upsdiscovery]'
+              tags:
+                - tag: 'Item Type'
+                  value: Status
+                - tag: UPS
+                  value: '{#NAME}'
+              trigger_prototypes:
+                - uuid: 61cb309d62f8429f852aff61c7c3fd2f
+                  expression: 'last(/BA - SSH - UPS/ssh.nut.ups.status[{#NAME}])=0'
+                  name: 'UPS ({#NAME}) Status = Offline'
+                  priority: HIGH
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: State
+            - uuid: 71e2da69276a404c9f3aacd9cac442aa
+              name: 'UPS ({#NAME}) Voltage'
+              type: DEPENDENT
+              key: 'ssh.nut.ups.voltage[{#NAME}]'
+              history: 30d
+              value_type: FLOAT
+              units: V
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$..[?(@.name==''{#NAME}'')][''input.voltage''].first()'
+              master_item:
+                key: 'ssh.run[upsdiscovery]'
+              tags:
+                - tag: 'Item Type'
+                  value: Voltage
+                - tag: UPS
+                  value: '{#NAME}'
+          master_item:
+            key: 'ssh.run[upsdiscovery]'
+      tags:
+        - tag: Agent
+          value: SSH
+        - tag: 'Template Type'
+          value: Poller
+      dashboards:
+        - uuid: a867be58c5ef404ebfe3baf24c32b9fd
+          name: NUT
+          pages:
+            - widgets:
+                - type: graphprototype
+                  width: '72'
+                  height: '3'
+                  fields:
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - SSH - UPS'
+                        key: 'ssh.nut.ups.status[{#NAME}]'
+                    - type: STRING
+                      name: reference
+                      value: RCUIG
+                    - type: INTEGER
+                      name: show_legend
+                      value: '0'
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  'y': '3'
+                  width: '36'
+                  height: '4'
+                  fields:
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - SSH - UPS'
+                        key: 'ssh.nut.ups.charge[{#NAME}]'
+                    - type: STRING
+                      name: reference
+                      value: KXXKG
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  'y': '7'
+                  width: '36'
+                  height: '4'
+                  fields:
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - SSH - UPS'
+                        key: 'ssh.nut.ups.runtime[{#NAME}]'
+                    - type: STRING
+                      name: reference
+                      value: UKARK
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  x: '36'
+                  'y': '3'
+                  width: '36'
+                  height: '4'
+                  fields:
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - SSH - UPS'
+                        key: 'ssh.nut.ups.load[{#NAME}]'
+                    - type: STRING
+                      name: reference
+                      value: UUXKG
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+                - type: graphprototype
+                  x: '36'
+                  'y': '7'
+                  width: '36'
+                  height: '4'
+                  fields:
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - SSH - UPS'
+                        key: 'ssh.nut.ups.voltage[{#NAME}]'
+                    - type: STRING
+                      name: reference
+                      value: IRSIF
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
+      valuemaps:
+        - uuid: aff82d0edfcb41379ecd4705717395a9
+          name: 'UPS Status'
+          mappings:
+            - value: '0'
+              newvalue: Offline
+            - value: '1'
+              newvalue: Online
+

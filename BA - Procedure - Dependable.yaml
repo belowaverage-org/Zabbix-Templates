@@ -1,0 +1,105 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: d323af8072864defab6d6e380742fb4d
+      name: BA/Procedures
+  templates:
+    - uuid: 7a399834cf294ac298985e737a801023
+      template: 'BA - Procedure - Dependable'
+      name: 'BA - Procedure - Dependable'
+      description: |
+        This template contains a procedure item that will enable maintenance mode on any hosts that correspond to this host.
+        
+        Hosts are linked by a macro and a tag.
+        
+        On the dependable host, link this template and set the {$DEPENDABLE} macro to a unique string of your choice.
+        
+        On the dependent hosts, add a tag called "Dependable" with the value set to the value of the macro defined above.
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/Procedures
+      items:
+        - uuid: 47f8a09b1bde4fef9e077d673bea65be
+          name: 'Dependable Procedure'
+          type: CALCULATED
+          key: ba.procedure.dependable
+          delay: 10s
+          history: 1d
+          value_type: TEXT
+          params: 'last(//icmppingretry[{HOST.HOST},3])'
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1h
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var wr = new HttpRequest();
+                  wr.addHeader("Content-Type: application/json-rpc");
+                  wr.addHeader("Authorization: Bearer {$ZABSELFKEY}");
+                  if (value != 1) {
+                      var raw_dependents = wr.post("{$ZABSELFAPI}", JSON.stringify({
+                          "jsonrpc": "2.0",
+                          "method": "host.get",
+                          "params": {
+                              "output": ["hostid"],
+                              "tags": [{
+                                  "tag": "Dependable",
+                                  "value": "{$DEPENDABLE}",
+                                  "operator": "1"
+                              }]
+                          },
+                          "id": 1
+                      }));
+                      var dependents = JSON.parse(raw_dependents);
+                      wr.post("{$ZABSELFAPI}", JSON.stringify({
+                          "jsonrpc": "2.0",
+                          "method": "maintenance.create",
+                          "params": {
+                              "name": "{$DEPENDABLE}",
+                              "active_since": 0,
+                              "active_till": 2147483647,
+                              "hosts": dependents.result,
+                              "timeperiods": [{
+                                  "period": 86399940,
+                              }]
+                          },
+                          "id": 1
+                      }));
+                  } else {
+                      var raw_maint = wr.post("{$ZABSELFAPI}", JSON.stringify({
+                          "jsonrpc": "2.0",
+                          "method": "maintenance.get",
+                          "params": {
+                              "output": ["maintenanceid"],
+                              "filter": [{
+                                  "name": "{$DEPENDABLE}"
+                              }]
+                          },
+                          "id": 1
+                      }));
+                      var maint = JSON.parse(raw_maint);
+                      var maint_ids = [];
+                      maint.result.forEach(function (v) {
+                          maint_ids.push(v.maintenanceid);
+                      });
+                      wr.post("{$ZABSELFAPI}", JSON.stringify({
+                          "jsonrpc": "2.0",
+                          "method": "maintenance.delete",
+                          "params": maint_ids,
+                          "id": 1
+                      }));
+                  }
+                  return value;
+          tags:
+            - tag: Type
+              value: Procedure
+      tags:
+        - tag: 'Template Type'
+          value: Procedure
+      macros:
+        - macro: '{$DEPENDABLE}'
+          description: 'This macro is used to identify dependents. The procedure will use this value to identify hosts that depend on this host. Dependents will need to have a tag called "Dependable" set to this value to associate the two or more hosts.'
+

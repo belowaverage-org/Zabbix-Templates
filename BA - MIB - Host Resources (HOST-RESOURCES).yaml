@@ -1,0 +1,599 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: b1abf69b89d145d0bb16bf3296e42c7d
+      template: 'BA - MIB - Host Resources'
+      name: 'BA - MIB - Host Resources (HOST-RESOURCES)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: 06f324c51e5f4598907c5cb273b658b8
+          name: 'CPU Count'
+          type: DEPENDENT
+          key: cpu.count
+          history: 7d
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - usage
+                - .1.3.6.1.2.1.25.3.3.1.2
+                - '0'
+            - type: JSONPATH
+              parameters:
+                - $.length()
+          master_item:
+            key: snmp.cpu
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: 5025fa88f9a7452289629d2d127374e8
+          name: 'CPU Usage'
+          type: DEPENDENT
+          key: cpu.usage
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - usage
+                - .1.3.6.1.2.1.25.3.3.1.2
+                - '0'
+            - type: JSONPATH
+              parameters:
+                - $..usage.avg()
+          master_item:
+            key: snmp.cpu
+          tags:
+            - tag: 'Item Type'
+              value: Usage
+          triggers:
+            - uuid: 54befd1674e64270b7bc9876c05d5204
+              expression: 'avg(/BA - MIB - Host Resources/cpu.usage,{$CPU_HIGH_AVG_TIME_WARN})>={$CPU_USAGE_WARN}'
+              name: 'CPU Usage >= {$CPU_USAGE_WARN}% for {$CPU_HIGH_AVG_TIME_WARN}'
+              priority: AVERAGE
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
+        - uuid: dfe4572fa178448692691e4d75cd44bc
+          name: 'Memory Usage'
+          type: DEPENDENT
+          key: memory.usage
+          history: 7d
+          units: '%'
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - desc
+                - .1.3.6.1.2.1.25.2.3.1.3
+                - '0'
+                - size
+                - .1.3.6.1.2.1.25.2.3.1.5
+                - '0'
+                - used
+                - .1.3.6.1.2.1.25.2.3.1.6
+                - '0'
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var data = JSON.parse(value);
+                  var used;
+                  var size;
+                  var linux;
+                  data.forEach(function(item) {
+                      if(item['desc'] == 'main memory' || item['desc'] == 'Physical Memory' || item['desc'] == 'Real Memory') { //MikroTik / Windows / VMWare
+                          used = item['used'];
+                          size = item['size'];
+                      }
+                      if(item['desc'] == 'Physical memory') { //Linux
+                          linux = true;
+                          size = item['size'];
+                      }
+                      if(item['desc'] == 'Available memory') { //Linux
+                          linux = true;
+                          used = item['size'];
+                      }
+                  });
+                  if (linux) {
+                      return Math.round((((used / size) - 1) * -1) * 100);
+                  }
+                  return Math.round(used / size * 100);
+          master_item:
+            key: snmp.hr.storage
+          tags:
+            - tag: 'Item Type'
+              value: Usage
+          triggers:
+            - uuid: 678770fcf45c4c8a8f617d58c4a77776
+              expression: 'last(/BA - MIB - Host Resources/memory.usage)>={$MEM_USAGE_WARN}'
+              name: 'Memory Usage >= {$MEM_USAGE_WARN}%'
+              priority: AVERAGE
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
+        - uuid: 466a0ad4e7d64c64ac813cf42a1a42f6
+          name: 'CPU Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[.1.3.6.1.2.1.25.3.3.1.2]'
+          key: snmp.cpu
+          history: '0'
+          value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
+        - uuid: d6776d1e932247fca27a366c365cd41f
+          name: 'Storage Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[.1.3.6.1.2.1.25.2.3.1.2, .1.3.6.1.2.1.25.2.3.1.3, .1.3.6.1.2.1.25.2.3.1.4, .1.3.6.1.2.1.25.2.3.1.5, .1.3.6.1.2.1.25.2.3.1.6]'
+          key: snmp.hr.storage
+          history: '0'
+          value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
+      discovery_rules:
+        - uuid: 0c403e28a6c4499a9ca25969557b655a
+          name: 'Processor Discovery'
+          type: DEPENDENT
+          key: snmp.hr.cpu.discovery
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: d7b4dc1bc39e46548aa5dcbcc9e42d9a
+              name: 'CPU ({#SNMPINDEX}) Usage'
+              type: DEPENDENT
+              key: 'snmp.hr.cpu.usage[{#SNMPINDEX}]'
+              history: 7d
+              units: '%'
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.25.3.3.1.2.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: snmp.cpu
+              tags:
+                - tag: CPU
+                  value: '{#SNMPINDEX}'
+                - tag: 'Item Type'
+                  value: Usage
+          master_item:
+            key: snmp.cpu
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - '{#USAGE}'
+                - .1.3.6.1.2.1.25.3.3.1.2
+                - '0'
+        - uuid: b06ed58b63fe4b74b7028ec8eb23facc
+          name: 'Fixed Disk Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#TYPE}, .1.3.6.1.2.1.25.2.3.1.2, {#DESC}, .1.3.6.1.2.1.25.2.3.1.3, {#AUNITS}, .1.3.6.1.2.1.25.2.3.1.4]'
+          key: snmp.hr.fdisk.discovery
+          delay: 1h
+          filter:
+            conditions:
+              - macro: '{#TYPE}'
+                value: 'HOST-RESOURCES-TYPES::hrStorageFixedDisk'
+              - macro: '{#TYPE}'
+                value: iso.3.6.1.2.1.25.2.1.4
+          lifetime: 1d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 974a620b61674937a5561e9227ab54c3
+              name: 'Disk ({#DESC}) Size'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
+              key: 'snmp.hr.fdisk.size[{#DESC}]'
+              delay: 6h
+              history: 7d
+              units: B
+              preprocessing:
+                - type: JAVASCRIPT
+                  parameters:
+                    - |
+                      value = parseInt(value)
+                      if (value < 0) {
+                          value = value + (2147483648 * 2);
+                      }
+                      return value * {#AUNITS};
+              tags:
+                - tag: Disk
+                  value: '{#DESC}'
+                - tag: 'Item Type'
+                  value: Size
+            - uuid: d9309c8752944c33ad352b0b23118259
+              name: 'Disk ({#DESC}) Usage'
+              type: CALCULATED
+              key: 'snmp.hr.fdisk.usage[{#DESC}]'
+              delay: 1h
+              history: 7d
+              value_type: FLOAT
+              units: '%'
+              params: 'last(//snmp.hr.fdisk.used[{#DESC}])/last(//snmp.hr.fdisk.size[{#DESC}])'
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '100'
+              tags:
+                - tag: Disk
+                  value: '{#DESC}'
+                - tag: 'Item Type'
+                  value: Usage
+              trigger_prototypes:
+                - uuid: 4e5aa0b34f4745ada32f998ac09fe99e
+                  expression: 'last(/BA - MIB - Host Resources/snmp.hr.fdisk.usage[{#DESC}])>={$DISK_HIGH_AVG_PERC_WARN}'
+                  name: 'Disk ({#DESC}) Usage >= {$DISK_HIGH_AVG_PERC_WARN}%'
+                  priority: HIGH
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: Threshold
+            - uuid: d12b45c4665144ab99bcc2b12ee4073d
+              name: 'Disk ({#DESC}) Used'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
+              key: 'snmp.hr.fdisk.used[{#DESC}]'
+              delay: 1h
+              history: 7d
+              units: B
+              preprocessing:
+                - type: JAVASCRIPT
+                  parameters:
+                    - |
+                      value = parseInt(value)
+                      if (value < 0) {
+                          value = value + (2147483648 * 2);
+                      }
+                      return value * {#AUNITS};
+              tags:
+                - tag: Disk
+                  value: '{#DESC}'
+                - tag: 'Item Type'
+                  value: Used
+          graph_prototypes:
+            - uuid: c257fe03d5424e8485a040c39e920cc0
+              name: 'Disk ({#DESC}) Statistics'
+              graph_items:
+                - color: 1A7C11
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.fdisk.size[{#DESC}]'
+                - sortorder: '1'
+                  color: F63100
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.fdisk.used[{#DESC}]'
+                - sortorder: '2'
+                  color: 2774A4
+                  yaxisside: RIGHT
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.fdisk.usage[{#DESC}]'
+            - uuid: 80c9eb5bde2e4873af69913d1cc94a51
+              name: 'Disk ({#DESC}) Usage'
+              yaxismax: '0'
+              show_work_period: 'NO'
+              show_triggers: 'NO'
+              type: PIE
+              show_3d: 'YES'
+              graph_items:
+                - color: F0F0F0
+                  calc_fnc: LAST
+                  type: GRAPH_SUM
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.fdisk.size[{#DESC}]'
+                - sortorder: '1'
+                  color: E57373
+                  calc_fnc: LAST
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.fdisk.used[{#DESC}]'
+          overrides:
+            - name: 'Disable Usage Trigger "System Disk" MikroTik'
+              step: '1'
+              filter:
+                conditions:
+                  - macro: '{#DESC}'
+                    value: '^system disk$'
+              operations:
+                - operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Usage
+                  status: DISABLED
+        - uuid: 5f9d9f2ab44f452cae7c7d8b67873df2
+          name: 'Memory Discovery'
+          type: DEPENDENT
+          key: snmp.hr.memory.discovery
+          filter:
+            conditions:
+              - macro: '{#DESC}'
+                value: '[Mm]emory'
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: e1a4c937289a420399b88d93a12d2936
+              name: 'Memory ({#DESC}) Size'
+              type: DEPENDENT
+              key: 'snmp.hr.memory.size[{#DESC}]'
+              history: 7d
+              units: B
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.25.2.3.1.5.{#SNMPINDEX}'
+                    - '0'
+                - type: MULTIPLIER
+                  parameters:
+                    - '{#ALLOCUNITS}'
+              master_item:
+                key: snmp.hr.storage
+              tags:
+                - tag: 'Item Type'
+                  value: Size
+                - tag: Memory
+                  value: '{#DESC}'
+            - uuid: 7dff57c2b11144b791f310ddb854afe0
+              name: 'Memory ({#DESC}) Usage'
+              type: DEPENDENT
+              key: 'snmp.hr.memory.usage[{#DESC}]'
+              history: 7d
+              units: '%'
+              preprocessing:
+                - type: JAVASCRIPT
+                  parameters:
+                    - 'return Math.round({#USED} / {#SIZE} * 100);'
+              master_item:
+                key: snmp.hr.storage
+              tags:
+                - tag: 'Item Type'
+                  value: Usage
+                - tag: Memory
+                  value: '{#DESC}'
+            - uuid: 27f46f9cff5e4fc1a7699dce1b869cbd
+              name: 'Memory ({#DESC}) Used'
+              type: DEPENDENT
+              key: 'snmp.hr.memory.used[{#DESC}]'
+              history: 7d
+              units: B
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.2.1.25.2.3.1.6.{#SNMPINDEX}'
+                    - '0'
+                - type: MULTIPLIER
+                  parameters:
+                    - '{#ALLOCUNITS}'
+              master_item:
+                key: snmp.hr.storage
+              tags:
+                - tag: 'Item Type'
+                  value: Used
+                - tag: Memory
+                  value: '{#DESC}'
+          graph_prototypes:
+            - uuid: 8d9417a5eeab4a8487ea550f9ef784fe
+              name: 'Memory ({#DESC}) Statistics'
+              graph_items:
+                - color: 199C0D
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.memory.size[{#DESC}]'
+                - sortorder: '1'
+                  color: F63100
+                  yaxisside: RIGHT
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.memory.usage[{#DESC}]'
+                - sortorder: '2'
+                  color: 2774A4
+                  calc_fnc: ALL
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.memory.used[{#DESC}]'
+            - uuid: ac45f37962c04cb1b37a0c240ca18eca
+              name: 'Memory ({#DESC}) Usage'
+              yaxismax: '0'
+              show_work_period: 'NO'
+              show_triggers: 'NO'
+              type: PIE
+              show_3d: 'YES'
+              graph_items:
+                - color: FFEBEE
+                  calc_fnc: LAST
+                  type: GRAPH_SUM
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.memory.size[{#DESC}]'
+                - sortorder: '1'
+                  color: 0080FF
+                  calc_fnc: LAST
+                  item:
+                    host: 'BA - MIB - Host Resources'
+                    key: 'snmp.hr.memory.used[{#DESC}]'
+          master_item:
+            key: snmp.hr.storage
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - '{#TYPE}'
+                - .1.3.6.1.2.1.25.2.3.1.2
+                - '0'
+                - '{#DESC}'
+                - .1.3.6.1.2.1.25.2.3.1.3
+                - '0'
+                - '{#ALLOCUNITS}'
+                - .1.3.6.1.2.1.25.2.3.1.4
+                - '0'
+                - '{#SIZE}'
+                - .1.3.6.1.2.1.25.2.3.1.5
+                - '0'
+                - '{#USED}'
+                - .1.3.6.1.2.1.25.2.3.1.6
+                - '0'
+      tags:
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
+      dashboards:
+        - uuid: 230ad7e9ab814c76a271c4d937cb0e4f
+          name: 'Host Resources'
+          pages:
+            - widgets:
+                - type: item
+                  width: '9'
+                  height: '3'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        key: cpu.usage
+                - type: graph
+                  'y': '3'
+                  width: '18'
+                  height: '5'
+                  fields:
+                    - type: GRAPH
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: CPU
+                    - type: STRING
+                      name: reference
+                      value: AAAAJ
+                - type: graph
+                  'y': '8'
+                  width: '18'
+                  height: '5'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        key: memory.usage
+                    - type: STRING
+                      name: reference
+                      value: AAABA
+                    - type: INTEGER
+                      name: source_type
+                      value: '1'
+                - type: item
+                  x: '9'
+                  width: '9'
+                  height: '3'
+                  fields:
+                    - type: ITEM
+                      name: itemid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        key: memory.usage
+                - type: graphprototype
+                  x: '18'
+                  width: '9'
+                  height: '24'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '1'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Memory ({#DESC}) Usage'
+                    - type: STRING
+                      name: reference
+                      value: AAAAY
+                    - type: INTEGER
+                      name: rows
+                      value: '6'
+                - type: graphprototype
+                  x: '27'
+                  width: '18'
+                  height: '24'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '1'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Memory ({#DESC}) Statistics'
+                    - type: STRING
+                      name: reference
+                      value: AAAAZ
+                    - type: INTEGER
+                      name: rows
+                      value: '6'
+                - type: graphprototype
+                  x: '45'
+                  width: '9'
+                  height: '24'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '1'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Disk ({#DESC}) Usage'
+                    - type: STRING
+                      name: reference
+                      value: AAAAK
+                    - type: INTEGER
+                      name: rows
+                      value: '6'
+                - type: graphprototype
+                  x: '54'
+                  width: '18'
+                  height: '24'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '1'
+                    - type: GRAPH_PROTOTYPE
+                      name: graphid
+                      value:
+                        host: 'BA - MIB - Host Resources'
+                        name: 'Disk ({#DESC}) Statistics'
+                    - type: STRING
+                      name: reference
+                      value: AAAAL
+                    - type: INTEGER
+                      name: rows
+                      value: '6'
+  graphs:
+    - uuid: 12e77545f5a8427892619e4f55fc37e0
+      name: CPU
+      graph_items:
+        - color: BF00FF
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - Host Resources'
+            key: cpu.count
+        - sortorder: '1'
+          drawtype: GRADIENT_LINE
+          color: 0288D1
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'BA - MIB - Host Resources'
+            key: cpu.usage
+

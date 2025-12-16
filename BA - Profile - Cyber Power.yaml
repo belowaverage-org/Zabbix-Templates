@@ -1,0 +1,27 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: b384f4b048b0408a9adfeae61f5574ae
+      name: BA/Profiles
+  templates:
+    - uuid: c9872f3dbacb455482641a09da61e4c3
+      template: 'BA - Profile - Cyber Power'
+      name: 'BA - Profile - Cyber Power'
+      wizard_ready: 'YES'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - MIB - Cyber Power'
+        - name: 'BA - MIB - Generic'
+        - name: 'BA - Procedure - Update Name'
+      groups:
+        - name: BA/Profiles
+      tags:
+        - tag: 'Template Type'
+          value: Profile
+        - tag: Vendor
+          value: 'Cyber Power'
+

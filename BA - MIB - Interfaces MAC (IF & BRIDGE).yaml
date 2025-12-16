@@ -1,0 +1,273 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: 6ca02ebb5e5b4ba7a83e37c81d53c44b
+      template: 'BA - MIB - Interfaces MAC'
+      name: 'BA - MIB - Interfaces MAC (IF & BRIDGE)'
+      vendor:
+        name: 'below average'
+        version: 0.0.0.0
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: fc899d89f8354984b896bbad38c158ac
+          name: 'Interfaces MAC Count Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#PORT}, .1.3.6.1.2.1.17.4.3.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
+          key: snmp.interfaces.mac.count.discovery.json
+          delay: 15m
+          history: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var data = JSON.parse(value);
+                  var ports = {};
+                  var results = [];
+                  data.forEach(function(macs) {
+                      if (macs['{#PORT}'] == undefined) return;
+                      if (ports[macs['{#PORT}']] == undefined) {
+                          ports[macs['{#PORT}']] = 1;
+                      } else {
+                          ports[macs['{#PORT}']] += 1;
+                      }
+                  });
+                  data.forEach(function(interfaces) {
+                          if (interfaces['{#NAME}'] == undefined) return;
+                          interfaces['{#MACS}'] = ports[interfaces['{#SNMPINDEX}']];
+                          if (interfaces['{#MACS}'] == undefined) interfaces['{#MACS}'] = 0;
+                          results.push(interfaces);
+                      });
+                  return JSON.stringify(results);
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
+        - uuid: 9ebe2ba0750e44d6aba6d54dba1504b4
+          name: 'Interfaces MAC Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#ADDR}, .1.3.6.1.2.1.17.4.3.1.1, {#IFINDEX}, .1.3.6.1.2.1.17.1.4.1.2, {#PORT}, .1.3.6.1.2.1.17.4.3.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]'
+          key: snmp.interfaces.mac.discovery.json
+          delay: 15m
+          history: '0'
+          value_type: TEXT
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  var result = [];
+                  var addressReg = /("{#ADDR}":"..)( )(..)( )(..)( )(..)( )(..)( )(..)( )/g;
+                  value = value.replace(addressReg, '$1:$3:$5:$7:$9:$11');
+                  var jvalue = JSON.parse(value);
+                  var macToPort = {};
+                  jvalue.forEach(function(address) {
+                      if (address['{#ADDR}'] == undefined) return;
+                      var newAddrParts = [];
+                      var addr = address['{#ADDR}'].toLowerCase();
+                      var addrParts = addr.split(':');
+                      addrParts.forEach(function(v) {
+                          if (v.length == 1) v = '0' + v;
+                          newAddrParts.push(v);
+                      });
+                      var newAddr = newAddrParts.join(':');
+                      macToPort[newAddr] = address['{#PORT}'];
+                  });
+                  var portToIfIndex = {};
+                  jvalue.forEach(function(ifindex) {
+                      if (ifindex['{#IFINDEX}'] == undefined) return;
+                      portToIfIndex[ifindex['{#SNMPINDEX}']] = ifindex['{#IFINDEX}'];
+                  });
+                  var ifIndexToInterface = {};
+                  jvalue.forEach(function(interface) {
+                      if (interface['{#NAME}'] == undefined) return;
+                      ifIndexToInterface[interface['{#SNMPINDEX}']] = {
+                          '{#NAME}': interface['{#NAME}'],
+                          '{#ALIAS}': interface['{#ALIAS}']
+                      };
+                  });
+                  for (mac in macToPort) {
+                      if (portToIfIndex[macToPort[mac]] == undefined) continue;
+                      result.push({
+                          '{#SNMPINDEX}': mac + ':' + macToPort[mac],
+                          '{#MAC}': mac,
+                          '{#NAME}': ifIndexToInterface[portToIfIndex[macToPort[mac]]]['{#NAME}'],
+                          '{#ALIAS}': ifIndexToInterface[portToIfIndex[macToPort[mac]]]['{#ALIAS}']
+                      });
+                  }
+                  return JSON.stringify(result);
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
+      discovery_rules:
+        - uuid: b2841a94cb24434798eb25f1bae1be56
+          name: 'Interfaces MAC Count Discovery'
+          type: DEPENDENT
+          key: snmp.interfaces.mac.count.discovery
+          filter:
+            conditions:
+              - macro: '{#ALIAS}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+              - macro: '{#NAME}'
+                value: '.*{$INTER_FILTER_REGEX}.*'
+                operator: NOT_MATCHES_REGEX
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: ea1e8ad01fa44b9c9432becb0580604c
+              name: 'Interface ({#NAME}: {#ALIAS}) MAC Count'
+              type: DEPENDENT
+              key: 'snmp.interfaces.mac.count[{#NAME}]'
+              history: 7d
+              preprocessing:
+                - type: JAVASCRIPT
+                  parameters:
+                    - 'return {#MACS};'
+              master_item:
+                key: snmp.interfaces.mac.count.discovery.json
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Count
+            - uuid: 8205834112a849e9aaa49a9f929ecb6d
+              name: 'Interface ({#NAME}: {#ALIAS}) Managed LLDP Status'
+              type: CALCULATED
+              key: 'snmp.interfaces.mac.managed.lldp[{#NAME}]'
+              delay: 15m
+              history: 7d
+              status: DISABLED
+              discover: NO_DISCOVER
+              params: 'find(//snmp.interfaces.lldp.desc[{#NAME}],#1,"regexp","{$INTER_UPLINK_MANAGED_EXCLUDE_LLDP_DESC}")'
+              valuemap:
+                name: 'Managed Status'
+              preprocessing:
+                - type: CHECK_NOT_SUPPORTED
+                  parameters:
+                    - '-1'
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Status
+            - uuid: 62187cc596264fe4938e8dd2cdc358ba
+              name: 'Interface ({#NAME}: {#ALIAS}) Uplink Status'
+              type: DEPENDENT
+              key: 'snmp.interfaces.mac.uplinkstatus[{#NAME}]'
+              history: 7d
+              valuemap:
+                name: 'Uplink Status'
+              preprocessing:
+                - type: JAVASCRIPT
+                  parameters:
+                    - |
+                      if ({#MACS} >= {$INTER_UPLINK_THRESHOLD}) {
+                          return 1;
+                      }
+                      return 0;
+              master_item:
+                key: snmp.interfaces.mac.count.discovery.json
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Status
+          trigger_prototypes:
+            - uuid: 3ba62eed99da49268e57928089ac4d41
+              expression: 'last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.uplinkstatus[{#NAME}])=1 and last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.managed.lldp[{#NAME}])=0'
+              name: 'Interface ({#NAME}: {#ALIAS}) MAC Count >= {$INTER_UPLINK_THRESHOLD} With Un-managed Device'
+              status: DISABLED
+              discover: NO_DISCOVER
+              priority: INFO
+              description: 'This interface has an un-managed device connected.'
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Threshold
+          master_item:
+            key: snmp.interfaces.mac.count.discovery.json
+          overrides:
+            - name: 'Uplink Exclude Name'
+              step: '1'
+              filter:
+                conditions:
+                  - macro: '{#NAME}'
+                    value: '{$INTER_UPLINK_MANAGED_EXCLUDE_NAME}'
+              operations:
+                - operator: LIKE
+                  value: Managed
+                  discover: NO_DISCOVER
+                - operationobject: TRIGGER_PROTOTYPE
+                  operator: LIKE
+                  value: Un-managed
+                  discover: NO_DISCOVER
+        - uuid: 5bcb64d2d3f54e908235d4610981cddd
+          name: 'Interfaces MAC Discovery'
+          type: DEPENDENT
+          key: snmp.interfaces.mac.discovery
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 44672117f4544766855c1c106404e8c7
+              name: 'Interface ({#NAME}: {#ALIAS}), MAC: {#MAC}'
+              type: DEPENDENT
+              key: 'snmp.interfaces.mac.status[{#SNMPINDEX}]'
+              history: 7d
+              trends: 30d
+              valuemap:
+                name: 'MAC Status'
+              preprocessing:
+                - type: MATCHES_REGEX
+                  parameters:
+                    - '"{.SNMPINDEX}":"{#SNMPINDEX}"'
+                  error_handler: CUSTOM_VALUE
+                  error_handler_params: '0'
+                - type: JAVASCRIPT
+                  parameters:
+                    - |
+                      if (value == 0) return value;
+                      return 1;
+              master_item:
+                key: snmp.interfaces.mac.discovery.json
+              tags:
+                - tag: 'Interface Name'
+                  value: '{#NAME}'
+                - tag: 'Item Type'
+                  value: Status
+                - tag: MAC
+                  value: '{#MAC}'
+          master_item:
+            key: snmp.interfaces.mac.discovery.json
+      tags:
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
+      valuemaps:
+        - uuid: 4832488ec33a470b8f7ee84221ceb82b
+          name: 'MAC Status'
+          mappings:
+            - value: '0'
+              newvalue: Stale
+            - value: '1'
+              newvalue: Active
+        - uuid: 7f55d972ef1043b99c1846822e7ea797
+          name: 'Managed Status'
+          mappings:
+            - value: '0'
+              newvalue: Un-managed
+            - value: '1'
+              newvalue: Managed
+        - uuid: f7f237d11e6648cbad93b136ccf62d2a
+          name: 'Uplink Status'
+          mappings:
+            - value: '0'
+              newvalue: 'False'
+            - value: '1'
+              newvalue: 'True'
+
