@@ -43,6 +43,9 @@ zabbix_export:
         - macro: '{$MEM_USAGE_WARN}'
           value: '95'
           description: 'Percentage to trigger a memory usage alert.'
+        - macro: '{$REBOOT_WARN_DURATION}'
+          value: 10m
+          description: 'Keep alert open for this amount of time after a reboot.'
         - macro: '{$SOFTWARE_VERSION_STRINGS}'
           value: ^(7\.20(\.6)|(YA|WC)\.16\.11\.0020)$
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'

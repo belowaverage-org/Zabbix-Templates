@@ -1672,6 +1672,28 @@ zabbix_export:
                     - type: INTEGER
                       name: show_column_header
                       value: '0'
+                - type: graphprototype
+                  'y': '12'
+                  width: '72'
+                  height: '52'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '3'
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - Internal - Zabbix'
+                        key: 'zabbix.stats.process.busy[{#PROCESSNAME}]'
+                    - type: STRING
+                      name: reference
+                      value: JETHW
+                    - type: INTEGER
+                      name: rows
+                      value: '13'
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
                 - type: topitems
                   name: 'Top Counts'
                   x: '24'
@@ -1785,6 +1807,9 @@ zabbix_export:
         - macro: '{$MEM_USAGE_WARN}'
           value: '95'
           description: 'Percentage to trigger a memory usage alert.'
+        - macro: '{$REBOOT_WARN_DURATION}'
+          value: 10m
+          description: 'Keep alert open for this amount of time after a reboot.'
         - macro: '{$SOFTWARE_VERSION_STRINGS}'
           value: ^(7\.20(\.6)|(YA|WC)\.16\.11\.0020)$
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
@@ -3479,10 +3504,10 @@ zabbix_export:
                 - tag: 'Trigger Type'
                   value: State
             - uuid: ed77aa0f513b454d90a231185baef9be
-              expression: 'last(/BA - MIB - Generic/snmp.uptime)<=300'
+              expression: 'last(/BA - MIB - Generic/snmp.uptime)<={$REBOOT_WARN_DURATION}'
               name: 'Device rebooted'
               priority: AVERAGE
-              description: 'This device rebooted within the last 5 minutes.'
+              description: 'This device rebooted within the last {$REBOOT_WARN_DURATION} minutes.'
               manual_close: 'YES'
               tags:
                 - tag: 'Trigger Type'
@@ -7964,7 +7989,7 @@ zabbix_export:
           key: ba.procedure.dependable
           delay: 10s
           history: 1d
-          value_type: TEXT
+          trends: '0'
           params: 'last(//icmppingretry[{HOST.HOST},3])'
           preprocessing:
             - type: DISCARD_UNCHANGED_HEARTBEAT
@@ -8011,9 +8036,9 @@ zabbix_export:
                           "method": "maintenance.get",
                           "params": {
                               "output": ["maintenanceid"],
-                              "filter": [{
+                              "filter": {
                                   "name": "{$DEPENDABLE}"
-                              }]
+                              }
                           },
                           "id": 1
                       }));

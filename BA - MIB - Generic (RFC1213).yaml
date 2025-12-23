@@ -148,10 +148,10 @@ zabbix_export:
                 - tag: 'Trigger Type'
                   value: State
             - uuid: ed77aa0f513b454d90a231185baef9be
-              expression: 'last(/BA - MIB - Generic/snmp.uptime)<=300'
+              expression: 'last(/BA - MIB - Generic/snmp.uptime)<={$REBOOT_WARN_DURATION}'
               name: 'Device rebooted'
               priority: AVERAGE
-              description: 'This device rebooted within the last 5 minutes.'
+              description: 'This device rebooted within the last {$REBOOT_WARN_DURATION} minutes.'
               manual_close: 'YES'
               tags:
                 - tag: 'Trigger Type'

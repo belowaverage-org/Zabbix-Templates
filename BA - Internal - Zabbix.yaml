@@ -681,6 +681,28 @@ zabbix_export:
                     - type: INTEGER
                       name: show_column_header
                       value: '0'
+                - type: graphprototype
+                  'y': '12'
+                  width: '72'
+                  height: '52'
+                  fields:
+                    - type: INTEGER
+                      name: columns
+                      value: '3'
+                    - type: ITEM_PROTOTYPE
+                      name: itemid.0
+                      value:
+                        host: 'BA - Internal - Zabbix'
+                        key: 'zabbix.stats.process.busy[{#PROCESSNAME}]'
+                    - type: STRING
+                      name: reference
+                      value: JETHW
+                    - type: INTEGER
+                      name: rows
+                      value: '13'
+                    - type: INTEGER
+                      name: source_type
+                      value: '3'
                 - type: topitems
                   name: 'Top Counts'
                   x: '24'
