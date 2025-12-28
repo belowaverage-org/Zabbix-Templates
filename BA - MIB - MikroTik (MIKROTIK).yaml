@@ -112,6 +112,8 @@ zabbix_export:
               history: 7d
               value_type: FLOAT
               units: '{#UNIT}'
+              valuemap:
+                name: Status
               preprocessing:
                 - type: JAVASCRIPT
                   parameters:
@@ -255,6 +257,14 @@ zabbix_export:
                     - type: STRING
                       name: reference
                       value: AAAAU
+      valuemaps:
+        - uuid: 3e67b6c117dc4c00a476782c9c637c81
+          name: Status
+          mappings:
+            - value: '0'
+              newvalue: '⚫️ Idle'
+            - value: '1'
+              newvalue: '🟢 Up'
   graphs:
     - uuid: 621c306af3f44412a3e0a9d1988d6a3c
       name: 'CPU Frequency'

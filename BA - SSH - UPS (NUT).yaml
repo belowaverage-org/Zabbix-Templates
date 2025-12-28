@@ -276,7 +276,7 @@ zabbix_export:
           name: 'UPS Status'
           mappings:
             - value: '0'
-              newvalue: Offline
+              newvalue: '🔴 Offline'
             - value: '1'
-              newvalue: Online
+              newvalue: '🟢 Online'
 

@@ -139,7 +139,7 @@ zabbix_export:
           name: 'MAC to IP State'
           mappings:
             - value: '0'
-              newvalue: Stale
+              newvalue: '⚫️ Stale'
             - value: '1'
-              newvalue: Active
+              newvalue: '🟢 Active'
 

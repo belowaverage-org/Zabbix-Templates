@@ -463,47 +463,47 @@ zabbix_export:
           name: 'Drive Status'
           mappings:
             - value: '1'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '2'
-              newvalue: Ready
+              newvalue: '⚫️ Ready'
             - value: '3'
-              newvalue: Online
+              newvalue: '🟢 Online'
             - value: '4'
-              newvalue: Foreign
+              newvalue: '🟡 Foreign'
             - value: '5'
-              newvalue: Offline
+              newvalue: '🔴 Offline'
             - value: '6'
-              newvalue: Blocked
+              newvalue: '🟡 Blocked'
             - value: '7'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
             - value: '8'
-              newvalue: 'Non Raid'
+              newvalue: '⚫️ Non Raid'
             - value: '9'
-              newvalue: Removed
+              newvalue: '⚫️ Removed'
             - value: '10'
-              newvalue: 'Read Only'
+              newvalue: '⚫️ Read Only'
         - uuid: 9bf34b9795194880806b30db0958782a
           name: 'Drive Type'
           mappings:
             - value: '1'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '2'
-              newvalue: HDD
+              newvalue: '💿 HDD'
             - value: '3'
-              newvalue: SSD
+              newvalue: '📀 SSD'
         - uuid: 67ac04bbb6a4456080692021506a2dec
           name: 'Object Status'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '3'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '4'
-              newvalue: 'Non Critical'
+              newvalue: '🟡 Non Critical'
             - value: '5'
-              newvalue: Critical
+              newvalue: '🔴 Critical'
             - value: '6'
-              newvalue: 'Non Recoverable'
+              newvalue: '🔴 Non Recoverable'
 

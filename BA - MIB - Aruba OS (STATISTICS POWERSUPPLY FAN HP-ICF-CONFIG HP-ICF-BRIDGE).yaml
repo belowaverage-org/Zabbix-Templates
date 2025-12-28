@@ -440,41 +440,41 @@ zabbix_export:
           name: 'Fan Status'
           mappings:
             - value: '0'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
             - value: '1'
-              newvalue: Removed
+              newvalue: '⚫️ Removed'
             - value: '2'
-              newvalue: 'Off'
+              newvalue: '⚫️ Off'
             - value: '3'
-              newvalue: 'Under Speed'
+              newvalue: '🟡 Under Speed'
             - value: '4'
-              newvalue: 'Over Speed'
+              newvalue: '🟡 Over Speed'
             - value: '5'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '6'
-              newvalue: Maxed
+              newvalue: '🟡 Maxed'
         - uuid: 83f6c58a912942d3b2b28f315efe79f0
           name: 'PSU Status'
           mappings:
             - value: '1'
-              newvalue: 'Not Present'
+              newvalue: '⚫️ Not Present'
             - value: '2'
-              newvalue: 'Not Plugged'
+              newvalue: '🟡 Not Plugged'
             - value: '3'
-              newvalue: Powered
+              newvalue: '🟢 Powered'
             - value: '4'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
             - value: '5'
-              newvalue: 'Permanent Failure'
+              newvalue: '🔴 Permanent Failure'
             - value: '6'
-              newvalue: Maxed
+              newvalue: '🟡 Maxed'
         - uuid: 8eb209439d724701966573df46e17da0
           name: Status
           mappings:
             - value: '1'
-              newvalue: Enabled
+              newvalue: '🟢 Enabled'
             - value: '2'
-              newvalue: Disabled
+              newvalue: '🟠 Disabled'
   triggers:
     - uuid: 0cb2f24a7f724fad988e17ed41f374ee
       expression: 'last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.startup)<>last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.running)'

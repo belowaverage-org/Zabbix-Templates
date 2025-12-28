@@ -135,13 +135,13 @@ zabbix_export:
           name: 'Operating Status'
           mappings:
             - value: '1'
-              newvalue: Active
+              newvalue: '🟢 Active'
             - value: '2'
-              newvalue: Continuing
+              newvalue: '⏯️ Continuing'
             - value: '3'
-              newvalue: Pausing
+              newvalue: '⏯️ Pausing'
             - value: '4'
-              newvalue: Paused
+              newvalue: '⏸️ Paused'
             - value: '5'
-              newvalue: Stopped
+              newvalue: '🔴 Stopped'
 

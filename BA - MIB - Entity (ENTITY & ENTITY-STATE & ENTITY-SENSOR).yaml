@@ -266,80 +266,80 @@ zabbix_export:
           name: Alarm
           mappings:
             - value: '0'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '1'
-              newvalue: 'Under Repair'
+              newvalue: '🟡 Under Repair'
             - value: '2'
-              newvalue: Critical
+              newvalue: '🔴 Critical'
             - value: '3'
-              newvalue: Major
+              newvalue: '🔴 Major'
             - value: '4'
-              newvalue: Minor
+              newvalue: '🟡 Minor'
             - value: '5'
-              newvalue: Warning
+              newvalue: '🟡 Warning'
             - value: '6'
-              newvalue: Indeterminate
+              newvalue: '❔ Indeterminate'
         - uuid: 2d1137ea13da40699b7a2fbdf087254e
           name: Class
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '3'
-              newvalue: Chassis
+              newvalue: '🗄️ Chassis'
             - value: '4'
-              newvalue: Backplane
+              newvalue: '🔗 Backplane'
             - value: '5'
-              newvalue: Container
+              newvalue: '📦 Container'
             - value: '6'
-              newvalue: 'Power Supply'
+              newvalue: '🔌 Power Supply'
             - value: '7'
-              newvalue: Fan
+              newvalue: '💨 Fan'
             - value: '8'
-              newvalue: Sensor
+              newvalue: '🌡️ Sensor'
             - value: '9'
-              newvalue: Module
+              newvalue: '🧩 Module'
             - value: '10'
-              newvalue: Port
+              newvalue: '⚫️ Port'
             - value: '11'
-              newvalue: Stack
+              newvalue: '📚 Stack'
             - value: '12'
-              newvalue: CPU
+              newvalue: '🧠 CPU'
         - uuid: 3d5438f67c324a56b0e567e68a90a14a
           name: 'Sensor Status'
           mappings:
             - value: '1'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '2'
-              newvalue: Unavailable
+              newvalue: '⚫️ Unavailable'
             - value: '3'
-              newvalue: 'Non Operational'
+              newvalue: '🔴 Non Operational'
         - uuid: abc18022ee8a440cb3d5b58ef645fd1c
           name: 'Sensor Type'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '3'
-              newvalue: 'Volts AC'
+              newvalue: '⚡️ Volts AC'
             - value: '4'
-              newvalue: 'Volts DC'
+              newvalue: '⚡️ Volts DC'
             - value: '5'
-              newvalue: Amps
+              newvalue: '⚡️ Amps'
             - value: '6'
-              newvalue: Watts
+              newvalue: '⚡️ Watts'
             - value: '7'
-              newvalue: Hertz
+              newvalue: '〜 Hertz'
             - value: '8'
-              newvalue: Celsius
+              newvalue: '℃ Celsius'
             - value: '9'
-              newvalue: 'Percent Relative Humidity'
+              newvalue: '% Percent Relative Humidity'
             - value: '10'
-              newvalue: RPM
+              newvalue: '🔄 RPM'
             - value: '11'
-              newvalue: 'Cubic Meters per Minute'
+              newvalue: '➡️ Cubic Meters per Minute'
             - value: '12'
-              newvalue: Boolean
+              newvalue: '↕️ Boolean'
 

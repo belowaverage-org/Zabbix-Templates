@@ -129,6 +129,8 @@ zabbix_export:
               delay: 5m
               history: 365d
               value_type: CHAR
+              valuemap:
+                name: 'Guest State'
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
@@ -163,6 +165,8 @@ zabbix_export:
               delay: 5m
               history: 365d
               value_type: CHAR
+              valuemap:
+                name: 'Power State'
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
@@ -177,4 +181,27 @@ zabbix_export:
           value: SNMP
         - tag: 'Template Type'
           value: Poller
+      valuemaps:
+        - uuid: 2ea71bb7466e4e5eb087a94b063e5a5e
+          name: 'Guest State'
+          mappings:
+            - value: running
+              newvalue: '🟢 Running'
+            - value: shuttingdown
+              newvalue: '🔄 Shutting Down'
+            - value: resetting
+              newvalue: '🔄 Resetting'
+            - value: standby
+              newvalue: '🟡 Stand By'
+            - value: notrunning
+              newvalue: '🟠 Not Running'
+            - value: unknown
+              newvalue: '❔ Unknown'
+        - uuid: 07548fb9557c4ca8b7cb177b7550bccd
+          name: 'Power State'
+          mappings:
+            - value: 'powered on'
+              newvalue: '🟢 Powered On'
+            - value: 'powered off'
+              newvalue: '🟠 Powered Off'
 

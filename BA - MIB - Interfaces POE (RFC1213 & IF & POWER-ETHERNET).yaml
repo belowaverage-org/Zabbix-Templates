@@ -96,22 +96,22 @@ zabbix_export:
           name: 'POE Admin'
           mappings:
             - value: '1'
-              newvalue: Enabled
+              newvalue: '🟢 Enabled'
             - value: '2'
-              newvalue: Disabled
+              newvalue: '🟠 Disabled'
         - uuid: ef4f68d4621c45b29c33579af98ad7d3
           name: 'POE Status'
           mappings:
             - value: '1'
-              newvalue: Disabled
+              newvalue: '🟠 Disabled'
             - value: '2'
-              newvalue: Searching
+              newvalue: '🔎 Searching'
             - value: '3'
-              newvalue: 'Delivering Power'
+              newvalue: '⚡️ Delivering Power'
             - value: '4'
-              newvalue: Fault
+              newvalue: '🔴 Fault'
             - value: '5'
-              newvalue: Test
+              newvalue: '🟡 Test'
             - value: '6'
-              newvalue: 'Other Fault'
+              newvalue: '🔴 Other Fault'
 

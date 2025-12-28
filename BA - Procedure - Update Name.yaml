@@ -80,7 +80,7 @@ zabbix_export:
           name: 'Exit Code'
           mappings:
             - value: '0'
-              newvalue: Success
+              newvalue: '🟢 Success'
             - value: '1'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
 

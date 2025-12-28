@@ -589,76 +589,76 @@ zabbix_export:
           name: Condition
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '3'
-              newvalue: Degraded
+              newvalue: '🟡 Degraded'
             - value: '4'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
         - uuid: e36970e130a049a19885414304878330
           name: 'Drive Status'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '3'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
             - value: '4'
-              newvalue: 'Predictive Failure'
+              newvalue: '🟡 Predictive Failure'
             - value: '5'
-              newvalue: Erasing
+              newvalue: '🔄 Erasing'
             - value: '6'
-              newvalue: 'Erasing Done'
+              newvalue: '✅ Erasing Done'
             - value: '7'
-              newvalue: 'Erase Queued'
+              newvalue: '⚫️ Erase Queued'
             - value: '8'
-              newvalue: 'SSD Wear Out'
+              newvalue: '🟡 SSD Wear Out'
             - value: '9'
-              newvalue: 'Not Authenticated'
+              newvalue: '🟡 Not Authenticated'
         - uuid: e8755e7be88745a5a927a3fbeb7b6b52
           name: 'Drive Type'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: HDD
+              newvalue: '💿 HDD'
             - value: '3'
-              newvalue: SSD
+              newvalue: '📀 SSD'
             - value: '4'
-              newvalue: SMR
+              newvalue: '💿 SMR'
         - uuid: 8663d7853f594e4a927b2d0d49ec902d
           name: 'Memory Status'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: 'Not Present'
+              newvalue: '⚫️ Not Present'
             - value: '3'
-              newvalue: Present
+              newvalue: '🟠 Present'
             - value: '4'
-              newvalue: Good
+              newvalue: '🟢 Good'
             - value: '5'
-              newvalue: Add
+              newvalue: '➕ Add'
             - value: '6'
-              newvalue: Upgrade
+              newvalue: '⬆️ Upgrade'
             - value: '7'
-              newvalue: Missing
+              newvalue: '🔎 Missing'
             - value: '8'
-              newvalue: 'Does Not Match'
+              newvalue: '🟡 Does Not Match'
             - value: '9'
-              newvalue: 'Not Supported'
+              newvalue: '🟡 Not Supported'
             - value: '10'
-              newvalue: 'Bad Config'
+              newvalue: '🟡 Bad Config'
             - value: '11'
-              newvalue: Degraded
+              newvalue: '🟡 Degraded'
             - value: '12'
-              newvalue: Spare
+              newvalue: '⚫️ Spare'
             - value: '13'
-              newvalue: Partial
+              newvalue: '🟡 Partial'
             - value: '14'
-              newvalue: 'Config Error'
+              newvalue: '🟡 Config Error'
             - value: '15'
-              newvalue: 'Training Failure'
+              newvalue: '🟡 Training Failure'
 

@@ -71,7 +71,7 @@ zabbix_export:
           name: 'Loop Detected'
           mappings:
             - value: '1'
-              newvalue: 'Yes'
+              newvalue: '🔴 Yes'
             - value: '2'
-              newvalue: 'No'
+              newvalue: '🟢 No'
 

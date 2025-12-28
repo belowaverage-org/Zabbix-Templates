@@ -198,9 +198,9 @@ zabbix_export:
           name: 'Ping Status'
           mappings:
             - value: '0'
-              newvalue: Down
+              newvalue: '🔴 Down'
             - value: '1'
-              newvalue: Up
+              newvalue: '🟢 Up'
     - uuid: f4d0ecadd0e647d3bf034ea2af2cf2b9
       template: 'BA - HTTP - Axis'
       name: 'BA - HTTP - Axis'
@@ -676,9 +676,9 @@ zabbix_export:
           name: Status
           mappings:
             - value: '0'
-              newvalue: Offline
+              newvalue: '🔴 Down'
             - value: '1'
-              newvalue: Online
+              newvalue: '🟢 Up'
     - uuid: c515f9575dd94457ae7446052b3b9525
       template: 'BA - HTTP - GitHub - Repository'
       name: 'BA - HTTP - GitHub - Repository'
@@ -2205,45 +2205,45 @@ zabbix_export:
           name: 'Battery Replace Indicator'
           mappings:
             - value: '1'
-              newvalue: 'No Battery Needs Replacing'
+              newvalue: '🟢 No Battery Needs Replacing'
             - value: '2'
-              newvalue: 'Battery Needs Replacing'
+              newvalue: '🔴 Battery Needs Replacing'
         - uuid: e82ea3b33488450e9119caec94008573
           name: 'Battery Status'
           mappings:
             - value: '1'
-              newvalue: Unkown
+              newvalue: '❔ Unkown'
             - value: '2'
-              newvalue: 'Battery Normal'
+              newvalue: '🟢 Battery Normal'
             - value: '3'
-              newvalue: 'Battery Low'
+              newvalue: '🔴 Battery Low'
         - uuid: 83bdd49e6e674d8d8b1b6b397f461643
           name: 'UPS Status'
           mappings:
             - value: '1'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '2'
-              newvalue: Online
+              newvalue: '🟢 Online'
             - value: '3'
-              newvalue: 'On Battery'
+              newvalue: '🟡 On Battery'
             - value: '4'
-              newvalue: 'On Smart Boost'
+              newvalue: '🟡 On Smart Boost'
             - value: '5'
-              newvalue: 'Timed Sleeping'
+              newvalue: '⚫️ Timed Sleeping'
             - value: '6'
-              newvalue: 'Software Bypass'
+              newvalue: '⚫️ Software Bypass'
             - value: '7'
-              newvalue: 'Off'
+              newvalue: '⚫️ Off'
             - value: '8'
-              newvalue: Rebooting
+              newvalue: '🟡 Rebooting'
             - value: '9'
-              newvalue: 'Switched Bypass'
+              newvalue: '⚫️ Switched Bypass'
             - value: '10'
-              newvalue: 'Hardware Failure Bypass'
+              newvalue: '🔴 Hardware Failure Bypass'
             - value: '11'
-              newvalue: 'Sleeping Unit Power Return'
+              newvalue: '⚫️ Sleeping Unit Power Return'
             - value: '12'
-              newvalue: 'On Smart Trim'
+              newvalue: '🟡 On Smart Trim'
     - uuid: 49d106e4ab994d41b8533cccb7a04abf
       template: 'BA - MIB - Aruba OS'
       name: 'BA - MIB - Aruba OS (STATISTICS POWERSUPPLY FAN HP-ICF-CONFIG HP-ICF-BRIDGE)'
@@ -2680,41 +2680,41 @@ zabbix_export:
           name: 'Fan Status'
           mappings:
             - value: '0'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
             - value: '1'
-              newvalue: Removed
+              newvalue: '⚫️ Removed'
             - value: '2'
-              newvalue: 'Off'
+              newvalue: '⚫️ Off'
             - value: '3'
-              newvalue: 'Under Speed'
+              newvalue: '🟡 Under Speed'
             - value: '4'
-              newvalue: 'Over Speed'
+              newvalue: '🟡 Over Speed'
             - value: '5'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '6'
-              newvalue: Maxed
+              newvalue: '🟡 Maxed'
         - uuid: 83f6c58a912942d3b2b28f315efe79f0
           name: 'PSU Status'
           mappings:
             - value: '1'
-              newvalue: 'Not Present'
+              newvalue: '⚫️ Not Present'
             - value: '2'
-              newvalue: 'Not Plugged'
+              newvalue: '🟡 Not Plugged'
             - value: '3'
-              newvalue: Powered
+              newvalue: '🟢 Powered'
             - value: '4'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
             - value: '5'
-              newvalue: 'Permanent Failure'
+              newvalue: '🔴 Permanent Failure'
             - value: '6'
-              newvalue: Maxed
+              newvalue: '🟡 Maxed'
         - uuid: 8eb209439d724701966573df46e17da0
           name: Status
           mappings:
             - value: '1'
-              newvalue: Enabled
+              newvalue: '🟢 Enabled'
             - value: '2'
-              newvalue: Disabled
+              newvalue: '🟠 Disabled'
     - uuid: e5761accf2dd4f6180e536fbc1d19612
       template: 'BA - MIB - Cyber Power'
       name: 'BA - MIB - Cyber Power (CPS)'
@@ -2983,45 +2983,45 @@ zabbix_export:
           name: 'Battery Replace Indicator'
           mappings:
             - value: '1'
-              newvalue: 'No Battery Needs Replacing'
+              newvalue: '🟢 No Battery Needs Replacing'
             - value: '2'
-              newvalue: 'Battery Needs Replacing'
+              newvalue: '🔴 Battery Needs Replacing'
         - uuid: 9b3c5fea6a9844d0b75e1d302e95bfec
           name: 'Battery Status'
           mappings:
             - value: '1'
-              newvalue: Unkown
+              newvalue: '❔ Unkown'
             - value: '2'
-              newvalue: 'Battery Normal'
+              newvalue: '🟢 Battery Normal'
             - value: '3'
-              newvalue: 'Battery Low'
+              newvalue: '🟡 Battery Low'
         - uuid: 01175c0c673f4b69a0b5232570fad142
           name: 'UPS Status'
           mappings:
             - value: '1'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '2'
-              newvalue: Online
+              newvalue: '🟢 Online'
             - value: '3'
-              newvalue: 'On Battery'
+              newvalue: '🟡 On Battery'
             - value: '4'
-              newvalue: 'On Smart Boost'
+              newvalue: '🟡 On Smart Boost'
             - value: '5'
-              newvalue: 'Timed Sleeping'
+              newvalue: '⚫️ Timed Sleeping'
             - value: '6'
-              newvalue: 'Software Bypass'
+              newvalue: '⚫️ Software Bypass'
             - value: '7'
-              newvalue: 'Off'
+              newvalue: '⚫️ Off'
             - value: '8'
-              newvalue: Rebooting
+              newvalue: '🟡 Rebooting'
             - value: '9'
-              newvalue: 'Switched Bypass'
+              newvalue: '⚫️ Switched Bypass'
             - value: '10'
-              newvalue: 'Hardware Failure Bypass'
+              newvalue: '🔴 Hardware Failure Bypass'
             - value: '11'
-              newvalue: 'Sleeping Unit Power Return'
+              newvalue: '⚫️ Sleeping Unit Power Return'
             - value: '12'
-              newvalue: 'On Smart Trim'
+              newvalue: '🟡 On Smart Trim'
     - uuid: 996e61cf1dd84efe93ea42c66397176d
       template: 'BA - MIB - Entity'
       name: 'BA - MIB - Entity (ENTITY & ENTITY-STATE & ENTITY-SENSOR)'
@@ -3284,82 +3284,82 @@ zabbix_export:
           name: Alarm
           mappings:
             - value: '0'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '1'
-              newvalue: 'Under Repair'
+              newvalue: '🟡 Under Repair'
             - value: '2'
-              newvalue: Critical
+              newvalue: '🔴 Critical'
             - value: '3'
-              newvalue: Major
+              newvalue: '🔴 Major'
             - value: '4'
-              newvalue: Minor
+              newvalue: '🟡 Minor'
             - value: '5'
-              newvalue: Warning
+              newvalue: '🟡 Warning'
             - value: '6'
-              newvalue: Indeterminate
+              newvalue: '❔ Indeterminate'
         - uuid: 2d1137ea13da40699b7a2fbdf087254e
           name: Class
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '3'
-              newvalue: Chassis
+              newvalue: '🗄️ Chassis'
             - value: '4'
-              newvalue: Backplane
+              newvalue: '🔗 Backplane'
             - value: '5'
-              newvalue: Container
+              newvalue: '📦 Container'
             - value: '6'
-              newvalue: 'Power Supply'
+              newvalue: '🔌 Power Supply'
             - value: '7'
-              newvalue: Fan
+              newvalue: '💨 Fan'
             - value: '8'
-              newvalue: Sensor
+              newvalue: '🌡️ Sensor'
             - value: '9'
-              newvalue: Module
+              newvalue: '🧩 Module'
             - value: '10'
-              newvalue: Port
+              newvalue: '⚫️ Port'
             - value: '11'
-              newvalue: Stack
+              newvalue: '📚 Stack'
             - value: '12'
-              newvalue: CPU
+              newvalue: '🧠 CPU'
         - uuid: 3d5438f67c324a56b0e567e68a90a14a
           name: 'Sensor Status'
           mappings:
             - value: '1'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '2'
-              newvalue: Unavailable
+              newvalue: '⚫️ Unavailable'
             - value: '3'
-              newvalue: 'Non Operational'
+              newvalue: '🔴 Non Operational'
         - uuid: abc18022ee8a440cb3d5b58ef645fd1c
           name: 'Sensor Type'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '3'
-              newvalue: 'Volts AC'
+              newvalue: '⚡️ Volts AC'
             - value: '4'
-              newvalue: 'Volts DC'
+              newvalue: '⚡️ Volts DC'
             - value: '5'
-              newvalue: Amps
+              newvalue: '⚡️ Amps'
             - value: '6'
-              newvalue: Watts
+              newvalue: '⚡️ Watts'
             - value: '7'
-              newvalue: Hertz
+              newvalue: '〜 Hertz'
             - value: '8'
-              newvalue: Celsius
+              newvalue: '℃ Celsius'
             - value: '9'
-              newvalue: 'Percent Relative Humidity'
+              newvalue: '% Percent Relative Humidity'
             - value: '10'
-              newvalue: RPM
+              newvalue: '🔄 RPM'
             - value: '11'
-              newvalue: 'Cubic Meters per Minute'
+              newvalue: '➡️ Cubic Meters per Minute'
             - value: '12'
-              newvalue: Boolean
+              newvalue: '↕️ Boolean'
     - uuid: 0ed25cacfaad433dbf26caee5e9849a0
       template: 'BA - MIB - Generic'
       name: 'BA - MIB - Generic (RFC1213)'
@@ -4620,49 +4620,49 @@ zabbix_export:
           name: 'Drive Status'
           mappings:
             - value: '1'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '2'
-              newvalue: Ready
+              newvalue: '⚫️ Ready'
             - value: '3'
-              newvalue: Online
+              newvalue: '🟢 Online'
             - value: '4'
-              newvalue: Foreign
+              newvalue: '🟡 Foreign'
             - value: '5'
-              newvalue: Offline
+              newvalue: '🔴 Offline'
             - value: '6'
-              newvalue: Blocked
+              newvalue: '🟡 Blocked'
             - value: '7'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
             - value: '8'
-              newvalue: 'Non Raid'
+              newvalue: '⚫️ Non Raid'
             - value: '9'
-              newvalue: Removed
+              newvalue: '⚫️ Removed'
             - value: '10'
-              newvalue: 'Read Only'
+              newvalue: '⚫️ Read Only'
         - uuid: 9bf34b9795194880806b30db0958782a
           name: 'Drive Type'
           mappings:
             - value: '1'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '2'
-              newvalue: HDD
+              newvalue: '💿 HDD'
             - value: '3'
-              newvalue: SSD
+              newvalue: '📀 SSD'
         - uuid: 67ac04bbb6a4456080692021506a2dec
           name: 'Object Status'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '3'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '4'
-              newvalue: 'Non Critical'
+              newvalue: '🟡 Non Critical'
             - value: '5'
-              newvalue: Critical
+              newvalue: '🔴 Critical'
             - value: '6'
-              newvalue: 'Non Recoverable'
+              newvalue: '🔴 Non Recoverable'
     - uuid: c132e4d556724cb4aab6f04f031d698c
       template: 'BA - MIB - iLO'
       name: 'BA - MIB - iLO (CPQHLTH CPQIDA CPQSINFO)'
@@ -5248,78 +5248,78 @@ zabbix_export:
           name: Condition
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '3'
-              newvalue: Degraded
+              newvalue: '🟡 Degraded'
             - value: '4'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
         - uuid: e36970e130a049a19885414304878330
           name: 'Drive Status'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: OK
+              newvalue: '🟢 OK'
             - value: '3'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
             - value: '4'
-              newvalue: 'Predictive Failure'
+              newvalue: '🟡 Predictive Failure'
             - value: '5'
-              newvalue: Erasing
+              newvalue: '🔄 Erasing'
             - value: '6'
-              newvalue: 'Erasing Done'
+              newvalue: '✅ Erasing Done'
             - value: '7'
-              newvalue: 'Erase Queued'
+              newvalue: '⚫️ Erase Queued'
             - value: '8'
-              newvalue: 'SSD Wear Out'
+              newvalue: '🟡 SSD Wear Out'
             - value: '9'
-              newvalue: 'Not Authenticated'
+              newvalue: '🟡 Not Authenticated'
         - uuid: e8755e7be88745a5a927a3fbeb7b6b52
           name: 'Drive Type'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: HDD
+              newvalue: '💿 HDD'
             - value: '3'
-              newvalue: SSD
+              newvalue: '📀 SSD'
             - value: '4'
-              newvalue: SMR
+              newvalue: '💿 SMR'
         - uuid: 8663d7853f594e4a927b2d0d49ec902d
           name: 'Memory Status'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '✨ Other'
             - value: '2'
-              newvalue: 'Not Present'
+              newvalue: '⚫️ Not Present'
             - value: '3'
-              newvalue: Present
+              newvalue: '🟠 Present'
             - value: '4'
-              newvalue: Good
+              newvalue: '🟢 Good'
             - value: '5'
-              newvalue: Add
+              newvalue: '➕ Add'
             - value: '6'
-              newvalue: Upgrade
+              newvalue: '⬆️ Upgrade'
             - value: '7'
-              newvalue: Missing
+              newvalue: '🔎 Missing'
             - value: '8'
-              newvalue: 'Does Not Match'
+              newvalue: '🟡 Does Not Match'
             - value: '9'
-              newvalue: 'Not Supported'
+              newvalue: '🟡 Not Supported'
             - value: '10'
-              newvalue: 'Bad Config'
+              newvalue: '🟡 Bad Config'
             - value: '11'
-              newvalue: Degraded
+              newvalue: '🟡 Degraded'
             - value: '12'
-              newvalue: Spare
+              newvalue: '⚫️ Spare'
             - value: '13'
-              newvalue: Partial
+              newvalue: '🟡 Partial'
             - value: '14'
-              newvalue: 'Config Error'
+              newvalue: '🟡 Config Error'
             - value: '15'
-              newvalue: 'Training Failure'
+              newvalue: '🟡 Training Failure'
     - uuid: 71e181bbccaf4ac6ad6dbc31f4ef7ffa
       template: 'BA - MIB - Interfaces'
       name: 'BA - MIB - Interfaces (RFC1213 & IF)'
@@ -5518,10 +5518,13 @@ zabbix_export:
                   parameters:
                     - '.1.3.6.1.2.1.2.2.1.10.{#SNMPINDEX}'
                     - '0'
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 15m
+                - type: CHANGE_PER_SECOND
                 - type: MULTIPLIER
                   parameters:
                     - '8'
-                - type: CHANGE_PER_SECOND
               master_item:
                 key: snmp.interfaces
               tags:
@@ -5648,10 +5651,13 @@ zabbix_export:
                   parameters:
                     - '.1.3.6.1.2.1.2.2.1.16.{#SNMPINDEX}'
                     - '0'
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 15m
+                - type: CHANGE_PER_SECOND
                 - type: MULTIPLIER
                   parameters:
                     - '8'
-                - type: CHANGE_PER_SECOND
               master_item:
                 key: snmp.interfaces
               tags:
@@ -5856,18 +5862,18 @@ zabbix_export:
           name: 'Alert On Errors'
           mappings:
             - value: '0'
-              newvalue: 'False'
+              newvalue: '🔕 False'
             - value: '1'
-              newvalue: 'True'
+              newvalue: '🔔 True'
         - uuid: 042dd6004ca744328459b83d571efd02
           name: 'Operational Status'
           mappings:
             - value: '1'
-              newvalue: Up
+              newvalue: '🟢 Up'
             - value: '2'
-              newvalue: Down
+              newvalue: '🔴 Down'
             - value: '3'
-              newvalue: Testing
+              newvalue: '🟡 Testing'
     - uuid: c978731e458f4899bad556a58a4f7722
       template: 'BA - MIB - Interfaces - Aruba OS'
       name: 'BA - MIB - Interfaces - Aruba OS (IF & HP-ICF-BRIDGE)'
@@ -5935,9 +5941,9 @@ zabbix_export:
           name: 'Loop Detected'
           mappings:
             - value: '1'
-              newvalue: 'Yes'
+              newvalue: '🔴 Yes'
             - value: '2'
-              newvalue: 'No'
+              newvalue: '🟢 No'
     - uuid: e610e67b64ae4a89b9838318c002d244
       template: 'BA - MIB - Interfaces LLDP'
       name: 'BA - MIB - Interfaces LLDP (IF & LLDP)'
@@ -6324,23 +6330,23 @@ zabbix_export:
           name: 'MAC Status'
           mappings:
             - value: '0'
-              newvalue: Stale
+              newvalue: '⚫️ Stale'
             - value: '1'
-              newvalue: Active
+              newvalue: '🟢 Active'
         - uuid: 7f55d972ef1043b99c1846822e7ea797
           name: 'Managed Status'
           mappings:
             - value: '0'
-              newvalue: Un-managed
+              newvalue: '❔ Un-managed'
             - value: '1'
-              newvalue: Managed
+              newvalue: '👁️ Managed'
         - uuid: f7f237d11e6648cbad93b136ccf62d2a
           name: 'Uplink Status'
           mappings:
             - value: '0'
-              newvalue: 'False'
+              newvalue: '➡️ False'
             - value: '1'
-              newvalue: 'True'
+              newvalue: '↖️ True'
     - uuid: c96e74b51406426fa9678cb3e36e305f
       template: 'BA - MIB - Interfaces POE'
       name: 'BA - MIB - Interfaces POE (RFC1213 & IF & POWER-ETHERNET)'
@@ -6433,24 +6439,24 @@ zabbix_export:
           name: 'POE Admin'
           mappings:
             - value: '1'
-              newvalue: Enabled
+              newvalue: '🟢 Enabled'
             - value: '2'
-              newvalue: Disabled
+              newvalue: '🟠 Disabled'
         - uuid: ef4f68d4621c45b29c33579af98ad7d3
           name: 'POE Status'
           mappings:
             - value: '1'
-              newvalue: Disabled
+              newvalue: '🟠 Disabled'
             - value: '2'
-              newvalue: Searching
+              newvalue: '🔎 Searching'
             - value: '3'
-              newvalue: 'Delivering Power'
+              newvalue: '⚡️ Delivering Power'
             - value: '4'
-              newvalue: Fault
+              newvalue: '🔴 Fault'
             - value: '5'
-              newvalue: Test
+              newvalue: '🟡 Test'
             - value: '6'
-              newvalue: 'Other Fault'
+              newvalue: '🔴 Other Fault'
     - uuid: a882acc6990047b492315f6d10e851ee
       template: 'BA - MIB - Interfaces VLAN'
       name: 'BA - MIB - Interfaces VLAN (RFC1213 & IF & Q-BRIDGE)'
@@ -6634,9 +6640,9 @@ zabbix_export:
           name: 'MAC to IP State'
           mappings:
             - value: '0'
-              newvalue: Stale
+              newvalue: '⚫️ Stale'
             - value: '1'
-              newvalue: Active
+              newvalue: '🟢 Active'
     - uuid: 81e18df8f00146508669b18575a0d3f6
       template: 'BA - MIB - MAC to IP - RFC1213'
       name: 'BA - MIB - MAC to IP (RFC1213)'
@@ -6733,9 +6739,9 @@ zabbix_export:
           name: 'MAC to IP Status'
           mappings:
             - value: '0'
-              newvalue: Stale
+              newvalue: '⚫️ Stale'
             - value: '1'
-              newvalue: Active
+              newvalue: '🟢 Active'
     - uuid: ad0d2cf3f7e84ff09f74ec148818c46d
       template: 'BA - MIB - MikroTik'
       name: 'BA - MIB - MikroTik (MIKROTIK)'
@@ -6844,6 +6850,8 @@ zabbix_export:
               history: 7d
               value_type: FLOAT
               units: '{#UNIT}'
+              valuemap:
+                name: Status
               preprocessing:
                 - type: JAVASCRIPT
                   parameters:
@@ -6987,6 +6995,14 @@ zabbix_export:
                     - type: STRING
                       name: reference
                       value: AAAAU
+      valuemaps:
+        - uuid: 3e67b6c117dc4c00a476782c9c637c81
+          name: Status
+          mappings:
+            - value: '0'
+              newvalue: '⚫️ Idle'
+            - value: '1'
+              newvalue: '🟢 Up'
     - uuid: 6dd5ae1611594a04a59971e486b8ea98
       template: 'BA - MIB - UPS'
       name: 'BA - MIB - UPS (UPS)'
@@ -7217,30 +7233,30 @@ zabbix_export:
           name: 'Battery Status'
           mappings:
             - value: '1'
-              newvalue: Unkown
+              newvalue: '❔ Unkown'
             - value: '2'
-              newvalue: 'Battery Normal'
+              newvalue: '🟢 Battery Normal'
             - value: '3'
-              newvalue: 'Battery Low'
+              newvalue: '🟡 Battery Low'
             - value: '4'
-              newvalue: 'Battery Depleated'
+              newvalue: '🔴 Battery Depleated'
         - uuid: c99853b8a39749d7ab16c5d96c924906
           name: 'UPS Status'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '❔ Other'
             - value: '2'
-              newvalue: None
+              newvalue: '⚫️ None'
             - value: '3'
-              newvalue: Normal
+              newvalue: '🟢 Normal'
             - value: '4'
-              newvalue: Bypass
+              newvalue: '🟠 Bypass'
             - value: '5'
-              newvalue: Battery
+              newvalue: '🟡 Battery'
             - value: '6'
-              newvalue: Booster
+              newvalue: '🟡 Booster'
             - value: '7'
-              newvalue: Reducer
+              newvalue: '🟡 Reducer'
     - uuid: dbe9320a85944279b7d9a7a9e887c146
       template: 'BA - MIB - vSphere VMs'
       name: 'BA - MIB - vSphere VMs (VMWARE-VMINFO)'
@@ -7366,6 +7382,8 @@ zabbix_export:
               delay: 5m
               history: 365d
               value_type: CHAR
+              valuemap:
+                name: 'Guest State'
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
@@ -7400,6 +7418,8 @@ zabbix_export:
               delay: 5m
               history: 365d
               value_type: CHAR
+              valuemap:
+                name: 'Power State'
               preprocessing:
                 - type: DISCARD_UNCHANGED_HEARTBEAT
                   parameters:
@@ -7414,6 +7434,29 @@ zabbix_export:
           value: SNMP
         - tag: 'Template Type'
           value: Poller
+      valuemaps:
+        - uuid: 2ea71bb7466e4e5eb087a94b063e5a5e
+          name: 'Guest State'
+          mappings:
+            - value: running
+              newvalue: '🟢 Running'
+            - value: shuttingdown
+              newvalue: '🔄 Shutting Down'
+            - value: resetting
+              newvalue: '🔄 Resetting'
+            - value: standby
+              newvalue: '🟡 Stand By'
+            - value: notrunning
+              newvalue: '🟠 Not Running'
+            - value: unknown
+              newvalue: '❔ Unknown'
+        - uuid: 07548fb9557c4ca8b7cb177b7550bccd
+          name: 'Power State'
+          mappings:
+            - value: 'powered on'
+              newvalue: '🟢 Powered On'
+            - value: 'powered off'
+              newvalue: '🟠 Powered Off'
     - uuid: 0d5221d8204a4e9eaedc70bb542141d0
       template: 'BA - MIB - Windows'
       name: 'BA - MIB - Windows (LanMgr)'
@@ -7545,15 +7588,15 @@ zabbix_export:
           name: 'Operating Status'
           mappings:
             - value: '1'
-              newvalue: Active
+              newvalue: '🟢 Active'
             - value: '2'
-              newvalue: Continuing
+              newvalue: '⏯️ Continuing'
             - value: '3'
-              newvalue: Pausing
+              newvalue: '⏯️ Pausing'
             - value: '4'
-              newvalue: Paused
+              newvalue: '⏸️ Paused'
             - value: '5'
-              newvalue: Stopped
+              newvalue: '🔴 Stopped'
     - uuid: c6bf4572df0a4cc28ced8aed23cec940
       template: 'BA - ONVIF - Avigilon'
       name: 'BA - ONVIF - Avigilon'
@@ -8140,9 +8183,9 @@ zabbix_export:
           name: 'Exit Code'
           mappings:
             - value: '0'
-              newvalue: Success
+              newvalue: '🟢 Success'
             - value: '1'
-              newvalue: Failed
+              newvalue: '🔴 Failed'
     - uuid: 46224c7ee9ab40cf8fc1807cc2965f2d
       template: 'BA - Profile - APC'
       name: 'BA - Profile - APC'
@@ -8860,9 +8903,9 @@ zabbix_export:
           name: Status
           mappings:
             - value: '1'
-              newvalue: Up
+              newvalue: '🟢 Up'
             - value: '0'
-              newvalue: Down
+              newvalue: '🔴 Down'
     - uuid: ed7b2d0bb3bc487f85dd64fe636c783e
       template: 'BA - SSH - Aruba Config'
       name: 'BA - SSH - Aruba Config'
@@ -9219,9 +9262,9 @@ zabbix_export:
           name: 'UPS Status'
           mappings:
             - value: '0'
-              newvalue: Offline
+              newvalue: '🔴 Offline'
             - value: '1'
-              newvalue: Online
+              newvalue: '🟢 Online'
   triggers:
     - uuid: 0cb2f24a7f724fad988e17ed41f374ee
       expression: 'last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.startup)<>last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.running)'

@@ -54,7 +54,7 @@ zabbix_export:
           name: Status
           mappings:
             - value: '0'
-              newvalue: Offline
+              newvalue: '🔴 Down'
             - value: '1'
-              newvalue: Online
+              newvalue: '🟢 Up'
 

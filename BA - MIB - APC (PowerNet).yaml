@@ -330,45 +330,45 @@ zabbix_export:
           name: 'Battery Replace Indicator'
           mappings:
             - value: '1'
-              newvalue: 'No Battery Needs Replacing'
+              newvalue: '🟢 No Battery Needs Replacing'
             - value: '2'
-              newvalue: 'Battery Needs Replacing'
+              newvalue: '🔴 Battery Needs Replacing'
         - uuid: e82ea3b33488450e9119caec94008573
           name: 'Battery Status'
           mappings:
             - value: '1'
-              newvalue: Unkown
+              newvalue: '❔ Unkown'
             - value: '2'
-              newvalue: 'Battery Normal'
+              newvalue: '🟢 Battery Normal'
             - value: '3'
-              newvalue: 'Battery Low'
+              newvalue: '🔴 Battery Low'
         - uuid: 83bdd49e6e674d8d8b1b6b397f461643
           name: 'UPS Status'
           mappings:
             - value: '1'
-              newvalue: Unknown
+              newvalue: '❔ Unknown'
             - value: '2'
-              newvalue: Online
+              newvalue: '🟢 Online'
             - value: '3'
-              newvalue: 'On Battery'
+              newvalue: '🟡 On Battery'
             - value: '4'
-              newvalue: 'On Smart Boost'
+              newvalue: '🟡 On Smart Boost'
             - value: '5'
-              newvalue: 'Timed Sleeping'
+              newvalue: '⚫️ Timed Sleeping'
             - value: '6'
-              newvalue: 'Software Bypass'
+              newvalue: '⚫️ Software Bypass'
             - value: '7'
-              newvalue: 'Off'
+              newvalue: '⚫️ Off'
             - value: '8'
-              newvalue: Rebooting
+              newvalue: '🟡 Rebooting'
             - value: '9'
-              newvalue: 'Switched Bypass'
+              newvalue: '⚫️ Switched Bypass'
             - value: '10'
-              newvalue: 'Hardware Failure Bypass'
+              newvalue: '🔴 Hardware Failure Bypass'
             - value: '11'
-              newvalue: 'Sleeping Unit Power Return'
+              newvalue: '⚫️ Sleeping Unit Power Return'
             - value: '12'
-              newvalue: 'On Smart Trim'
+              newvalue: '🟡 On Smart Trim'
   graphs:
     - uuid: 13bb88368aab4bd8a4a862360288fc0f
       name: 'Battery Charge'

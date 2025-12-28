@@ -234,30 +234,30 @@ zabbix_export:
           name: 'Battery Status'
           mappings:
             - value: '1'
-              newvalue: Unkown
+              newvalue: '❔ Unkown'
             - value: '2'
-              newvalue: 'Battery Normal'
+              newvalue: '🟢 Battery Normal'
             - value: '3'
-              newvalue: 'Battery Low'
+              newvalue: '🟡 Battery Low'
             - value: '4'
-              newvalue: 'Battery Depleated'
+              newvalue: '🔴 Battery Depleated'
         - uuid: c99853b8a39749d7ab16c5d96c924906
           name: 'UPS Status'
           mappings:
             - value: '1'
-              newvalue: Other
+              newvalue: '❔ Other'
             - value: '2'
-              newvalue: None
+              newvalue: '⚫️ None'
             - value: '3'
-              newvalue: Normal
+              newvalue: '🟢 Normal'
             - value: '4'
-              newvalue: Bypass
+              newvalue: '🟠 Bypass'
             - value: '5'
-              newvalue: Battery
+              newvalue: '🟡 Battery'
             - value: '6'
-              newvalue: Booster
+              newvalue: '🟡 Booster'
             - value: '7'
-              newvalue: Reducer
+              newvalue: '🟡 Reducer'
   graphs:
     - uuid: ab621a713e324752b7a53d0084914239
       name: 'Battery Charge'

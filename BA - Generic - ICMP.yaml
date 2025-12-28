@@ -178,9 +178,9 @@ zabbix_export:
           name: 'Ping Status'
           mappings:
             - value: '0'
-              newvalue: Down
+              newvalue: '🔴 Down'
             - value: '1'
-              newvalue: Up
+              newvalue: '🟢 Up'
   graphs:
     - uuid: 4c4d6eca42594740977ac9df1727d1bd
       name: 'ICMP Statistics'
