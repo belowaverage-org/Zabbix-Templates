@@ -1,8 +1,8 @@
 zabbix_export:
   version: '7.4'
   template_groups:
-    - uuid: a9ae9cbb57864537879e36c074d112ca
-      name: BA/Profiles/Networking
+    - uuid: cc6be408b8514e46b03f980d35635c7c
+      name: BA/Profiles/Networking/Switches
   templates:
     - uuid: edfde163545d4f058f26a5ace12614f0
       template: 'BA - Profile - Cisco Small Business Switch'
@@ -25,7 +25,7 @@ zabbix_export:
         - name: 'BA - MIB - MAC to IP - IP'
         - name: 'BA - Procedure - Update Name'
       groups:
-        - name: BA/Profiles/Networking
+        - name: BA/Profiles/Networking/Switches
       tags:
         - tag: 'Template Type'
           value: Profile

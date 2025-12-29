@@ -1,8 +1,8 @@
 zabbix_export:
   version: '7.4'
   template_groups:
-    - uuid: b384f4b048b0408a9adfeae61f5574ae
-      name: BA/Profiles
+    - uuid: 46cd4e6f4d7444b9b1293cbcd76e311b
+      name: BA/Profiles/UPS
   templates:
     - uuid: a84485143ea944d39947bc6beb5c8dee
       template: 'BA - Profile - UPS'
@@ -18,7 +18,7 @@ zabbix_export:
         - name: 'BA - MIB - UPS'
         - name: 'BA - Procedure - Update Name'
       groups:
-        - name: BA/Profiles
+        - name: BA/Profiles/UPS
       tags:
         - tag: 'Template Type'
           value: Profile

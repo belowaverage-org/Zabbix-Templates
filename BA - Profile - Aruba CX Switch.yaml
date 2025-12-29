@@ -1,8 +1,8 @@
 zabbix_export:
   version: '7.4'
   template_groups:
-    - uuid: a9ae9cbb57864537879e36c074d112ca
-      name: BA/Profiles/Networking
+    - uuid: cc6be408b8514e46b03f980d35635c7c
+      name: BA/Profiles/Networking/Switches
   templates:
     - uuid: 901df0e8cba24e74890e3e629e965b9a
       template: 'BA - Profile - Aruba CX Switch'
@@ -26,7 +26,7 @@ zabbix_export:
         - name: 'BA - Procedure - Update Name'
         - name: 'BA - SSH - Aruba Config'
       groups:
-        - name: BA/Profiles/Networking
+        - name: BA/Profiles/Networking/Switches
       tags:
         - tag: 'Template Type'
           value: Profile

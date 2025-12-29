@@ -1,8 +1,8 @@
 zabbix_export:
   version: '7.4'
   template_groups:
-    - uuid: a9ae9cbb57864537879e36c074d112ca
-      name: BA/Profiles/Networking
+    - uuid: cc6be408b8514e46b03f980d35635c7c
+      name: BA/Profiles/Networking/Switches
   templates:
     - uuid: c14d11008b524874a40ab65d935d01cf
       template: 'BA - Profile - Cisco IOS Switch'
@@ -21,7 +21,7 @@ zabbix_export:
         - name: 'BA - MIB - MAC to IP - RFC1213'
         - name: 'BA - Procedure - Update Name'
       groups:
-        - name: BA/Profiles/Networking
+        - name: BA/Profiles/Networking/Switches
       tags:
         - tag: 'Template Type'
           value: Profile

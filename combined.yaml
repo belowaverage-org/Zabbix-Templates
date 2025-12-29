@@ -19,8 +19,14 @@ zabbix_export:
       name: BA/Profiles/Cameras
     - uuid: a9ae9cbb57864537879e36c074d112ca
       name: BA/Profiles/Networking
+    - uuid: cc6be408b8514e46b03f980d35635c7c
+      name: BA/Profiles/Networking/Switches
     - uuid: 2128cf518279432187a98490d555a270
       name: BA/Profiles/Servers
+    - uuid: a33341008cd4460cae6f021e7d32852e
+      name: BA/Profiles/Servers/OS
+    - uuid: 46cd4e6f4d7444b9b1293cbcd76e311b
+      name: BA/Profiles/UPS
     - uuid: 08afccc1647440e2bdf5025bd5f4b3e0
       name: BA/SSH
   templates:
@@ -8272,7 +8278,7 @@ zabbix_export:
         - name: 'BA - MIB - Generic'
         - name: 'BA - Procedure - Update Name'
       groups:
-        - name: BA/Profiles
+        - name: BA/Profiles/UPS
       tags:
         - tag: 'Template Type'
           value: Profile
@@ -8300,7 +8306,7 @@ zabbix_export:
         - name: 'BA - Procedure - Update Name'
         - name: 'BA - SSH - Aruba Config'
       groups:
-        - name: BA/Profiles/Networking
+        - name: BA/Profiles/Networking/Switches
       tags:
         - tag: 'Template Type'
           value: Profile
@@ -8331,7 +8337,7 @@ zabbix_export:
         - name: 'BA - SSH'
         - name: 'BA - SSH - Aruba Config'
       groups:
-        - name: BA/Profiles/Networking
+        - name: BA/Profiles/Networking/Switches
       tags:
         - tag: 'Template Type'
           value: Profile
@@ -8414,7 +8420,7 @@ zabbix_export:
         - name: 'BA - MIB - MAC to IP - RFC1213'
         - name: 'BA - Procedure - Update Name'
       groups:
-        - name: BA/Profiles/Networking
+        - name: BA/Profiles/Networking/Switches
       tags:
         - tag: 'Template Type'
           value: Profile
@@ -8441,7 +8447,7 @@ zabbix_export:
         - name: 'BA - MIB - MAC to IP - IP'
         - name: 'BA - Procedure - Update Name'
       groups:
-        - name: BA/Profiles/Networking
+        - name: BA/Profiles/Networking/Switches
       tags:
         - tag: 'Template Type'
           value: Profile
@@ -8461,7 +8467,7 @@ zabbix_export:
         - name: 'BA - MIB - Generic'
         - name: 'BA - Procedure - Update Name'
       groups:
-        - name: BA/Profiles
+        - name: BA/Profiles/UPS
       tags:
         - tag: 'Template Type'
           value: Profile
@@ -8761,7 +8767,7 @@ zabbix_export:
         - name: 'BA - Procedure - Update Name'
         - name: 'BA - SSH'
       groups:
-        - name: BA/Profiles/Servers
+        - name: BA/Profiles/Servers/OS
       tags:
         - tag: 'Template Type'
           value: Profile
@@ -8834,7 +8840,7 @@ zabbix_export:
         - name: 'BA - Procedure - Update Name'
         - name: 'BA - SSH'
       groups:
-        - name: BA/Profiles
+        - name: BA/Profiles/Networking
       tags:
         - tag: 'Template Type'
           value: Profile
@@ -8855,7 +8861,7 @@ zabbix_export:
         - name: 'BA - MIB - Interfaces'
         - name: 'BA - Procedure - Update Name'
       groups:
-        - name: BA/Profiles/Servers
+        - name: BA/Profiles/Networking
       tags:
         - tag: 'Template Type'
           value: Profile
@@ -8875,7 +8881,7 @@ zabbix_export:
         - name: 'BA - MIB - UPS'
         - name: 'BA - Procedure - Update Name'
       groups:
-        - name: BA/Profiles
+        - name: BA/Profiles/UPS
       tags:
         - tag: 'Template Type'
           value: Profile
@@ -8925,7 +8931,7 @@ zabbix_export:
         - name: 'BA - Procedure - Update Name'
         - name: 'BA - SSH'
       groups:
-        - name: BA/Profiles/Servers
+        - name: BA/Profiles/Servers/OS
       tags:
         - tag: 'Template Type'
           value: Profile

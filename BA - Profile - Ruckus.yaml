@@ -1,8 +1,8 @@
 zabbix_export:
   version: '7.4'
   template_groups:
-    - uuid: b384f4b048b0408a9adfeae61f5574ae
-      name: BA/Profiles
+    - uuid: a9ae9cbb57864537879e36c074d112ca
+      name: BA/Profiles/Networking
   templates:
     - uuid: 59825d81f28447858af5e9f1425cb800
       template: 'BA - Profile - Ruckus'
@@ -20,7 +20,7 @@ zabbix_export:
         - name: 'BA - Procedure - Update Name'
         - name: 'BA - SSH'
       groups:
-        - name: BA/Profiles
+        - name: BA/Profiles/Networking
       tags:
         - tag: 'Template Type'
           value: Profile
