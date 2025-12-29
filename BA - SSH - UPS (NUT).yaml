@@ -184,10 +184,11 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: a867be58c5ef404ebfe3baf24c32b9fd
-          name: NUT
+          name: '🔋 NUT'
           pages:
             - widgets:
                 - type: graphprototype
+                  name: '❔ UPS Status'
                   width: '72'
                   height: '3'
                   fields:
@@ -206,6 +207,7 @@ zabbix_export:
                       name: source_type
                       value: '3'
                 - type: graphprototype
+                  name: '⚡️ UPS Charge'
                   'y': '3'
                   width: '36'
                   height: '4'
@@ -222,6 +224,7 @@ zabbix_export:
                       name: source_type
                       value: '3'
                 - type: graphprototype
+                  name: '⏱️ UPS Runtime'
                   'y': '7'
                   width: '36'
                   height: '4'
@@ -238,6 +241,7 @@ zabbix_export:
                       name: source_type
                       value: '3'
                 - type: graphprototype
+                  name: '📈 UPS Load'
                   x: '36'
                   'y': '3'
                   width: '36'
@@ -255,6 +259,7 @@ zabbix_export:
                       name: source_type
                       value: '3'
                 - type: graphprototype
+                  name: '〜 UPS Voltage'
                   x: '36'
                   'y': '7'
                   width: '36'

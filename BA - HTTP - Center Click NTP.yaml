@@ -174,10 +174,11 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 19ad995e75ec482a8ee86ca1b3a66a18
-          name: 'Center Click NTP'
+          name: '🕑 Center Click NTP'
           pages:
             - widgets:
                 - type: graph
+                  name: '😬 Jitter'
                   width: '36'
                   height: '4'
                   fields:
@@ -190,6 +191,7 @@ zabbix_export:
                       name: reference
                       value: MFZKQ
                 - type: graph
+                  name: '🌡️ Temperature'
                   'y': '4'
                   width: '36'
                   height: '4'
@@ -206,6 +208,7 @@ zabbix_export:
                       name: source_type
                       value: '1'
                 - type: graph
+                  name: '✉️ Packets Per Second'
                   'y': '8'
                   width: '36'
                   height: '4'
@@ -219,6 +222,7 @@ zabbix_export:
                       name: reference
                       value: YRTTY
                 - type: graph
+                  name: '📡 GPS'
                   x: '36'
                   width: '36'
                   height: '4'
@@ -232,6 +236,7 @@ zabbix_export:
                       name: reference
                       value: HBTJK
                 - type: graph
+                  name: '🗣️ Clients'
                   x: '36'
                   'y': '4'
                   width: '36'
@@ -249,6 +254,7 @@ zabbix_export:
                       name: source_type
                       value: '1'
                 - type: graph
+                  name: '🧠 CPU Usage'
                   x: '36'
                   'y': '8'
                   width: '36'

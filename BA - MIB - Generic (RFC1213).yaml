@@ -163,10 +163,11 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 55e89b077abe45588368e83c98c963f1
-          name: SNMP
+          name: '📖 SNMP'
           pages:
             - widgets:
                 - type: item
+                  name: '✏️ Name'
                   width: '36'
                   fields:
                     - type: ITEM
@@ -178,6 +179,7 @@ zabbix_export:
                       name: show.0
                       value: '2'
                 - type: item
+                  name: '📍 Location'
                   'y': '2'
                   width: '36'
                   fields:
@@ -190,6 +192,7 @@ zabbix_export:
                       name: show.0
                       value: '2'
                 - type: graph
+                  name: '📈 Uptime'
                   'y': '4'
                   width: '72'
                   height: '6'
@@ -206,6 +209,7 @@ zabbix_export:
                       name: source_type
                       value: '1'
                 - type: item
+                  name: '📝 Description'
                   x: '36'
                   width: '36'
                   fields:
@@ -218,10 +222,14 @@ zabbix_export:
                       name: show.0
                       value: '2'
                 - type: item
+                  name: '⏱️ Uptime'
                   x: '36'
                   'y': '2'
                   width: '36'
                   fields:
+                    - type: INTEGER
+                      name: decimal_places
+                      value: '0'
                     - type: ITEM
                       name: itemid.0
                       value:

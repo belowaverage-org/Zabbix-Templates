@@ -116,12 +116,20 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: fd7f3696289d4db0a96b6e8a9b22bd76
-          name: 'ICMP Statistics'
+          name: '⏱️ ICMP'
           pages:
             - widgets:
                 - type: item
-                  width: '12'
+                  name: '❔ ICMP Status'
+                  width: '15'
+                  height: '6'
                   fields:
+                    - type: INTEGER
+                      name: decimal_places
+                      value: '0'
+                    - type: INTEGER
+                      name: decimal_size
+                      value: '20'
                     - type: ITEM
                       name: itemid.0
                       value:
@@ -134,6 +142,9 @@ zabbix_export:
                       name: show.1
                       value: '3'
                     - type: INTEGER
+                      name: time_size
+                      value: '5'
+                    - type: INTEGER
                       name: time_v_pos
                       value: '2'
                     - type: INTEGER
@@ -143,17 +154,17 @@ zabbix_export:
                       name: units_show
                       value: '0'
                     - type: INTEGER
-                      name: value_v_pos
-                      value: '0'
-                - type: clock
-                  'y': '2'
-                  width: '12'
-                  height: '5'
+                      name: value_size
+                      value: '15'
                 - type: gauge
-                  x: '12'
-                  width: '13'
-                  height: '7'
+                  name: '⏱️ ICMP Latency'
+                  x: '15'
+                  width: '15'
+                  height: '6'
                   fields:
+                    - type: INTEGER
+                      name: angle
+                      value: '270'
                     - type: ITEM
                       name: itemid.0
                       value:
@@ -181,9 +192,10 @@ zabbix_export:
                       name: show.3
                       value: '5'
                 - type: graph
-                  x: '25'
-                  width: '47'
-                  height: '7'
+                  name: '📈 ICMP Statistics'
+                  x: '30'
+                  width: '42'
+                  height: '6'
                   fields:
                     - type: GRAPH
                       name: graphid.0
@@ -535,10 +547,11 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 19ad995e75ec482a8ee86ca1b3a66a18
-          name: 'Center Click NTP'
+          name: '🕑 Center Click NTP'
           pages:
             - widgets:
                 - type: graph
+                  name: '😬 Jitter'
                   width: '36'
                   height: '4'
                   fields:
@@ -551,6 +564,7 @@ zabbix_export:
                       name: reference
                       value: MFZKQ
                 - type: graph
+                  name: '🌡️ Temperature'
                   'y': '4'
                   width: '36'
                   height: '4'
@@ -567,6 +581,7 @@ zabbix_export:
                       name: source_type
                       value: '1'
                 - type: graph
+                  name: '✉️ Packets Per Second'
                   'y': '8'
                   width: '36'
                   height: '4'
@@ -580,6 +595,7 @@ zabbix_export:
                       name: reference
                       value: YRTTY
                 - type: graph
+                  name: '📡 GPS'
                   x: '36'
                   width: '36'
                   height: '4'
@@ -593,6 +609,7 @@ zabbix_export:
                       name: reference
                       value: HBTJK
                 - type: graph
+                  name: '🗣️ Clients'
                   x: '36'
                   'y': '4'
                   width: '36'
@@ -610,6 +627,7 @@ zabbix_export:
                       name: source_type
                       value: '1'
                 - type: graph
+                  name: '🧠 CPU Usage'
                   x: '36'
                   'y': '8'
                   width: '36'
@@ -1610,11 +1628,11 @@ zabbix_export:
           description: Time
       dashboards:
         - uuid: 2c3b91a6abc741e88dcd9d0893b8adf3
-          name: 'Zabbix Statistics'
+          name: '📈 Zabbix Statistics'
           pages:
             - widgets:
                 - type: topitems
-                  name: 'Top Usage'
+                  name: '⬆️ Top Usage'
                   width: '24'
                   height: '12'
                   fields:
@@ -1673,6 +1691,7 @@ zabbix_export:
                       name: show_column_header
                       value: '0'
                 - type: graphprototype
+                  name: '📊 Busy'
                   'y': '12'
                   width: '72'
                   height: '52'
@@ -1695,7 +1714,7 @@ zabbix_export:
                       name: source_type
                       value: '3'
                 - type: topitems
-                  name: 'Top Counts'
+                  name: '#️⃣ Top Counts'
                   x: '24'
                   width: '24'
                   height: '6'
@@ -1728,6 +1747,7 @@ zabbix_export:
                       name: show_column_header
                       value: '0'
                 - type: graph
+                  name: '📈 Cache Statistics'
                   x: '24'
                   'y': '6'
                   width: '24'
@@ -1742,6 +1762,7 @@ zabbix_export:
                       name: reference
                       value: TUMCN
                 - type: graph
+                  name: '📈 Cache Usage'
                   x: '48'
                   width: '24'
                   height: '6'
@@ -1755,6 +1776,7 @@ zabbix_export:
                       name: reference
                       value: WEEWS
                 - type: graph
+                  name: '🧠 Cache Values'
                   x: '48'
                   'y': '6'
                   width: '24'
@@ -2571,15 +2593,16 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 5a74a2692f494cf1ae093a9fc4141824
-          name: Aruba
+          name: '🌴 Aruba'
           pages:
             - widgets:
                 - type: graph
+                  name: '🧠 CPU Usage'
                   width: '33'
                   height: '5'
                   fields:
                     - type: GRAPH
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         name: 'CPU Usage'
@@ -2587,12 +2610,13 @@ zabbix_export:
                       name: reference
                       value: AAAAE
                 - type: graph
+                  name: '💭 Memory Usage'
                   'y': '5'
                   width: '33'
                   height: '5'
                   fields:
                     - type: GRAPH
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         name: 'Memory Usage'
@@ -2600,80 +2624,95 @@ zabbix_export:
                       name: reference
                       value: AAAAF
                 - type: item
+                  name: '#️⃣ Flash Version'
                   x: '33'
                   width: '12'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.flash.version
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '🌳 Spanning Tree Status'
                   x: '33'
                   'y': '2'
                   width: '12'
                   fields:
+                    - type: INTEGER
+                      name: decimal_places
+                      value: '0'
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.rstp.status
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '🔁 Loop Protect Status'
                   x: '33'
                   'y': '4'
                   width: '12'
                   fields:
+                    - type: INTEGER
+                      name: decimal_places
+                      value: '0'
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.loopprotect.status
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '⏱️ Loop Protect Timer'
                   x: '33'
                   'y': '6'
                   width: '12'
                   fields:
+                    - type: INTEGER
+                      name: decimal_places
+                      value: '0'
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.loopprotect.timer
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '#️⃣ Running Config Hash'
                   x: '45'
                   width: '27'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.config.sha.running
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '#️⃣ Startup Config Hash'
                   x: '45'
                   'y': '2'
                   width: '27'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.config.sha.startup
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
       valuemaps:
         - uuid: 9b1fc8e853c74f7088adf58aba8ab698
@@ -3519,10 +3558,11 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 55e89b077abe45588368e83c98c963f1
-          name: SNMP
+          name: '📖 SNMP'
           pages:
             - widgets:
                 - type: item
+                  name: '✏️ Name'
                   width: '36'
                   fields:
                     - type: ITEM
@@ -3534,6 +3574,7 @@ zabbix_export:
                       name: show.0
                       value: '2'
                 - type: item
+                  name: '📍 Location'
                   'y': '2'
                   width: '36'
                   fields:
@@ -3546,6 +3587,7 @@ zabbix_export:
                       name: show.0
                       value: '2'
                 - type: graph
+                  name: '📈 Uptime'
                   'y': '4'
                   width: '72'
                   height: '6'
@@ -3562,6 +3604,7 @@ zabbix_export:
                       name: source_type
                       value: '1'
                 - type: item
+                  name: '📝 Description'
                   x: '36'
                   width: '36'
                   fields:
@@ -3574,10 +3617,14 @@ zabbix_export:
                       name: show.0
                       value: '2'
                 - type: item
+                  name: '⏱️ Uptime'
                   x: '36'
                   'y': '2'
                   width: '36'
                   fields:
+                    - type: INTEGER
+                      name: decimal_places
+                      value: '0'
                     - type: ITEM
                       name: itemid.0
                       value:
@@ -4034,25 +4081,16 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 230ad7e9ab814c76a271c4d937cb0e4f
-          name: 'Host Resources'
+          name: '🔎 Host Resources'
           pages:
             - widgets:
-                - type: item
-                  width: '9'
-                  height: '3'
-                  fields:
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - Host Resources'
-                        key: cpu.usage
                 - type: graph
-                  'y': '3'
-                  width: '18'
+                  name: '🧠 CPU Usage'
+                  width: '19'
                   height: '5'
                   fields:
                     - type: GRAPH
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - Host Resources'
                         name: CPU
@@ -4060,12 +4098,13 @@ zabbix_export:
                       name: reference
                       value: AAAAJ
                 - type: graph
-                  'y': '8'
-                  width: '18'
+                  name: '💭 Memory Usage'
+                  'y': '5'
+                  width: '19'
                   height: '5'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Host Resources'
                         key: memory.usage
@@ -4075,26 +4114,17 @@ zabbix_export:
                     - type: INTEGER
                       name: source_type
                       value: '1'
-                - type: item
-                  x: '9'
-                  width: '9'
-                  height: '3'
-                  fields:
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - Host Resources'
-                        key: memory.usage
                 - type: graphprototype
-                  x: '18'
-                  width: '9'
-                  height: '24'
+                  name: '💭 Memory'
+                  x: '19'
+                  width: '7'
+                  height: '30'
                   fields:
                     - type: INTEGER
                       name: columns
                       value: '1'
                     - type: GRAPH_PROTOTYPE
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - Host Resources'
                         name: 'Memory ({#DESC}) Usage'
@@ -4105,15 +4135,16 @@ zabbix_export:
                       name: rows
                       value: '6'
                 - type: graphprototype
-                  x: '27'
-                  width: '18'
-                  height: '24'
+                  name: '💭 Memory'
+                  x: '26'
+                  width: '19'
+                  height: '30'
                   fields:
                     - type: INTEGER
                       name: columns
                       value: '1'
                     - type: GRAPH_PROTOTYPE
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - Host Resources'
                         name: 'Memory ({#DESC}) Statistics'
@@ -4124,15 +4155,16 @@ zabbix_export:
                       name: rows
                       value: '6'
                 - type: graphprototype
+                  name: '💿 Disk'
                   x: '45'
-                  width: '9'
-                  height: '24'
+                  width: '7'
+                  height: '30'
                   fields:
                     - type: INTEGER
                       name: columns
                       value: '1'
                     - type: GRAPH_PROTOTYPE
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - Host Resources'
                         name: 'Disk ({#DESC}) Usage'
@@ -4143,15 +4175,16 @@ zabbix_export:
                       name: rows
                       value: '6'
                 - type: graphprototype
-                  x: '54'
-                  width: '18'
-                  height: '24'
+                  name: '💿 Disk'
+                  x: '52'
+                  width: '19'
+                  height: '30'
                   fields:
                     - type: INTEGER
                       name: columns
                       value: '1'
                     - type: GRAPH_PROTOTYPE
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - Host Resources'
                         name: 'Disk ({#DESC}) Statistics'
@@ -5149,100 +5182,124 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: db86ebd68489487fb4664c66286c8d93
-          name: iLO
+          name: '💡 iLO'
           pages:
             - widgets:
                 - type: item
-                  width: '15'
-                  height: '4'
+                  name: '✏️ Model'
+                  width: '16'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - iLO'
-                        key: snmp.ilo.health
-                    - type: STRING
-                      name: thresholds.0.color
-                      value: 1B5E20
-                    - type: STRING
-                      name: thresholds.0.threshold
+                        key: snmp.ilo.model
+                    - type: INTEGER
+                      name: show.0
                       value: '2'
-                - type: graphprototype
+                    - type: INTEGER
+                      name: value_size
+                      value: '30'
+                - type: item
+                  name: '#️⃣ Serial'
+                  'y': '2'
+                  width: '16'
+                  fields:
+                    - type: ITEM
+                      name: itemid.0
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: snmp.ilo.serial
+                    - type: INTEGER
+                      name: show.0
+                      value: '2'
+                    - type: INTEGER
+                      name: value_size
+                      value: '30'
+                - type: honeycomb
+                  name: '🚦 Status'
                   'y': '4'
-                  width: '72'
-                  height: '5'
+                  width: '44'
+                  height: '12'
+                  fields:
+                    - type: STRING
+                      name: items.0
+                      value: '*'
+                    - type: INTEGER
+                      name: item_tags.0.operator
+                      value: '0'
+                    - type: STRING
+                      name: item_tags.0.tag
+                      value: 'Item Type'
+                    - type: STRING
+                      name: item_tags.0.value
+                      value: Status
+                    - type: STRING
+                      name: primary_label
+                      value: '{{ITEM.NAME}.regrepl("Status|\(|\)", "")}'
+                    - type: STRING
+                      name: reference
+                      value: GBGYX
+                    - type: INTEGER
+                      name: secondary_label_decimal_places
+                      value: '0'
+                - type: graphprototype
+                  name: '⚡️ Power Supplies'
+                  x: '16'
+                  width: '56'
+                  height: '4'
                   fields:
                     - type: GRAPH_PROTOTYPE
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - iLO'
                         name: 'Power Supply ({#BAY}) Input Volts / Output Watts'
                     - type: STRING
                       name: reference
                       value: AAAAQ
-                - type: graphprototype
-                  'y': '9'
-                  width: '72'
-                  height: '5'
+                - type: honeycomb
+                  name: '🌡️ Temperature'
+                  x: '44'
+                  'y': '4'
+                  width: '28'
+                  height: '12'
                   fields:
                     - type: INTEGER
-                      name: columns
-                      value: '4'
-                    - type: ITEM_PROTOTYPE
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: 'ilo.temp.celsius[{#SNMPINDEX}]'
+                      name: interpolation
+                      value: '1'
+                    - type: STRING
+                      name: items.0
+                      value: '*'
+                    - type: INTEGER
+                      name: item_tags.0.operator
+                      value: '0'
+                    - type: STRING
+                      name: item_tags.0.tag
+                      value: 'Item Type'
+                    - type: STRING
+                      name: item_tags.0.value
+                      value: Temperature
+                    - type: STRING
+                      name: primary_label
+                      value: '{{ITEM.NAME}.regrepl("Temperature|Celsius|\(|\)", "")}'
                     - type: STRING
                       name: reference
-                      value: AAAAR
+                      value: UTNIA
                     - type: INTEGER
-                      name: source_type
-                      value: '3'
-                - type: graphprototype
-                  'y': '14'
-                  width: '72'
-                  height: '5'
-                  fields:
-                    - type: INTEGER
-                      name: columns
-                      value: '4'
-                    - type: ITEM_PROTOTYPE
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: 'ilo.drive.temp[{#BAY}]'
+                      name: secondary_label_decimal_places
+                      value: '0'
                     - type: STRING
-                      name: reference
-                      value: AAAAP
-                    - type: INTEGER
-                      name: source_type
-                      value: '3'
-                - type: item
-                  x: '15'
-                  width: '57'
-                  fields:
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: snmp.ilo.model
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                - type: item
-                  x: '15'
-                  'y': '2'
-                  width: '57'
-                  fields:
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: snmp.ilo.serial
-                    - type: INTEGER
-                      name: show
-                      value: '2'
+                      name: thresholds.0.color
+                      value: 0040FF
+                    - type: STRING
+                      name: thresholds.0.threshold
+                      value: '15'
+                    - type: STRING
+                      name: thresholds.1.color
+                      value: E65660
+                    - type: STRING
+                      name: thresholds.1.threshold
+                      value: '50'
       valuemaps:
         - uuid: 5d0a36b6fc934ec8960c3f2f22ad2338
           name: Condition
@@ -5836,10 +5893,11 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 9f66f49a16914a42b4731103a16d816f
-          name: Interfaces
+          name: '🌐 Interfaces'
           pages:
             - widgets:
                 - type: graphprototype
+                  name: '🌐 Interfaces'
                   width: '72'
                   height: '38'
                   fields:
@@ -6925,45 +6983,49 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 64178c330b0846e59eebe2be6abb18be
-          name: RouterOS
+          name: '🔀 RouterOS'
           pages:
             - widgets:
                 - type: item
+                  name: '✏️ RouterOS Board Name'
                   width: '12'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - MikroTik'
                         key: ros.boardname
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: 'ℹ️ RouterOS Version'
                   'y': '2'
                   width: '12'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - MikroTik'
                         key: ros.version
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '＃ RouterOS Serial'
                   'y': '4'
                   width: '12'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - MikroTik'
                         key: ros.serial
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: graphprototype
+                  name: '📈 Gauges'
                   'y': '6'
                   width: '72'
                   height: '7'
@@ -6972,7 +7034,7 @@ zabbix_export:
                       name: columns
                       value: '3'
                     - type: GRAPH_PROTOTYPE
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - MikroTik'
                         name: 'Gauge ({#NAME}) {#UNIT}'
@@ -6983,12 +7045,13 @@ zabbix_export:
                       name: rows
                       value: '2'
                 - type: graph
+                  name: '〜 CPU Frequency'
                   x: '12'
                   width: '60'
                   height: '6'
                   fields:
                     - type: GRAPH
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - MikroTik'
                         name: 'CPU Frequency'
@@ -7154,24 +7217,26 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 090b575c82c24738bb3326672240eae0
-          name: UPS
+          name: '🔋 UPS'
           pages:
             - widgets:
                 - type: item
+                  name: '❔ Status'
                   width: '24'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - UPS'
                         key: snmp.ups.ups.status
                 - type: graph
+                  name: '⚡️ Battery Charge'
                   'y': '2'
                   width: '72'
                   height: '5'
                   fields:
                     - type: GRAPH
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - UPS'
                         name: 'Battery Charge'
@@ -7179,12 +7244,13 @@ zabbix_export:
                       name: reference
                       value: AAAAV
                 - type: graph
+                  name: '〜 UPS Input'
                   'y': '7'
                   width: '72'
                   height: '5'
                   fields:
                     - type: GRAPH
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - UPS'
                         name: 'UPS Input'
@@ -7192,12 +7258,13 @@ zabbix_export:
                       name: reference
                       value: AAAAW
                 - type: graph
+                  name: '🌡️ Battery Temperature'
                   'y': '12'
                   width: '72'
                   height: '5'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - UPS'
                         key: snmp.ups.battery.temperature
@@ -7208,25 +7275,27 @@ zabbix_export:
                       name: source_type
                       value: '1'
                 - type: item
+                  name: '⚠️ Alarms'
                   x: '24'
                   width: '24'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - UPS'
                         key: snmp.ups.ups.alarms
                 - type: item
+                  name: '✏️ Model'
                   x: '48'
                   width: '24'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - UPS'
                         key: snmp.ups.model
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
       valuemaps:
         - uuid: e1ea0ce38dba43fbbd6d91fd183681d3
@@ -7545,11 +7614,11 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: e4ec2731c79441a999eb38f3351d62d8
-          name: 'Windows Services'
+          name: '⚙️ Windows Services'
           pages:
             - widgets:
                 - type: honeycomb
-                  name: 'Windows Services'
+                  name: '⚙️ Windows Services'
                   width: '72'
                   height: '16'
                   fields:
@@ -7559,15 +7628,18 @@ zabbix_export:
                     - type: STRING
                       name: primary_label
                       value: '{{ITEM.NAME}.regrepl("^Windows Service \(|\) Status$", "")}'
-                    - type: INTEGER
-                      name: primary_label_size_type
-                      value: '1'
                     - type: STRING
                       name: reference
                       value: POOEJ
                     - type: INTEGER
                       name: secondary_label_bold
                       value: '0'
+                    - type: INTEGER
+                      name: secondary_label_decimal_places
+                      value: '0'
+                    - type: INTEGER
+                      name: secondary_label_size
+                      value: '25'
                     - type: INTEGER
                       name: secondary_label_size_type
                       value: '1'
@@ -9170,10 +9242,11 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: a867be58c5ef404ebfe3baf24c32b9fd
-          name: NUT
+          name: '🔋 NUT'
           pages:
             - widgets:
                 - type: graphprototype
+                  name: '❔ UPS Status'
                   width: '72'
                   height: '3'
                   fields:
@@ -9192,6 +9265,7 @@ zabbix_export:
                       name: source_type
                       value: '3'
                 - type: graphprototype
+                  name: '⚡️ UPS Charge'
                   'y': '3'
                   width: '36'
                   height: '4'
@@ -9208,6 +9282,7 @@ zabbix_export:
                       name: source_type
                       value: '3'
                 - type: graphprototype
+                  name: '⏱️ UPS Runtime'
                   'y': '7'
                   width: '36'
                   height: '4'
@@ -9224,6 +9299,7 @@ zabbix_export:
                       name: source_type
                       value: '3'
                 - type: graphprototype
+                  name: '📈 UPS Load'
                   x: '36'
                   'y': '3'
                   width: '36'
@@ -9241,6 +9317,7 @@ zabbix_export:
                       name: source_type
                       value: '3'
                 - type: graphprototype
+                  name: '〜 UPS Voltage'
                   x: '36'
                   'y': '7'
                   width: '36'

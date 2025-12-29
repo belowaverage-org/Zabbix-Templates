@@ -92,11 +92,11 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: e4ec2731c79441a999eb38f3351d62d8
-          name: 'Windows Services'
+          name: '⚙️ Windows Services'
           pages:
             - widgets:
                 - type: honeycomb
-                  name: 'Windows Services'
+                  name: '⚙️ Windows Services'
                   width: '72'
                   height: '16'
                   fields:
@@ -106,15 +106,18 @@ zabbix_export:
                     - type: STRING
                       name: primary_label
                       value: '{{ITEM.NAME}.regrepl("^Windows Service \(|\) Status$", "")}'
-                    - type: INTEGER
-                      name: primary_label_size_type
-                      value: '1'
                     - type: STRING
                       name: reference
                       value: POOEJ
                     - type: INTEGER
                       name: secondary_label_bold
                       value: '0'
+                    - type: INTEGER
+                      name: secondary_label_decimal_places
+                      value: '0'
+                    - type: INTEGER
+                      name: secondary_label_size
+                      value: '25'
                     - type: INTEGER
                       name: secondary_label_size_type
                       value: '1'

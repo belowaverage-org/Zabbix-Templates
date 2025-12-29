@@ -520,10 +520,11 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 9f66f49a16914a42b4731103a16d816f
-          name: Interfaces
+          name: '🌐 Interfaces'
           pages:
             - widgets:
                 - type: graphprototype
+                  name: '🌐 Interfaces'
                   width: '72'
                   height: '38'
                   fields:

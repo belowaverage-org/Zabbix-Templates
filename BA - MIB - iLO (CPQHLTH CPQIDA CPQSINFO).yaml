@@ -490,100 +490,124 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: db86ebd68489487fb4664c66286c8d93
-          name: iLO
+          name: '💡 iLO'
           pages:
             - widgets:
                 - type: item
-                  width: '15'
-                  height: '4'
+                  name: '✏️ Model'
+                  width: '16'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - iLO'
-                        key: snmp.ilo.health
-                    - type: STRING
-                      name: thresholds.0.color
-                      value: 1B5E20
-                    - type: STRING
-                      name: thresholds.0.threshold
+                        key: snmp.ilo.model
+                    - type: INTEGER
+                      name: show.0
                       value: '2'
-                - type: graphprototype
+                    - type: INTEGER
+                      name: value_size
+                      value: '30'
+                - type: item
+                  name: '#️⃣ Serial'
+                  'y': '2'
+                  width: '16'
+                  fields:
+                    - type: ITEM
+                      name: itemid.0
+                      value:
+                        host: 'BA - MIB - iLO'
+                        key: snmp.ilo.serial
+                    - type: INTEGER
+                      name: show.0
+                      value: '2'
+                    - type: INTEGER
+                      name: value_size
+                      value: '30'
+                - type: honeycomb
+                  name: '🚦 Status'
                   'y': '4'
-                  width: '72'
-                  height: '5'
+                  width: '44'
+                  height: '12'
+                  fields:
+                    - type: STRING
+                      name: items.0
+                      value: '*'
+                    - type: INTEGER
+                      name: item_tags.0.operator
+                      value: '0'
+                    - type: STRING
+                      name: item_tags.0.tag
+                      value: 'Item Type'
+                    - type: STRING
+                      name: item_tags.0.value
+                      value: Status
+                    - type: STRING
+                      name: primary_label
+                      value: '{{ITEM.NAME}.regrepl("Status|\(|\)", "")}'
+                    - type: STRING
+                      name: reference
+                      value: GBGYX
+                    - type: INTEGER
+                      name: secondary_label_decimal_places
+                      value: '0'
+                - type: graphprototype
+                  name: '⚡️ Power Supplies'
+                  x: '16'
+                  width: '56'
+                  height: '4'
                   fields:
                     - type: GRAPH_PROTOTYPE
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - iLO'
                         name: 'Power Supply ({#BAY}) Input Volts / Output Watts'
                     - type: STRING
                       name: reference
                       value: AAAAQ
-                - type: graphprototype
-                  'y': '9'
-                  width: '72'
-                  height: '5'
+                - type: honeycomb
+                  name: '🌡️ Temperature'
+                  x: '44'
+                  'y': '4'
+                  width: '28'
+                  height: '12'
                   fields:
                     - type: INTEGER
-                      name: columns
-                      value: '4'
-                    - type: ITEM_PROTOTYPE
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: 'ilo.temp.celsius[{#SNMPINDEX}]'
+                      name: interpolation
+                      value: '1'
+                    - type: STRING
+                      name: items.0
+                      value: '*'
+                    - type: INTEGER
+                      name: item_tags.0.operator
+                      value: '0'
+                    - type: STRING
+                      name: item_tags.0.tag
+                      value: 'Item Type'
+                    - type: STRING
+                      name: item_tags.0.value
+                      value: Temperature
+                    - type: STRING
+                      name: primary_label
+                      value: '{{ITEM.NAME}.regrepl("Temperature|Celsius|\(|\)", "")}'
                     - type: STRING
                       name: reference
-                      value: AAAAR
+                      value: UTNIA
                     - type: INTEGER
-                      name: source_type
-                      value: '3'
-                - type: graphprototype
-                  'y': '14'
-                  width: '72'
-                  height: '5'
-                  fields:
-                    - type: INTEGER
-                      name: columns
-                      value: '4'
-                    - type: ITEM_PROTOTYPE
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: 'ilo.drive.temp[{#BAY}]'
+                      name: secondary_label_decimal_places
+                      value: '0'
                     - type: STRING
-                      name: reference
-                      value: AAAAP
-                    - type: INTEGER
-                      name: source_type
-                      value: '3'
-                - type: item
-                  x: '15'
-                  width: '57'
-                  fields:
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: snmp.ilo.model
-                    - type: INTEGER
-                      name: show
-                      value: '2'
-                - type: item
-                  x: '15'
-                  'y': '2'
-                  width: '57'
-                  fields:
-                    - type: ITEM
-                      name: itemid
-                      value:
-                        host: 'BA - MIB - iLO'
-                        key: snmp.ilo.serial
-                    - type: INTEGER
-                      name: show
-                      value: '2'
+                      name: thresholds.0.color
+                      value: 0040FF
+                    - type: STRING
+                      name: thresholds.0.threshold
+                      value: '15'
+                    - type: STRING
+                      name: thresholds.1.color
+                      value: E65660
+                    - type: STRING
+                      name: thresholds.1.threshold
+                      value: '50'
       valuemaps:
         - uuid: 5d0a36b6fc934ec8960c3f2f22ad2338
           name: Condition

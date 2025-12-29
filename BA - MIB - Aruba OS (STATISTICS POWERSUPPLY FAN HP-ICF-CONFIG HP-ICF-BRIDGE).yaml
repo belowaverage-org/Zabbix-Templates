@@ -331,15 +331,16 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 5a74a2692f494cf1ae093a9fc4141824
-          name: Aruba
+          name: '🌴 Aruba'
           pages:
             - widgets:
                 - type: graph
+                  name: '🧠 CPU Usage'
                   width: '33'
                   height: '5'
                   fields:
                     - type: GRAPH
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         name: 'CPU Usage'
@@ -347,12 +348,13 @@ zabbix_export:
                       name: reference
                       value: AAAAE
                 - type: graph
+                  name: '💭 Memory Usage'
                   'y': '5'
                   width: '33'
                   height: '5'
                   fields:
                     - type: GRAPH
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         name: 'Memory Usage'
@@ -360,80 +362,95 @@ zabbix_export:
                       name: reference
                       value: AAAAF
                 - type: item
+                  name: '#️⃣ Flash Version'
                   x: '33'
                   width: '12'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.flash.version
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '🌳 Spanning Tree Status'
                   x: '33'
                   'y': '2'
                   width: '12'
                   fields:
+                    - type: INTEGER
+                      name: decimal_places
+                      value: '0'
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.rstp.status
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '🔁 Loop Protect Status'
                   x: '33'
                   'y': '4'
                   width: '12'
                   fields:
+                    - type: INTEGER
+                      name: decimal_places
+                      value: '0'
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.loopprotect.status
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '⏱️ Loop Protect Timer'
                   x: '33'
                   'y': '6'
                   width: '12'
                   fields:
+                    - type: INTEGER
+                      name: decimal_places
+                      value: '0'
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.loopprotect.timer
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '#️⃣ Running Config Hash'
                   x: '45'
                   width: '27'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.config.sha.running
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '#️⃣ Startup Config Hash'
                   x: '45'
                   'y': '2'
                   width: '27'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - Aruba OS'
                         key: snmp.aruba.config.sha.startup
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
       valuemaps:
         - uuid: 9b1fc8e853c74f7088adf58aba8ab698

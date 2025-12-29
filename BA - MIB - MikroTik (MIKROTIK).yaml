@@ -187,45 +187,49 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 64178c330b0846e59eebe2be6abb18be
-          name: RouterOS
+          name: '🔀 RouterOS'
           pages:
             - widgets:
                 - type: item
+                  name: '✏️ RouterOS Board Name'
                   width: '12'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - MikroTik'
                         key: ros.boardname
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: 'ℹ️ RouterOS Version'
                   'y': '2'
                   width: '12'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - MikroTik'
                         key: ros.version
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: item
+                  name: '＃ RouterOS Serial'
                   'y': '4'
                   width: '12'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - MikroTik'
                         key: ros.serial
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
                 - type: graphprototype
+                  name: '📈 Gauges'
                   'y': '6'
                   width: '72'
                   height: '7'
@@ -234,7 +238,7 @@ zabbix_export:
                       name: columns
                       value: '3'
                     - type: GRAPH_PROTOTYPE
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - MikroTik'
                         name: 'Gauge ({#NAME}) {#UNIT}'
@@ -245,12 +249,13 @@ zabbix_export:
                       name: rows
                       value: '2'
                 - type: graph
+                  name: '〜 CPU Frequency'
                   x: '12'
                   width: '60'
                   height: '6'
                   fields:
                     - type: GRAPH
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - MikroTik'
                         name: 'CPU Frequency'

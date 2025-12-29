@@ -619,11 +619,11 @@ zabbix_export:
           description: Time
       dashboards:
         - uuid: 2c3b91a6abc741e88dcd9d0893b8adf3
-          name: 'Zabbix Statistics'
+          name: '📈 Zabbix Statistics'
           pages:
             - widgets:
                 - type: topitems
-                  name: 'Top Usage'
+                  name: '⬆️ Top Usage'
                   width: '24'
                   height: '12'
                   fields:
@@ -682,6 +682,7 @@ zabbix_export:
                       name: show_column_header
                       value: '0'
                 - type: graphprototype
+                  name: '📊 Busy'
                   'y': '12'
                   width: '72'
                   height: '52'
@@ -704,7 +705,7 @@ zabbix_export:
                       name: source_type
                       value: '3'
                 - type: topitems
-                  name: 'Top Counts'
+                  name: '#️⃣ Top Counts'
                   x: '24'
                   width: '24'
                   height: '6'
@@ -737,6 +738,7 @@ zabbix_export:
                       name: show_column_header
                       value: '0'
                 - type: graph
+                  name: '📈 Cache Statistics'
                   x: '24'
                   'y': '6'
                   width: '24'
@@ -751,6 +753,7 @@ zabbix_export:
                       name: reference
                       value: TUMCN
                 - type: graph
+                  name: '📈 Cache Usage'
                   x: '48'
                   width: '24'
                   height: '6'
@@ -764,6 +767,7 @@ zabbix_export:
                       name: reference
                       value: WEEWS
                 - type: graph
+                  name: '🧠 Cache Values'
                   x: '48'
                   'y': '6'
                   width: '24'

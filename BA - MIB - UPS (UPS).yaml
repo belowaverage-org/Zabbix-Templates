@@ -155,24 +155,26 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: 090b575c82c24738bb3326672240eae0
-          name: UPS
+          name: '🔋 UPS'
           pages:
             - widgets:
                 - type: item
+                  name: '❔ Status'
                   width: '24'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - UPS'
                         key: snmp.ups.ups.status
                 - type: graph
+                  name: '⚡️ Battery Charge'
                   'y': '2'
                   width: '72'
                   height: '5'
                   fields:
                     - type: GRAPH
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - UPS'
                         name: 'Battery Charge'
@@ -180,12 +182,13 @@ zabbix_export:
                       name: reference
                       value: AAAAV
                 - type: graph
+                  name: '〜 UPS Input'
                   'y': '7'
                   width: '72'
                   height: '5'
                   fields:
                     - type: GRAPH
-                      name: graphid
+                      name: graphid.0
                       value:
                         host: 'BA - MIB - UPS'
                         name: 'UPS Input'
@@ -193,12 +196,13 @@ zabbix_export:
                       name: reference
                       value: AAAAW
                 - type: graph
+                  name: '🌡️ Battery Temperature'
                   'y': '12'
                   width: '72'
                   height: '5'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - UPS'
                         key: snmp.ups.battery.temperature
@@ -209,25 +213,27 @@ zabbix_export:
                       name: source_type
                       value: '1'
                 - type: item
+                  name: '⚠️ Alarms'
                   x: '24'
                   width: '24'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - UPS'
                         key: snmp.ups.ups.alarms
                 - type: item
+                  name: '✏️ Model'
                   x: '48'
                   width: '24'
                   fields:
                     - type: ITEM
-                      name: itemid
+                      name: itemid.0
                       value:
                         host: 'BA - MIB - UPS'
                         key: snmp.ups.model
                     - type: INTEGER
-                      name: show
+                      name: show.0
                       value: '2'
       valuemaps:
         - uuid: e1ea0ce38dba43fbbd6d91fd183681d3

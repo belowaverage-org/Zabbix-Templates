@@ -96,12 +96,20 @@ zabbix_export:
           value: Poller
       dashboards:
         - uuid: fd7f3696289d4db0a96b6e8a9b22bd76
-          name: 'ICMP Statistics'
+          name: '⏱️ ICMP'
           pages:
             - widgets:
                 - type: item
-                  width: '12'
+                  name: '❔ ICMP Status'
+                  width: '15'
+                  height: '6'
                   fields:
+                    - type: INTEGER
+                      name: decimal_places
+                      value: '0'
+                    - type: INTEGER
+                      name: decimal_size
+                      value: '20'
                     - type: ITEM
                       name: itemid.0
                       value:
@@ -114,6 +122,9 @@ zabbix_export:
                       name: show.1
                       value: '3'
                     - type: INTEGER
+                      name: time_size
+                      value: '5'
+                    - type: INTEGER
                       name: time_v_pos
                       value: '2'
                     - type: INTEGER
@@ -123,17 +134,17 @@ zabbix_export:
                       name: units_show
                       value: '0'
                     - type: INTEGER
-                      name: value_v_pos
-                      value: '0'
-                - type: clock
-                  'y': '2'
-                  width: '12'
-                  height: '5'
+                      name: value_size
+                      value: '15'
                 - type: gauge
-                  x: '12'
-                  width: '13'
-                  height: '7'
+                  name: '⏱️ ICMP Latency'
+                  x: '15'
+                  width: '15'
+                  height: '6'
                   fields:
+                    - type: INTEGER
+                      name: angle
+                      value: '270'
                     - type: ITEM
                       name: itemid.0
                       value:
@@ -161,9 +172,10 @@ zabbix_export:
                       name: show.3
                       value: '5'
                 - type: graph
-                  x: '25'
-                  width: '47'
-                  height: '7'
+                  name: '📈 ICMP Statistics'
+                  x: '30'
+                  width: '42'
+                  height: '6'
                   fields:
                     - type: GRAPH
                       name: graphid.0
