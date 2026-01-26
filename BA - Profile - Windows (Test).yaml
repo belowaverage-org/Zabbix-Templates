@@ -1,0 +1,26 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: a33341008cd4460cae6f021e7d32852e
+      name: BA/Profiles/Servers/OS
+  templates:
+    - uuid: a8d5f640fe9840fd8dc38b651e6e08de
+      template: 'BA - Profile - WindowsTest'
+      name: 'BA - Profile - Windows (Test)'
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - Macro - Interfaces'
+        - name: 'BA - Macro - Windows'
+        - name: 'BA - Procedure - Update Name'
+        - name: 'BA - SSH'
+        - name: 'BA - ZBA - Shared'
+        - name: 'BA - ZBA - Windows'
+      groups:
+        - name: BA/Profiles/Servers/OS
+      tags:
+        - tag: 'Template Type'
+          value: Profile
+        - tag: Vendor
+          value: Microsoft
+

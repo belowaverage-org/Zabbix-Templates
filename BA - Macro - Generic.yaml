@@ -17,7 +17,7 @@ zabbix_export:
           value: Macro
       macros:
         - macro: '{$CPU_HIGH_AVG_TIME_WARN}'
-          value: 15m
+          value: 1h
           description: 'Amount of time the percentage must be over to alert.'
         - macro: '{$CPU_USAGE_WARN}'
           value: '90'
@@ -47,7 +47,7 @@ zabbix_export:
           value: 10m
           description: 'Keep alert open for this amount of time after a reboot.'
         - macro: '{$SOFTWARE_VERSION_STRINGS}'
-          value: ^(7\.20(\.6)|(YA|WC)\.16\.11\.0020)$
+          value: ^(7\.20\.7|(YA|WC)\.16\.11\.0020)$
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
         - macro: '{$TEMP_C_WARN}'
           value: '75'

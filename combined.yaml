@@ -29,6 +29,8 @@ zabbix_export:
       name: BA/Profiles/UPS
     - uuid: 08afccc1647440e2bdf5025bd5f4b3e0
       name: BA/SSH
+    - uuid: 5b179fb589fa49ddae414d5c5bbd3dc6
+      name: BA/ZBA
   templates:
     - uuid: 1096884d9c9340b095f2b3473a20a7f5
       template: 'BA - Generic - ICMP'
@@ -1809,7 +1811,7 @@ zabbix_export:
           value: Macro
       macros:
         - macro: '{$CPU_HIGH_AVG_TIME_WARN}'
-          value: 15m
+          value: 1h
           description: 'Amount of time the percentage must be over to alert.'
         - macro: '{$CPU_USAGE_WARN}'
           value: '90'
@@ -1839,7 +1841,7 @@ zabbix_export:
           value: 10m
           description: 'Keep alert open for this amount of time after a reboot.'
         - macro: '{$SOFTWARE_VERSION_STRINGS}'
-          value: ^(7\.20(\.6)|(YA|WC)\.16\.11\.0020)$
+          value: ^(7\.20\.7|(YA|WC)\.16\.11\.0020)$
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
         - macro: '{$TEMP_C_WARN}'
           value: '75'
@@ -1869,7 +1871,7 @@ zabbix_export:
           value: 6h
           description: 'The timeframe for counting errors.'
         - macro: '{$INTER_FILTER_REGEX}'
-          value: '(^tunnel|^ppp|^loopback|LightWeight|Scheduler|^Local Area Connection|^Hyper-V|^enc0|^lo0|^pflog0|^pfsync0|^Logical-int|^Nu0|^Vl1|^veth|^lo|^docker0$|^br|^tif|^lo|^wifi|^wlan|^eth\d\d?!|^dhcp|^VLAN|^Po|^ubond|^ath|^<sstp-|^enP)'
+          value: '(^tunnel|^ppp|^loopback|LightWeight|Scheduler|^Local Area Connection|^Hyper-V|^enc0|^lo0|^pflog0|^pfsync0|^Logical-int|^Nu0|^Vl1|^veth|^lo|^docker0$|^br|^tif|^lo|^wifi|^wlan|^eth\d\d?!|^dhcp|^VLAN|^Po|^ubond|^ath|^<sstp-|^enP|^WAN Miniport|^Microsoft|^Software Loopback|Virtual Function)'
           description: 'Filters via Name & Alias'
         - macro: '{$INTER_FLAP_WARN_COUNT}'
           value: '3'
@@ -8937,6 +8939,25 @@ zabbix_export:
           value: Profile
         - tag: Vendor
           value: Microsoft
+    - uuid: a8d5f640fe9840fd8dc38b651e6e08de
+      template: 'BA - Profile - WindowsTest'
+      name: 'BA - Profile - Windows (Test)'
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - Macro - Interfaces'
+        - name: 'BA - Macro - Windows'
+        - name: 'BA - Procedure - Update Name'
+        - name: 'BA - SSH'
+        - name: 'BA - ZBA - Shared'
+        - name: 'BA - ZBA - Windows'
+      groups:
+        - name: BA/Profiles/Servers/OS
+      tags:
+        - tag: 'Template Type'
+          value: Profile
+        - tag: Vendor
+          value: Microsoft
     - uuid: c0c1bf70b15f40c89a6787174b3ad3a5
       template: 'BA - SSH'
       name: 'BA - SSH'
@@ -9348,6 +9369,424 @@ zabbix_export:
               newvalue: '🔴 Offline'
             - value: '1'
               newvalue: '🟢 Online'
+    - uuid: 770b4218358c43049eeff3ed809f59c0
+      template: 'BA - ZBA - Shared'
+      name: 'BA - ZBA - Shared'
+      groups:
+        - name: BA/ZBA
+      items:
+        - uuid: cad00aa80f69406c8ff20aec84fe56fd
+          name: 'Interface Discovery'
+          type: ZABBIX_ACTIVE
+          key: net.if.discovery
+          delay: 15m
+          history: '0'
+          value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
+        - uuid: c2c4e516620c42e29d0a7094010529c0
+          name: 'TCP Connections'
+          type: ZABBIX_ACTIVE
+          key: 'net.tcp.socket.count[,,,,established]'
+          delay: 15s
+          history: 7d
+          description: 'The number of TCP sockets that are open and connected.'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: 39fd5425ba104fb69fe7bda346fc9069
+          name: 'UDP Connections'
+          type: ZABBIX_ACTIVE
+          key: 'net.udp.socket.count[,,,,established]'
+          delay: 15s
+          history: 7d
+          description: 'The number of UDP sockets that are open and connected.'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: 2b366b0958634ad09784e01254db82de
+          name: Processes
+          type: ZABBIX_ACTIVE
+          key: proc.num
+          delay: 15s
+          history: 7d
+          description: 'The number of processes running on the system.'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: f77eccc3a8e44b788bd4b38802193080
+          name: 'CPU Load'
+          type: ZABBIX_ACTIVE
+          key: system.cpu.load
+          history: 7d
+          description: 'CPU queue length (or CPU run queue length) represents the number of processes that are ready to run but are waiting for CPU time.'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: 88be7cc86e644f66935e2b93cde1c183
+          name: 'CPU Usage'
+          type: ZABBIX_ACTIVE
+          key: system.cpu.util
+          delay: 15s
+          history: 7d
+          units: '%'
+          description: 'CPU usage refers to the percentage of processing power that a computer''s central processing unit (CPU) is using at any given time, indicating how busy the system is .'
+          tags:
+            - tag: 'Item Type'
+              value: Usage
+        - uuid: abaea0686f374d109a878272739206ac
+          name: Uptime
+          type: ZABBIX_ACTIVE
+          key: system.uptime
+          delay: 15s
+          history: 7d
+          units: s
+          description: 'System uptime refers to the total time a computer system has been operational since its last reboot.'
+          tags:
+            - tag: 'Item Type'
+              value: Uptime
+        - uuid: bf0744d9d58a4071a80a9380c20d721d
+          name: 'Disk Discovery'
+          type: ZABBIX_ACTIVE
+          key: vfs.fs.get
+          delay: 15s
+          history: '0'
+          value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
+        - uuid: 6004b7073c674bec9290c1543b5e3c04
+          name: 'Memory Available'
+          type: ZABBIX_ACTIVE
+          key: 'vm.memory.size[available]'
+          delay: 15s
+          history: 7d
+          value_type: FLOAT
+          units: B
+          tags:
+            - tag: 'Item Type'
+              value: Size
+        - uuid: b90c66c1dae34ee1928f7f67cb1428c3
+          name: 'Memory Utilization'
+          type: ZABBIX_ACTIVE
+          key: 'vm.memory.size[pused]'
+          delay: 15s
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          tags:
+            - tag: 'Item Type'
+              value: Usage
+        - uuid: 224d5e9c94414c158c105b5c0296f360
+          name: 'Memory Total'
+          type: ZABBIX_ACTIVE
+          key: 'vm.memory.size[total]'
+          delay: 15m
+          history: 7d
+          value_type: FLOAT
+          units: B
+          preprocessing:
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 6h
+          tags:
+            - tag: 'Item Type'
+              value: Size
+        - uuid: 37248d35047543d6b03d452ef994f27d
+          name: 'Memory Used'
+          type: ZABBIX_ACTIVE
+          key: 'vm.memory.size[used]'
+          delay: 15s
+          history: 7d
+          value_type: FLOAT
+          units: B
+          tags:
+            - tag: 'Item Type'
+              value: Size
+      discovery_rules:
+        - uuid: c70b16aaf202435eb6bd1c2211d68b0a
+          name: 'Disk Discovery'
+          type: DEPENDENT
+          key: disk.discovery
+          item_prototypes:
+            - uuid: df3c5376164f496bb38b50ef5462776a
+              name: 'Disk ({#FSLABEL} ({#FSNAME}) - {#FSTYPE}) Free'
+              type: DEPENDENT
+              key: 'disk.free[{#FSNAME}]'
+              history: 7d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$[?(@.fsname == ''{#FSNAME}'')].bytes.free.first()'
+              master_item:
+                key: vfs.fs.get
+              tags:
+                - tag: Disk
+                  value: '{#FSNAME}'
+                - tag: 'Item Type'
+                  value: Free
+            - uuid: 0c7acedc48444f9fb41d71712aa88c74
+              name: 'Disk ({#FSLABEL} ({#FSNAME}) - {#FSTYPE}) Total'
+              type: DEPENDENT
+              key: 'disk.total[{#FSNAME}]'
+              history: 7d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$[?(@.fsname == ''{#FSNAME}'')].bytes.total.first()'
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 6h
+              master_item:
+                key: vfs.fs.get
+              tags:
+                - tag: Disk
+                  value: '{#FSNAME}'
+                - tag: 'Item Type'
+                  value: Total
+            - uuid: cb6f736b3bd244b6b7c38ec8d86fbb9c
+              name: 'Disk ({#FSLABEL} ({#FSNAME}) - {#FSTYPE}) Usage'
+              type: DEPENDENT
+              key: 'disk.usage[{#FSNAME}]'
+              history: 7d
+              units: '%'
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$[?(@.fsname == ''{#FSNAME}'')].bytes.pused.first()'
+              master_item:
+                key: vfs.fs.get
+              tags:
+                - tag: Disk
+                  value: '{#FSNAME}'
+                - tag: 'Item Type'
+                  value: Usage
+            - uuid: 35e33117be9946e090eccd7bba0747f2
+              name: 'Disk ({#FSLABEL} ({#FSNAME}) - {#FSTYPE}) Used'
+              type: DEPENDENT
+              key: 'disk.used[{#FSNAME}]'
+              history: 7d
+              units: B
+              preprocessing:
+                - type: JSONPATH
+                  parameters:
+                    - '$[?(@.fsname == ''{#FSNAME}'')].bytes.used.first()'
+              master_item:
+                key: vfs.fs.get
+              tags:
+                - tag: Disk
+                  value: '{#FSNAME}'
+                - tag: 'Item Type'
+                  value: Used
+          master_item:
+            key: vfs.fs.get
+          lld_macro_paths:
+            - lld_macro: '{#FSLABEL}'
+              path: $.fslabel
+            - lld_macro: '{#FSNAME}'
+              path: $.fsname
+            - lld_macro: '{#FSTYPE}'
+              path: $.fstype
+        - uuid: a7e60df4823b4c9095eac9cd26af5f87
+          name: 'Interface Discovery'
+          type: DEPENDENT
+          key: interface.discovery
+          filter:
+            conditions:
+              - macro: '{#IFNAME}'
+                value: '{$INTER_FILTER_REGEX}'
+                operator: NOT_MATCHES_REGEX
+          item_prototypes:
+            - uuid: fd1a37c748d94c66b0deedb31ebdf797
+              name: 'Interface ({#IFNAME}} In Errors'
+              type: ZABBIX_ACTIVE
+              key: 'net.if.in[{#IFNAME}, errors]'
+              delay: 15s
+              history: 7d
+              units: pps
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 15m
+                - type: CHANGE_PER_SECOND
+              tags:
+                - tag: Interface
+                  value: '{#IFNAME}'
+                - tag: 'Item Type'
+                  value: Rate
+            - uuid: 36843d978080429ba6a77f28e618dd46
+              name: 'Interface ({#IFNAME}} In Rate'
+              type: ZABBIX_ACTIVE
+              key: 'net.if.in[{#IFNAME}]'
+              delay: 15s
+              history: 7d
+              units: bps
+              preprocessing:
+                - type: CHANGE_PER_SECOND
+              tags:
+                - tag: Interface
+                  value: '{#IFNAME}'
+                - tag: 'Item Type'
+                  value: Rate
+            - uuid: 40dc27f77bcb4ecc96138aefa9913e55
+              name: 'Interface ({#IFNAME}} Out Errors'
+              type: ZABBIX_ACTIVE
+              key: 'net.if.out[{#IFNAME}, errors]'
+              delay: 15s
+              history: 7d
+              units: pps
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 15m
+                - type: CHANGE_PER_SECOND
+              tags:
+                - tag: Interface
+                  value: '{#IFNAME}'
+                - tag: 'Item Type'
+                  value: Rate
+            - uuid: 97693d00552e49a2afd996887a2a1e9f
+              name: 'Interface ({#IFNAME}} Out Rate'
+              type: ZABBIX_ACTIVE
+              key: 'net.if.out[{#IFNAME}]'
+              delay: 15s
+              history: 7d
+              units: bps
+              preprocessing:
+                - type: CHANGE_PER_SECOND
+              tags:
+                - tag: Interface
+                  value: '{#IFNAME}'
+                - tag: 'Item Type'
+                  value: Rate
+          master_item:
+            key: net.if.discovery
+      tags:
+        - tag: Agent
+          value: ZBA
+        - tag: 'Template Type'
+          value: Active
+    - uuid: ca8a2cf525cf4e3cb8e69790e57b3492
+      template: 'BA - ZBA - Windows'
+      name: 'BA - ZBA - Windows'
+      groups:
+        - name: BA/ZBA
+      items:
+        - uuid: 3614232cb5cf4979bf6095e31dc483c5
+          name: 'Windows - Event Log - Application'
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Application]'
+          delay: 15s
+          history: 15d
+          value_type: LOG
+          description: 'The Application log stores events that come from applications and programs, not the Windows OS itself. These are messages written by software components both Microsoft and third-party.'
+          tags:
+            - tag: 'Item Type'
+              value: Log
+        - uuid: 8a7223ac2c23466aadcd44e6819edcf5
+          name: 'Windows - Event Log - Security'
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[Security]'
+          delay: 15s
+          history: 15d
+          value_type: LOG
+          description: 'The Security log records events related to security, authentication, access, and audit policy.'
+          tags:
+            - tag: 'Item Type'
+              value: Log
+        - uuid: eb2adb51114c4c239c1ba997c563b663
+          name: 'Windows - Event Log - System'
+          type: ZABBIX_ACTIVE
+          key: 'eventlog[System]'
+          delay: 15s
+          history: 15d
+          value_type: LOG
+          description: 'The System log records events generated by the Windows operating system itself and by system-level components such as drivers and core services.'
+          tags:
+            - tag: 'Item Type'
+              value: Log
+        - uuid: 897d21a747f44b6ebdd6ee0e748eb80f
+          name: Threads
+          type: ZABBIX_ACTIVE
+          key: 'perf_counter[\System\Threads, 15]'
+          delay: 15s
+          history: 7d
+          description: 'Threads is the number of threads in the computer at the time of data collection. This is an instantaneous count, not an average over the time interval.  A thread is the basic executable entity that can execute instructions in a processor.'
+          tags:
+            - tag: 'Item Type'
+              value: Count
+        - uuid: 28420d99b86b460f94d61b092d074d74
+          name: 'Windows Services Discovery'
+          type: ZABBIX_ACTIVE
+          key: service.discovery
+          history: '0'
+          value_type: TEXT
+          tags:
+            - tag: 'Item Type'
+              value: Discovery
+      discovery_rules:
+        - uuid: 0ea8aff1fea841d3b2763befd6689300
+          name: 'Windows Services Discovery'
+          type: DEPENDENT
+          key: windows.services.discovery
+          filter:
+            evaltype: AND
+            conditions:
+              - macro: '{#SERVICE.DISPLAYNAME}'
+                value: '{$WIN_SERVICES}'
+              - macro: '{#SERVICE.DISPLAYNAME}'
+                value: '{$WIN_SERVICES_IGNORE}'
+                operator: NOT_MATCHES_REGEX
+          item_prototypes:
+            - uuid: 4f70bd60d51a41c584b9217805dd196a
+              name: 'Windows Service ({#SERVICE.DISPLAYNAME}) Status'
+              type: DEPENDENT
+              key: 'windows.services.status[{#SERVICE.DISPLAYNAME}]'
+              history: 7d
+              valuemap:
+                name: 'Service State'
+              preprocessing:
+                - type: REGEX
+                  parameters:
+                    - '.*'
+                    - '{#SERVICE.STATE}'
+              master_item:
+                key: service.discovery
+              tags:
+                - tag: 'Item Type'
+                  value: Status
+                - tag: Service
+                  value: '{#SERVICE.DISPLAYNAME}'
+          master_item:
+            key: service.discovery
+      tags:
+        - tag: Agent
+          value: ZBA
+        - tag: 'Template Type'
+          value: Active
+      valuemaps:
+        - uuid: 552c0a99266345da9f74cd9be7bbffe0
+          name: 'Service State'
+          mappings:
+            - value: '0'
+              newvalue: '🟢 Running'
+            - value: '1'
+              newvalue: '🟡 Paused'
+            - value: '2'
+              newvalue: '🟡 Start Pending'
+            - value: '3'
+              newvalue: '🟡 Pause Pending'
+            - value: '4'
+              newvalue: '🟡 Continue Pending'
+            - value: '5'
+              newvalue: '🟠 Stop Pending'
+            - value: '6'
+              newvalue: '🔴 Stopped'
+            - value: '7'
+              newvalue: '⚫️ Unknown'
   triggers:
     - uuid: 0cb2f24a7f724fad988e17ed41f374ee
       expression: 'last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.startup)<>last(/BA - MIB - Aruba OS/snmp.aruba.config.sha.running)'
