@@ -1,0 +1,25 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: a33341008cd4460cae6f021e7d32852e
+      name: BA/Profiles/Servers/OS
+  templates:
+    - uuid: 8e8df67daccb4f1d8038c40f2753000c
+      template: 'BA - Profile - Linux - ZBA'
+      name: 'BA - Profile - Linux - ZBA'
+      templates:
+        - name: 'BA - Generic - ICMP'
+        - name: 'BA - Macro - Generic'
+        - name: 'BA - Macro - Interfaces'
+        - name: 'BA - Macro - Windows'
+        - name: 'BA - Procedure - Update Name'
+        - name: 'BA - SSH'
+        - name: 'BA - ZBA - Shared'
+      groups:
+        - name: BA/Profiles/Servers/OS
+      tags:
+        - tag: 'Template Type'
+          value: Profile
+        - tag: Vendor
+          value: Linux
+
