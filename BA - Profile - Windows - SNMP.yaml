@@ -5,8 +5,8 @@ zabbix_export:
       name: BA/Profiles/Servers/OS
   templates:
     - uuid: 22526bb9690840debbaa02fd6f35d5b0
-      template: 'BA - Profile - Windows'
-      name: 'BA - Profile - Windows'
+      template: 'BA - Profile - Windows - SNMP'
+      name: 'BA - Profile - Windows - SNMP'
       wizard_ready: 'YES'
       vendor:
         name: 'below average'

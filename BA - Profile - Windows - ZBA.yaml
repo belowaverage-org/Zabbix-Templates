@@ -5,8 +5,8 @@ zabbix_export:
       name: BA/Profiles/Servers/OS
   templates:
     - uuid: a8d5f640fe9840fd8dc38b651e6e08de
-      template: 'BA - Profile - WindowsTest'
-      name: 'BA - Profile - Windows (Test)'
+      template: 'BA - Profile - Windows - ZBA'
+      name: 'BA - Profile - Windows - ZBA'
       templates:
         - name: 'BA - Generic - ICMP'
         - name: 'BA - Macro - Generic'

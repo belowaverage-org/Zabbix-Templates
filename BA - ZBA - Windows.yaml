@@ -32,6 +32,17 @@ zabbix_export:
           tags:
             - tag: 'Item Type'
               value: Log
+          triggers:
+            - uuid: 699682402c3541a996db888278da1b6a
+              expression: 'find(/BA - ZBA - Windows/eventlog[Security],{$WIN_SEC_EVENT_LOG_DURATION},"like","Network Policy Server denied access to a user.")=1'
+              name: 'Network Policy Server denied access to a user within {$WIN_SEC_EVENT_LOG_DURATION}'
+              opdata: 'Network Policy Server denied access to a user'
+              status: DISABLED
+              priority: WARNING
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Event
         - uuid: eb2adb51114c4c239c1ba997c563b663
           name: 'Windows - Event Log - System'
           type: ZABBIX_ACTIVE
@@ -95,6 +106,16 @@ zabbix_export:
                   value: Status
                 - tag: Service
                   value: '{#SERVICE.DISPLAYNAME}'
+              trigger_prototypes:
+                - uuid: ac897e1046a648d69880ea71ea0032f2
+                  expression: 'last(/BA - ZBA - Windows/windows.services.status[{#SERVICE.DISPLAYNAME}])<>0'
+                  name: 'Windows Service ({#SERVICE.DISPLAYNAME}) Status != Running'
+                  priority: WARNING
+                  description: 'This service is not in a running state.'
+                  manual_close: 'YES'
+                  tags:
+                    - tag: 'Trigger Type'
+                      value: Status
           master_item:
             key: service.discovery
       tags:
@@ -102,6 +123,199 @@ zabbix_export:
           value: ZBA
         - tag: 'Template Type'
           value: Active
+      dashboards:
+        - uuid: 2f16e314fa6b47dbb8cc822b97a0b9c2
+          name: '📱 Windows Services'
+          pages:
+            - widgets:
+                - type: honeycomb
+                  name: 'Windows Services'
+                  width: '72'
+                  height: '17'
+                  fields:
+                    - type: STRING
+                      name: items.0
+                      value: '*Service*'
+                    - type: STRING
+                      name: primary_label
+                      value: '{{ITEM.NAME}.regrepl("^.*\(|\).*$", "")}'
+                    - type: INTEGER
+                      name: primary_label_bold
+                      value: '1'
+                    - type: STRING
+                      name: reference
+                      value: EOTNU
+                    - type: INTEGER
+                      name: secondary_label_bold
+                      value: '0'
+                    - type: INTEGER
+                      name: secondary_label_decimal_places
+                      value: '0'
+                    - type: INTEGER
+                      name: secondary_label_size
+                      value: '15'
+                    - type: INTEGER
+                      name: secondary_label_size_type
+                      value: '1'
+                    - type: STRING
+                      name: thresholds.0.color
+                      value: '144618'
+                    - type: STRING
+                      name: thresholds.0.threshold
+                      value: '0'
+                    - type: STRING
+                      name: thresholds.1.color
+                      value: B75F11
+                    - type: STRING
+                      name: thresholds.1.threshold
+                      value: '1'
+                    - type: STRING
+                      name: thresholds.2.color
+                      value: '891515'
+                    - type: STRING
+                      name: thresholds.2.threshold
+                      value: '6'
+        - uuid: b199f5c5b45f40c3986d424cafa84d37
+          name: '🪵 Windows Event Log'
+          pages:
+            - widgets:
+                - type: itemhistory
+                  name: 'Windows Event Log'
+                  width: '72'
+                  height: '17'
+                  fields:
+                    - type: INTEGER
+                      name: columns.0.display
+                      value: '5'
+                    - type: STRING
+                      name: columns.0.highlights.0.color
+                      value: 5B0E0E
+                    - type: STRING
+                      name: columns.0.highlights.0.pattern
+                      value: error|Error|fail|Fail
+                    - type: STRING
+                      name: columns.0.highlights.1.color
+                      value: 7A3F0B
+                    - type: STRING
+                      name: columns.0.highlights.1.pattern
+                      value: warning|Warning
+                    - type: STRING
+                      name: columns.0.highlights.2.color
+                      value: 0D2F10
+                    - type: STRING
+                      name: columns.0.highlights.2.pattern
+                      value: success|Success
+                    - type: ITEM
+                      name: columns.0.itemid
+                      value:
+                        host: 'BA - ZBA - Windows'
+                        key: 'eventlog[Application]'
+                    - type: INTEGER
+                      name: columns.0.local_time
+                      value: '1'
+                    - type: INTEGER
+                      name: columns.0.max_length
+                      value: '300'
+                    - type: INTEGER
+                      name: columns.0.monospace_font
+                      value: '1'
+                    - type: STRING
+                      name: columns.0.name
+                      value: '📱 Application'
+                    - type: INTEGER
+                      name: columns.1.display
+                      value: '5'
+                    - type: STRING
+                      name: columns.1.highlights.0.color
+                      value: 5B0E0E
+                    - type: STRING
+                      name: columns.1.highlights.0.pattern
+                      value: error|Error|fail|Fail
+                    - type: STRING
+                      name: columns.1.highlights.1.color
+                      value: 7A3F0B
+                    - type: STRING
+                      name: columns.1.highlights.1.pattern
+                      value: warning|Warning
+                    - type: STRING
+                      name: columns.1.highlights.2.color
+                      value: 0D2F10
+                    - type: STRING
+                      name: columns.1.highlights.2.pattern
+                      value: success|Success
+                    - type: ITEM
+                      name: columns.1.itemid
+                      value:
+                        host: 'BA - ZBA - Windows'
+                        key: 'eventlog[System]'
+                    - type: INTEGER
+                      name: columns.1.local_time
+                      value: '1'
+                    - type: INTEGER
+                      name: columns.1.max_length
+                      value: '300'
+                    - type: INTEGER
+                      name: columns.1.monospace_font
+                      value: '1'
+                    - type: STRING
+                      name: columns.1.name
+                      value: '⚙️ System'
+                    - type: INTEGER
+                      name: columns.2.display
+                      value: '5'
+                    - type: STRING
+                      name: columns.2.highlights.0.color
+                      value: 5B0E0E
+                    - type: STRING
+                      name: columns.2.highlights.0.pattern
+                      value: error|Error|fail|Fail
+                    - type: STRING
+                      name: columns.2.highlights.1.color
+                      value: 0D2F10
+                    - type: STRING
+                      name: columns.2.highlights.1.pattern
+                      value: success|Success
+                    - type: STRING
+                      name: columns.2.highlights.2.color
+                      value: 7A3F0B
+                    - type: STRING
+                      name: columns.2.highlights.2.pattern
+                      value: warning|Warning
+                    - type: ITEM
+                      name: columns.2.itemid
+                      value:
+                        host: 'BA - ZBA - Windows'
+                        key: 'eventlog[Security]'
+                    - type: INTEGER
+                      name: columns.2.local_time
+                      value: '1'
+                    - type: INTEGER
+                      name: columns.2.max_length
+                      value: '300'
+                    - type: INTEGER
+                      name: columns.2.monospace_font
+                      value: '1'
+                    - type: STRING
+                      name: columns.2.name
+                      value: '🔐 Security'
+                    - type: STRING
+                      name: reference
+                      value: MQLGG
+                    - type: INTEGER
+                      name: show_column_header
+                      value: '1'
+                    - type: INTEGER
+                      name: show_lines
+                      value: '500'
+                    - type: INTEGER
+                      name: show_timestamp
+                      value: '1'
+                    - type: STRING
+                      name: time_period.from
+                      value: now-24h
+                    - type: STRING
+                      name: time_period.to
+                      value: now
       valuemaps:
         - uuid: 552c0a99266345da9f74cd9be7bbffe0
           name: 'Service State'
