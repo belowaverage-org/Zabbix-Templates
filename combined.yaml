@@ -10228,6 +10228,23 @@ zabbix_export:
           history: 15d
           value_type: LOG
           description: 'The Security log records events related to security, authentication, access, and audit policy.'
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  if (value.indexOf("Network Policy Server denied access to a user.") >= 0) {
+                  	var username =  value.match(/Account Name:\W*(\S*)/)[1];
+                  	var called =  value.match(/Called Station Identifier:\W*(\S*)/)[1];
+                  	var calling =  value.match(/Calling Station Identifier:\W*(\S*)/)[1];
+                  	var nasid =  value.match(/NAS Identifier:\W*(\S*)/)[1];
+                  	value = 
+                   	"User: " + username + ", " +
+                  	"Called: " + called + ", " +
+                  	"Calling: " + calling + ", " +
+                  	"NAS ID: " + nasid + "\r\n\r\n" +
+                  	value;
+                  }
+                  return value;
           tags:
             - tag: 'Item Type'
               value: Log
@@ -10236,7 +10253,7 @@ zabbix_export:
               expression: 'find(/BA - ZBA - Windows/eventlog[Security],,"like","Network Policy Server denied access to a user.")=1'
               recovery_mode: NONE
               name: 'Network Policy Server denied access to a user.'
-              opdata: '{ITEM.LASTVALUE}'
+              opdata: '{{ITEM.VALUE}.regsub("(.*)", \1)}'
               priority: WARNING
               type: MULTIPLE
               manual_close: 'YES'
