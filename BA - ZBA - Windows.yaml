@@ -34,11 +34,12 @@ zabbix_export:
               value: Log
           triggers:
             - uuid: 699682402c3541a996db888278da1b6a
-              expression: 'find(/BA - ZBA - Windows/eventlog[Security],{$WIN_SEC_EVENT_LOG_DURATION},"like","Network Policy Server denied access to a user.")=1'
-              name: 'Network Policy Server denied access to a user within {$WIN_SEC_EVENT_LOG_DURATION}'
-              opdata: 'Network Policy Server denied access to a user'
-              status: DISABLED
+              expression: 'find(/BA - ZBA - Windows/eventlog[Security],,"like","Network Policy Server denied access to a user.")=1'
+              recovery_mode: NONE
+              name: 'Network Policy Server denied access to a user.'
+              opdata: '{ITEM.LASTVALUE}'
               priority: WARNING
+              type: MULTIPLE
               manual_close: 'YES'
               tags:
                 - tag: 'Trigger Type'
