@@ -25,6 +25,9 @@ zabbix_export:
         - macro: '{$CPU_USAGE_WARN}'
           value: '90'
           description: 'Percentage to trigger a CPU usage alert.'
+        - macro: '{$DISK_FILTER}'
+          value: '^(.:|/|/mnt/.*|system disk)$'
+          description: 'Disk names to include in discovery.'
         - macro: '{$DISK_FREE_WARN}'
           value: 5G
           description: 'Warn if a disk has less than specified amount.'

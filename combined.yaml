@@ -66,27 +66,28 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               dependencies:
-                - name: 'Device offline'
+                - name: 'ICMP Status != Up'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: 'Trigger Type'
                   value: Threshold
         - uuid: 157c0a57578f4b6fa626c497c413b7ff
-          name: 'ICMP Ping'
+          name: 'ICMP Status'
           type: SIMPLE
           key: 'icmppingretry[{HOST.HOST},3]'
           delay: 10s
           history: 7d
           valuemap:
-            name: 'Ping Status'
+            name: 'ICMP Status'
           tags:
             - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 77f9ed9ba5d44b938fd34d222cd5c502
               expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
-              name: 'Device offline'
+              name: 'ICMP Status != Up'
               priority: HIGH
+              description: 'This device is offline and un-reachable.'
               manual_close: 'YES'
               tags:
                 - tag: 'Trigger Type'
@@ -112,7 +113,7 @@ zabbix_export:
               priority: INFO
               manual_close: 'YES'
               dependencies:
-                - name: 'Device offline'
+                - name: 'ICMP Status != Up'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: 'Trigger Type'
@@ -215,7 +216,7 @@ zabbix_export:
                       value: AAAAA
       valuemaps:
         - uuid: 4e0b1b29cccb413ea3dbe1730a188450
-          name: 'Ping Status'
+          name: 'ICMP Status'
           mappings:
             - value: '0'
               newvalue: '🔴 Down'
@@ -333,10 +334,10 @@ zabbix_export:
               description: 'Please check the password on the device.'
               manual_close: 'YES'
               dependencies:
-                - name: 'Device offline'
-                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
                 - name: 'ICMP Loss in {$ICMP_HIGH_LOSS_WARN_PERIOD} > {$ICMP_HIGH_LOSS_WARN}%'
                   expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},10,500],{$ICMP_HIGH_LOSS_WARN_PERIOD})>{$ICMP_HIGH_LOSS_WARN}'
+                - name: 'ICMP Status != Up'
+                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: 'Trigger Type'
                   value: State
@@ -1819,6 +1820,9 @@ zabbix_export:
         - macro: '{$CPU_USAGE_WARN}'
           value: '90'
           description: 'Percentage to trigger a CPU usage alert.'
+        - macro: '{$DISK_FILTER}'
+          value: '^(.:|/|/mnt/.*|system disk)$'
+          description: 'Disk names to include in discovery.'
         - macro: '{$DISK_FREE_WARN}'
           value: 5G
           description: 'Warn if a disk has less than specified amount.'
@@ -3560,7 +3564,7 @@ zabbix_export:
               priority: AVERAGE
               manual_close: 'YES'
               dependencies:
-                - name: 'Device offline'
+                - name: 'ICMP Status != Up'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: 'Trigger Type'
@@ -3782,7 +3786,7 @@ zabbix_export:
             - tag: 'Item Type'
               value: Discovery
         - uuid: d6776d1e932247fca27a366c365cd41f
-          name: 'Storage Discovery'
+          name: 'Memory Discovery'
           type: SNMP_AGENT
           snmp_oid: 'walk[.1.3.6.1.2.1.25.2.3.1.2, .1.3.6.1.2.1.25.2.3.1.3, .1.3.6.1.2.1.25.2.3.1.4, .1.3.6.1.2.1.25.2.3.1.5, .1.3.6.1.2.1.25.2.3.1.6]'
           key: snmp.hr.storage
@@ -3833,12 +3837,13 @@ zabbix_export:
           delay: 1h
           filter:
             conditions:
+              - macro: '{#DESC}'
+                value: '{$DISK_FILTER}'
               - macro: '{#TYPE}'
                 value: 'HOST-RESOURCES-TYPES::hrStorageFixedDisk'
               - macro: '{#TYPE}'
                 value: iso.3.6.1.2.1.25.2.1.4
-          lifetime: 1d
-          enabled_lifetime_type: DISABLE_NEVER
+          lifetime: 30d
           item_prototypes:
             - uuid: 974a620b61674937a5561e9227ab54c3
               name: 'Disk ({#DESC}) Size'
@@ -7617,7 +7622,7 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   dependencies:
-                    - name: 'Device offline'
+                    - name: 'ICMP Status != Up'
                       expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
                   tags:
                     - tag: 'Trigger Type'
@@ -7866,10 +7871,10 @@ zabbix_export:
               description: 'Please check the password on the device.'
               manual_close: 'YES'
               dependencies:
-                - name: 'Device offline'
-                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
                 - name: 'ICMP Loss in {$ICMP_HIGH_LOSS_WARN_PERIOD} > {$ICMP_HIGH_LOSS_WARN}%'
                   expression: 'avg(/BA - Generic - ICMP/icmppingloss[{HOST.HOST},10,500],{$ICMP_HIGH_LOSS_WARN_PERIOD})>{$ICMP_HIGH_LOSS_WARN}'
+                - name: 'ICMP Status != Up'
+                  expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: 'Trigger Type'
                   value: State
@@ -9020,7 +9025,7 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               dependencies:
-                - name: 'Device offline'
+                - name: 'ICMP Status != Up'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: 'Trigger Type'
@@ -9084,7 +9089,7 @@ zabbix_export:
               description: 'Check that the SSH user can login to back the configuration up.'
               manual_close: 'YES'
               dependencies:
-                - name: 'Device offline'
+                - name: 'ICMP Status != Up'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: 'Trigger Type'
@@ -9435,11 +9440,33 @@ zabbix_export:
               description: 'The agent has not reported-in within the last {$ZBA_REPORT_IN_TIME_WARN}s.'
               manual_close: 'YES'
               dependencies:
-                - name: 'Device offline'
+                - name: 'ICMP Status != Up'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: 'Trigger Type'
                   value: State
+        - uuid: b90c66c1dae34ee1928f7f67cb1428c3
+          name: 'Memory Usage'
+          type: CALCULATED
+          key: memory.usage
+          delay: 15s
+          history: 7d
+          units: '%'
+          params: '(last(//vm.memory.size[total])-last(//vm.memory.size[available]))/last(//vm.memory.size[total])*100'
+          tags:
+            - tag: 'Item Type'
+              value: Usage
+        - uuid: 37248d35047543d6b03d452ef994f27d
+          name: 'Memory Used'
+          type: CALCULATED
+          key: memory.used
+          delay: 15s
+          history: 7d
+          units: B
+          params: 'last(//vm.memory.size[total])-last(//vm.memory.size[available])'
+          tags:
+            - tag: 'Item Type'
+              value: Size
         - uuid: cad00aa80f69406c8ff20aec84fe56fd
           name: 'Interface Discovery'
           type: ZABBIX_ACTIVE
@@ -9619,17 +9646,6 @@ zabbix_export:
               tags:
                 - tag: 'Item Type'
                   value: Threshold
-        - uuid: b90c66c1dae34ee1928f7f67cb1428c3
-          name: 'Memory Usage'
-          type: ZABBIX_ACTIVE
-          key: 'vm.memory.size[pused]'
-          delay: 15s
-          history: 7d
-          value_type: FLOAT
-          units: '%'
-          tags:
-            - tag: 'Item Type'
-              value: Usage
         - uuid: 224d5e9c94414c158c105b5c0296f360
           name: 'Memory Total'
           type: ZABBIX_ACTIVE
@@ -9645,17 +9661,6 @@ zabbix_export:
           tags:
             - tag: 'Item Type'
               value: Size
-        - uuid: 37248d35047543d6b03d452ef994f27d
-          name: 'Memory Used'
-          type: ZABBIX_ACTIVE
-          key: 'vm.memory.size[used]'
-          delay: 15s
-          history: 7d
-          value_type: FLOAT
-          units: B
-          tags:
-            - tag: 'Item Type'
-              value: Size
       discovery_rules:
         - uuid: c70b16aaf202435eb6bd1c2211d68b0a
           name: 'Disk Discovery'
@@ -9664,7 +9669,7 @@ zabbix_export:
           filter:
             conditions:
               - macro: '{#FSNAME}'
-                value: '^(.:|/|/mnt/.*)$'
+                value: '{$DISK_FILTER}'
           item_prototypes:
             - uuid: df3c5376164f496bb38b50ef5462776a
               name: 'Disk ({#FSLABEL}({#FSNAME}) - {#FSTYPE}) Free'
@@ -9827,6 +9832,9 @@ zabbix_export:
               units: bps
               preprocessing:
                 - type: CHANGE_PER_SECOND
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
               tags:
                 - tag: Interface
                   value: '{#IFNAME}'
@@ -9858,6 +9866,9 @@ zabbix_export:
               units: bps
               preprocessing:
                 - type: CHANGE_PER_SECOND
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
               tags:
                 - tag: Interface
                   value: '{#IFNAME}'
@@ -10155,7 +10166,7 @@ zabbix_export:
                       name: itemid.0
                       value:
                         host: 'BA - ZBA - Shared'
-                        key: 'vm.memory.size[pused]'
+                        key: memory.usage
                     - type: STRING
                       name: max
                       value: '100'
@@ -10232,28 +10243,55 @@ zabbix_export:
             - type: JAVASCRIPT
               parameters:
                 - |
-                  if (value.indexOf("Network Policy Server denied access to a user.") >= 0) {
-                  	var username =  value.match(/Account Name:\W*(\S*)/)[1];
-                  	var called =  value.match(/Called Station Identifier:\W*(\S*)/)[1];
-                  	var calling =  value.match(/Calling Station Identifier:\W*(\S*)/)[1];
-                  	var nasid =  value.match(/NAS Identifier:\W*(\S*)/)[1];
-                  	value = 
-                   	"User: " + username + ", " +
-                  	"Called: " + called + ", " +
-                  	"Calling: " + calling + ", " +
-                  	"NAS ID: " + nasid + "\r\n\r\n" +
-                  	value;
-                  }
+                  try {
+                      if (value.indexOf("Network Policy Server denied access to a user.") >= 0) {
+                  	    var username =  value.match(/Account Name:\s*(\S*)/)[1];
+                      	var called =  value.match(/Called Station Identifier:\s*(\S*)/)[1];
+                  	    var calling =  value.match(/Calling Station Identifier:\s*(\S*)/)[1];
+                  	    var nasid =  value.match(/NAS Identifier:\s*(\S*)/)[1];
+                  	    value = 
+                   	    "User: " + username + ", " +
+                  	    "Called: " + called + ", " +
+                  	    "Calling: " + calling + ", " +
+                  	    "NAS ID: " + nasid +
+                          "\r\n\r\n" +
+                  	    value;
+                      }
+                      if (value.indexOf("An account failed to log on.") >= 0) {
+                  	    var username =  value.match(/[\s\S]*Account For Which Logon Failed:[\s\S]*Account Name:\s*(\S*)/)[1];
+                      	var wsname =  value.match(/Workstation Name:\s*(\S*)/)[1];
+                      	var source =  value.match(/Source Network Address:\s*(\S*)/)[1];
+                  	    value = 
+                   	    "User: " + username + ", " +
+                  		"Workstation: " + wsname + ", " +
+                  		"Source IP: " + source +
+                  		"\r\n\r\n" +
+                  	    value;
+                      }
+                  } catch(e) { }
                   return value;
           tags:
             - tag: 'Item Type'
               value: Log
           triggers:
+            - uuid: a0eb9ea5650f4ea1a0510166ffa71bc3
+              expression: 'find(/BA - ZBA - Windows/eventlog[Security],,"like","An account failed to log on.")=1'
+              recovery_mode: NONE
+              name: 'An account failed to log on.'
+              opdata: '{{ITEM.VALUE}.regsub("(.*)", \1)}'
+              status: DISABLED
+              priority: WARNING
+              type: MULTIPLE
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Event
             - uuid: 699682402c3541a996db888278da1b6a
               expression: 'find(/BA - ZBA - Windows/eventlog[Security],,"like","Network Policy Server denied access to a user.")=1'
               recovery_mode: NONE
               name: 'Network Policy Server denied access to a user.'
               opdata: '{{ITEM.VALUE}.regsub("(.*)", \1)}'
+              status: DISABLED
               priority: WARNING
               type: MULTIPLE
               manual_close: 'YES'
@@ -10728,14 +10766,14 @@ zabbix_export:
           calc_fnc: ALL
           item:
             host: 'BA - ZBA - Shared'
-            key: 'vm.memory.size[used]'
+            key: memory.used
         - sortorder: '2'
           color: 2774A4
           yaxisside: RIGHT
           calc_fnc: ALL
           item:
             host: 'BA - ZBA - Shared'
-            key: 'vm.memory.size[pused]'
+            key: memory.usage
     - uuid: 20263e09ac454893b1c06d8167076df2
       name: 'Memory Usage'
       graph_items:

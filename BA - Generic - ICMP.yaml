@@ -38,27 +38,28 @@ zabbix_export:
               priority: WARNING
               manual_close: 'YES'
               dependencies:
-                - name: 'Device offline'
+                - name: 'ICMP Status != Up'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: 'Trigger Type'
                   value: Threshold
         - uuid: 157c0a57578f4b6fa626c497c413b7ff
-          name: 'ICMP Ping'
+          name: 'ICMP Status'
           type: SIMPLE
           key: 'icmppingretry[{HOST.HOST},3]'
           delay: 10s
           history: 7d
           valuemap:
-            name: 'Ping Status'
+            name: 'ICMP Status'
           tags:
             - tag: 'Item Type'
               value: Status
           triggers:
             - uuid: 77f9ed9ba5d44b938fd34d222cd5c502
               expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
-              name: 'Device offline'
+              name: 'ICMP Status != Up'
               priority: HIGH
+              description: 'This device is offline and un-reachable.'
               manual_close: 'YES'
               tags:
                 - tag: 'Trigger Type'
@@ -84,7 +85,7 @@ zabbix_export:
               priority: INFO
               manual_close: 'YES'
               dependencies:
-                - name: 'Device offline'
+                - name: 'ICMP Status != Up'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: 'Trigger Type'
@@ -187,7 +188,7 @@ zabbix_export:
                       value: AAAAA
       valuemaps:
         - uuid: 4e0b1b29cccb413ea3dbe1730a188450
-          name: 'Ping Status'
+          name: 'ICMP Status'
           mappings:
             - value: '0'
               newvalue: '🔴 Down'

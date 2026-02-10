@@ -37,11 +37,33 @@ zabbix_export:
               description: 'The agent has not reported-in within the last {$ZBA_REPORT_IN_TIME_WARN}s.'
               manual_close: 'YES'
               dependencies:
-                - name: 'Device offline'
+                - name: 'ICMP Status != Up'
                   expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
               tags:
                 - tag: 'Trigger Type'
                   value: State
+        - uuid: b90c66c1dae34ee1928f7f67cb1428c3
+          name: 'Memory Usage'
+          type: CALCULATED
+          key: memory.usage
+          delay: 15s
+          history: 7d
+          units: '%'
+          params: '(last(//vm.memory.size[total])-last(//vm.memory.size[available]))/last(//vm.memory.size[total])*100'
+          tags:
+            - tag: 'Item Type'
+              value: Usage
+        - uuid: 37248d35047543d6b03d452ef994f27d
+          name: 'Memory Used'
+          type: CALCULATED
+          key: memory.used
+          delay: 15s
+          history: 7d
+          units: B
+          params: 'last(//vm.memory.size[total])-last(//vm.memory.size[available])'
+          tags:
+            - tag: 'Item Type'
+              value: Size
         - uuid: cad00aa80f69406c8ff20aec84fe56fd
           name: 'Interface Discovery'
           type: ZABBIX_ACTIVE
@@ -221,17 +243,6 @@ zabbix_export:
               tags:
                 - tag: 'Item Type'
                   value: Threshold
-        - uuid: b90c66c1dae34ee1928f7f67cb1428c3
-          name: 'Memory Usage'
-          type: ZABBIX_ACTIVE
-          key: 'vm.memory.size[pused]'
-          delay: 15s
-          history: 7d
-          value_type: FLOAT
-          units: '%'
-          tags:
-            - tag: 'Item Type'
-              value: Usage
         - uuid: 224d5e9c94414c158c105b5c0296f360
           name: 'Memory Total'
           type: ZABBIX_ACTIVE
@@ -247,17 +258,6 @@ zabbix_export:
           tags:
             - tag: 'Item Type'
               value: Size
-        - uuid: 37248d35047543d6b03d452ef994f27d
-          name: 'Memory Used'
-          type: ZABBIX_ACTIVE
-          key: 'vm.memory.size[used]'
-          delay: 15s
-          history: 7d
-          value_type: FLOAT
-          units: B
-          tags:
-            - tag: 'Item Type'
-              value: Size
       discovery_rules:
         - uuid: c70b16aaf202435eb6bd1c2211d68b0a
           name: 'Disk Discovery'
@@ -266,7 +266,7 @@ zabbix_export:
           filter:
             conditions:
               - macro: '{#FSNAME}'
-                value: '^(.:|/|/mnt/.*)$'
+                value: '{$DISK_FILTER}'
           item_prototypes:
             - uuid: df3c5376164f496bb38b50ef5462776a
               name: 'Disk ({#FSLABEL}({#FSNAME}) - {#FSTYPE}) Free'
@@ -429,6 +429,9 @@ zabbix_export:
               units: bps
               preprocessing:
                 - type: CHANGE_PER_SECOND
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
               tags:
                 - tag: Interface
                   value: '{#IFNAME}'
@@ -460,6 +463,9 @@ zabbix_export:
               units: bps
               preprocessing:
                 - type: CHANGE_PER_SECOND
+                - type: MULTIPLIER
+                  parameters:
+                    - '8'
               tags:
                 - tag: Interface
                   value: '{#IFNAME}'
@@ -757,7 +763,7 @@ zabbix_export:
                       name: itemid.0
                       value:
                         host: 'BA - ZBA - Shared'
-                        key: 'vm.memory.size[pused]'
+                        key: memory.usage
                     - type: STRING
                       name: max
                       value: '100'
@@ -848,12 +854,12 @@ zabbix_export:
           calc_fnc: ALL
           item:
             host: 'BA - ZBA - Shared'
-            key: 'vm.memory.size[used]'
+            key: memory.used
         - sortorder: '2'
           color: 2774A4
           yaxisside: RIGHT
           calc_fnc: ALL
           item:
             host: 'BA - ZBA - Shared'
-            key: 'vm.memory.size[pused]'
+            key: memory.usage
 

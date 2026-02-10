@@ -33,28 +33,55 @@ zabbix_export:
             - type: JAVASCRIPT
               parameters:
                 - |
-                  if (value.indexOf("Network Policy Server denied access to a user.") >= 0) {
-                  	var username =  value.match(/Account Name:\W*(\S*)/)[1];
-                  	var called =  value.match(/Called Station Identifier:\W*(\S*)/)[1];
-                  	var calling =  value.match(/Calling Station Identifier:\W*(\S*)/)[1];
-                  	var nasid =  value.match(/NAS Identifier:\W*(\S*)/)[1];
-                  	value = 
-                   	"User: " + username + ", " +
-                  	"Called: " + called + ", " +
-                  	"Calling: " + calling + ", " +
-                  	"NAS ID: " + nasid + "\r\n\r\n" +
-                  	value;
-                  }
+                  try {
+                      if (value.indexOf("Network Policy Server denied access to a user.") >= 0) {
+                  	    var username =  value.match(/Account Name:\s*(\S*)/)[1];
+                      	var called =  value.match(/Called Station Identifier:\s*(\S*)/)[1];
+                  	    var calling =  value.match(/Calling Station Identifier:\s*(\S*)/)[1];
+                  	    var nasid =  value.match(/NAS Identifier:\s*(\S*)/)[1];
+                  	    value = 
+                   	    "User: " + username + ", " +
+                  	    "Called: " + called + ", " +
+                  	    "Calling: " + calling + ", " +
+                  	    "NAS ID: " + nasid +
+                          "\r\n\r\n" +
+                  	    value;
+                      }
+                      if (value.indexOf("An account failed to log on.") >= 0) {
+                  	    var username =  value.match(/[\s\S]*Account For Which Logon Failed:[\s\S]*Account Name:\s*(\S*)/)[1];
+                      	var wsname =  value.match(/Workstation Name:\s*(\S*)/)[1];
+                      	var source =  value.match(/Source Network Address:\s*(\S*)/)[1];
+                  	    value = 
+                   	    "User: " + username + ", " +
+                  		"Workstation: " + wsname + ", " +
+                  		"Source IP: " + source +
+                  		"\r\n\r\n" +
+                  	    value;
+                      }
+                  } catch(e) { }
                   return value;
           tags:
             - tag: 'Item Type'
               value: Log
           triggers:
+            - uuid: a0eb9ea5650f4ea1a0510166ffa71bc3
+              expression: 'find(/BA - ZBA - Windows/eventlog[Security],,"like","An account failed to log on.")=1'
+              recovery_mode: NONE
+              name: 'An account failed to log on.'
+              opdata: '{{ITEM.VALUE}.regsub("(.*)", \1)}'
+              status: DISABLED
+              priority: WARNING
+              type: MULTIPLE
+              manual_close: 'YES'
+              tags:
+                - tag: 'Trigger Type'
+                  value: Event
             - uuid: 699682402c3541a996db888278da1b6a
               expression: 'find(/BA - ZBA - Windows/eventlog[Security],,"like","Network Policy Server denied access to a user.")=1'
               recovery_mode: NONE
               name: 'Network Policy Server denied access to a user.'
               opdata: '{{ITEM.VALUE}.regsub("(.*)", \1)}'
+              status: DISABLED
               priority: WARNING
               type: MULTIPLE
               manual_close: 'YES'

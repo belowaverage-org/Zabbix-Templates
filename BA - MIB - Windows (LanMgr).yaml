@@ -72,7 +72,7 @@ zabbix_export:
                   priority: AVERAGE
                   manual_close: 'YES'
                   dependencies:
-                    - name: 'Device offline'
+                    - name: 'ICMP Status != Up'
                       expression: 'last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0'
                   tags:
                     - tag: 'Trigger Type'
