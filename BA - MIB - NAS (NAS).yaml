@@ -1,0 +1,363 @@
+zabbix_export:
+  version: '7.4'
+  template_groups:
+    - uuid: 3fdb37c563464c49b24b75703e0038ed
+      name: BA/MIBs
+  templates:
+    - uuid: f08f23edb9fb41a68b99bcbf2d2131d7
+      template: 'BA - MIB - NAS'
+      name: 'BA - MIB - NAS (NAS)'
+      groups:
+        - name: BA/MIBs
+      items:
+        - uuid: 40ab8f5e9f7243488e7ffa5958ddb9fb
+          name: 'Disk Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.2,.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.4,.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.5,.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.6,.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.8]'
+          key: disk.discovery
+          history: '0'
+          value_type: TEXT
+          tags:
+            - tag: Type
+              value: Discovery
+        - uuid: 687afc3bf9f24e469e8288b6dc1bc443
+          name: 'Disk Performance Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[.1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.2,.1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.3,.1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.4]'
+          key: disk.perf.discovery
+          history: '0'
+          value_type: TEXT
+          tags:
+            - tag: Type
+              value: Discovery
+        - uuid: 7381619852d8412ebfdd913c8f890a5c
+          name: 'Fan Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[.1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.4,.1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.5]'
+          key: fan.discovery
+          history: '0'
+          value_type: TEXT
+          tags:
+            - tag: Type
+              value: Discovery
+        - uuid: af8d8ce65a4244a88c10a65fdb528965
+          name: 'RAID Discovery'
+          type: SNMP_AGENT
+          snmp_oid: 'walk[.1.3.6.1.4.1.24681.1.4.1.1.1.2.1.2.1.2,.1.3.6.1.4.1.24681.1.4.1.1.1.2.1.2.1.5,.1.3.6.1.4.1.24681.1.4.1.1.1.2.1.2.1.7]'
+          key: raid.discovery
+          history: '0'
+          value_type: TEXT
+          tags:
+            - tag: Type
+              value: Discovery
+      discovery_rules:
+        - uuid: cbe51c551c92473da6dae9c07815a90f
+          name: 'Disk Discovery'
+          type: DEPENDENT
+          key: disk.discovery.rule
+          lifetime: 30d
+          item_prototypes:
+            - uuid: 0b15e27e6f704ebab9b31d5402fe765d
+              name: 'Disk ({#ID}) Model'
+              type: DEPENDENT
+              key: 'disk.model[{#ID}]'
+              history: 7d
+              value_type: TEXT
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.8.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: disk.discovery
+              tags:
+                - tag: Disk
+                  value: '{#ID}'
+                - tag: Type
+                  value: Model
+            - uuid: f715be545518446bad81697e8aea5592
+              name: 'Disk ({#ID}) SMART Status'
+              type: DEPENDENT
+              key: 'disk.smart.status[{#ID}]'
+              history: 7d
+              trends: '0'
+              valuemap:
+                name: 'SMART Status'
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.5.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: disk.discovery
+              tags:
+                - tag: Disk
+                  value: '{#ID}'
+                - tag: Type
+                  value: Status
+              trigger_prototypes:
+                - uuid: eb1750e4c8124ac88280511902d666f3
+                  expression: 'last(/BA - MIB - NAS/disk.smart.status[{#ID}])<>0'
+                  name: 'Disk ({#ID}) Smart Status != Good'
+                  priority: AVERAGE
+                  manual_close: 'YES'
+            - uuid: d677b90f4f2e462aade08fbac6024322
+              name: 'Disk ({#ID}) Status'
+              type: DEPENDENT
+              key: 'disk.status[{#ID}]'
+              history: 7d
+              value_type: CHAR
+              valuemap:
+                name: 'Disk Status'
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.4.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: disk.discovery
+              tags:
+                - tag: Disk
+                  value: '{#ID}'
+                - tag: Type
+                  value: Status
+              trigger_prototypes:
+                - uuid: 75a71abade494565969bf16c97cc8111
+                  expression: 'last(/BA - MIB - NAS/disk.status[{#ID}])<>"Good"'
+                  name: 'Disk ({#ID}) Status != Good'
+                  priority: AVERAGE
+                  manual_close: 'YES'
+            - uuid: 753c8fb6b64f4a3ca9f5e3af364976f3
+              name: 'Disk ({#ID}) Temperature'
+              type: DEPENDENT
+              key: 'disk.temp[{#ID}]'
+              history: 7d
+              units: C
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.6.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: disk.discovery
+              tags:
+                - tag: Disk
+                  value: '{#ID}'
+                - tag: Type
+                  value: Celsius
+          master_item:
+            key: disk.discovery
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - '{#ID}'
+                - .1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.2
+                - '0'
+        - uuid: 1bc58412907c4479b8fd5a443115405d
+          name: 'Disk Performance Discovery'
+          type: DEPENDENT
+          key: disk.perf.discovery.rule
+          lifetime: 30d
+          item_prototypes:
+            - uuid: afa03184cf184c879d31049e011021f4
+              name: 'Disk Performance ({#ID}) IOPS'
+              type: DEPENDENT
+              key: 'disk.perf.iops[{#ID}]'
+              history: 7d
+              units: IOPS
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.3.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: disk.perf.discovery
+              tags:
+                - tag: 'DIsk Performance'
+                  value: '{#ID}'
+                - tag: Type
+                  value: IOPS
+            - uuid: 0163d2d143ba4ac8948721c7885ae5d4
+              name: 'Disk Performance ({#ID}) Latency'
+              type: DEPENDENT
+              key: 'disk.perf.latency[{#ID}]'
+              history: 7d
+              units: ms
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.4.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: disk.perf.discovery
+              tags:
+                - tag: 'DIsk Performance'
+                  value: '{#ID}'
+                - tag: Type
+                  value: Milliseconds
+          master_item:
+            key: disk.perf.discovery
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - '{#ID}'
+                - .1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.2
+                - '0'
+        - uuid: 299261efc6384b81a4529d56003ace8c
+          name: 'Fan Discovery'
+          type: DEPENDENT
+          key: fan.discovery.rule
+          lifetime: 30d
+          item_prototypes:
+            - uuid: eb4c881ab3164356a86111bbca4b15f5
+              name: 'Fan ({#SNMPINDEX}) Speed'
+              type: DEPENDENT
+              key: 'fan.speed[{#SNMPINDEX}]'
+              history: 7d
+              units: RPM
+              valuemap:
+                name: 'Fan Status'
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.5.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: fan.discovery
+              tags:
+                - tag: Fan
+                  value: '{#SNMPINDEX}'
+                - tag: Type
+                  value: RPM
+            - uuid: b322489f83b046c189756ebfaf95cefa
+              name: 'Fan ({#SNMPINDEX}) Status'
+              type: DEPENDENT
+              key: 'fan.status[{#SNMPINDEX}]'
+              history: 7d
+              value_type: FLOAT
+              trends: '0'
+              valuemap:
+                name: 'Fan Status'
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.4.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: fan.discovery
+              tags:
+                - tag: Fan
+                  value: '{#SNMPINDEX}'
+                - tag: Type
+                  value: Status
+              trigger_prototypes:
+                - uuid: 5d1304e4637044bd9331e3fd868e210b
+                  expression: 'last(/BA - MIB - NAS/fan.status[{#SNMPINDEX}])<>0'
+                  name: 'Fan ({#SNMPINDEX}) Status != Good'
+                  priority: WARNING
+                  manual_close: 'YES'
+          master_item:
+            key: fan.discovery
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - '{#INDEX}'
+                - .1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.4
+                - '0'
+        - uuid: f58b93f94ee74a1a972deda0ef276848
+          name: 'RAID Discovery'
+          type: DEPENDENT
+          key: raid.discovery.rule
+          lifetime: 30d
+          item_prototypes:
+            - uuid: d718ca9d35704b8793bd1533e22e85ac
+              name: 'RAID Array ({#ID}) Level'
+              type: DEPENDENT
+              key: 'raid.level[{#ID}]'
+              history: 7d
+              trends: '0'
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.4.1.24681.1.4.1.1.1.2.1.2.1.7.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: raid.discovery
+              tags:
+                - tag: RAID
+                  value: '{#ID}'
+                - tag: Type
+                  value: Level
+            - uuid: 758b9168aa354f939f4835c80476f045
+              name: 'RAID Array ({#ID}) Status'
+              type: DEPENDENT
+              key: 'raid.status[{#ID}]'
+              history: 7d
+              value_type: CHAR
+              valuemap:
+                name: 'RAID Status'
+              preprocessing:
+                - type: SNMP_WALK_VALUE
+                  parameters:
+                    - '.1.3.6.1.4.1.24681.1.4.1.1.1.2.1.2.1.5.{#SNMPINDEX}'
+                    - '0'
+              master_item:
+                key: raid.discovery
+              tags:
+                - tag: RAID
+                  value: '{#ID}'
+                - tag: Type
+                  value: Status
+              trigger_prototypes:
+                - uuid: 47b5f4f30894433cbb3249e2f924b667
+                  expression: 'last(/BA - MIB - NAS/raid.status[{#ID}])<>"Good"'
+                  name: 'RAID Array ({#ID}) Status != Good'
+                  priority: AVERAGE
+                  manual_close: 'YES'
+          master_item:
+            key: raid.discovery
+          preprocessing:
+            - type: SNMP_WALK_TO_JSON
+              parameters:
+                - '{#ID}'
+                - .1.3.6.1.4.1.24681.1.4.1.1.1.2.1.2.1.2
+                - '0'
+      tags:
+        - tag: Agent
+          value: SNMP
+        - tag: 'Template Type'
+          value: Poller
+      valuemaps:
+        - uuid: cff2ce4c1d3b4014a5f55422e503037a
+          name: 'Disk Status'
+          mappings:
+            - value: Good
+              newvalue: '🟢 Good'
+            - value: Warning
+              newvalue: '🟡 Warning'
+            - value: Abnormal
+              newvalue: '🔴 Abnormal'
+        - uuid: d4d1846e376f4f30bc2277a6898b1650
+          name: 'Fan Status'
+          mappings:
+            - value: '0'
+              newvalue: '🟢 OK'
+            - value: '-1'
+              newvalue: '🔴 Fail'
+        - uuid: d7b5a1f919684112bac51e4c1a0c362b
+          name: 'RAID Status'
+          mappings:
+            - value: Good
+              newvalue: '🟢 Good'
+            - value: Degraded
+              newvalue: '🟡 Degraded'
+        - uuid: d1312dff64654a7c985de45ed7d37450
+          name: 'SMART Status'
+          mappings:
+            - value: '0'
+              newvalue: '🟢 Good'
+            - value: '1'
+              newvalue: '🟡 Warning'
+            - value: '2'
+              newvalue: '🔴 Abnormal'
+
