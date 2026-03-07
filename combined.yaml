@@ -7400,8 +7400,8 @@ zabbix_export:
                   value: Status
               trigger_prototypes:
                 - uuid: 47b5f4f30894433cbb3249e2f924b667
-                  expression: 'last(/BA - MIB - NAS/raid.status[{#ID}])<>"Good"'
-                  name: 'RAID Array ({#ID}) Status != Good'
+                  expression: 'last(/BA - MIB - NAS/raid.status[{#ID}])<>"Ready"'
+                  name: 'RAID Array ({#ID}) Status != Ready'
                   priority: AVERAGE
                   manual_close: 'YES'
           master_item:
@@ -7441,6 +7441,8 @@ zabbix_export:
               newvalue: '🟢 Good'
             - value: Degraded
               newvalue: '🟡 Degraded'
+            - value: Synchronizing
+              newvalue: '🔵 Synchronizing'
         - uuid: d1312dff64654a7c985de45ed7d37450
           name: 'SMART Status'
           mappings:
