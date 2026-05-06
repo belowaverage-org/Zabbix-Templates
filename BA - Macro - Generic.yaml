@@ -59,7 +59,7 @@ zabbix_export:
           value: 10m
           description: 'Keep alert open for this amount of time after a reboot.'
         - macro: '{$SOFTWARE_VERSION_STRINGS}'
-          value: ^(7\.20\.8|(YA|WC)\.16\.11\.0020)$
+          value: ^(7\.21\.4|(YA|WC)\.16\.11\.0020)$
           description: 'A REGEX list of software strings. Trigger an alert if the software versions do not match this value.'
         - macro: '{$TEMP_C_WARN}'
           value: '75'

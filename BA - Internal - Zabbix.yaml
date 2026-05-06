@@ -753,19 +753,22 @@ zabbix_export:
                       name: reference
                       value: TUMCN
                 - type: graph
-                  name: '📈 Cache Usage'
+                  name: '🧪 Performance'
                   x: '48'
                   width: '24'
                   height: '6'
                   fields:
-                    - type: GRAPH
-                      name: graphid.0
+                    - type: ITEM
+                      name: itemid.0
                       value:
                         host: 'BA - Internal - Zabbix'
-                        name: 'Zabbix - Stats - Write Cache - Usage'
+                        key: zbx.stats.values.written
                     - type: STRING
                       name: reference
-                      value: WEEWS
+                      value: UDSBQ
+                    - type: INTEGER
+                      name: source_type
+                      value: '1'
                 - type: graph
                   name: '🧠 Cache Values'
                   x: '48'
