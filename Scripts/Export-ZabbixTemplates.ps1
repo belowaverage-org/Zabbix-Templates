@@ -26,7 +26,7 @@ $template = Invoke-WebRequest -UseBasicParsing -Uri $api -Method Post -Headers @
     "jsonrpc" = "2.0"
     "method" = "configuration.export"
     "params" = @{
-        "format" = "yaml"
+        "format" = "json"
         "prettyprint" = $true
         "options" = @{
             "templates" = $templates.result | Select-Object -ExpandProperty templateid
@@ -34,7 +34,7 @@ $template = Invoke-WebRequest -UseBasicParsing -Uri $api -Method Post -Headers @
     }
     "id" = 1
 }) | ConvertFrom-Json
-$template.result | Out-File -FilePath "combined.yaml" -Encoding utf8
+$template.result | Out-File -FilePath "combined.json" -Encoding utf8
 
 $templates.result | ForEach-Object {
     $id = $_.templateid
