@@ -47,7 +47,7 @@ $templates.result | ForEach-Object {
         "jsonrpc" = "2.0"
         "method" = "configuration.export"
         "params" = @{
-            "format" = "yaml"
+            "format" = "json"
             "prettyprint" = $true
             "options" = @{
                 "templates" = @($id)
@@ -55,5 +55,5 @@ $templates.result | ForEach-Object {
         }
         "id" = 1
     }) | ConvertFrom-Json
-    $template.result | Out-File -FilePath "$name.yaml" -Encoding utf8
+    $template.result | Out-File -FilePath "$name.json" -Encoding utf8
 }
