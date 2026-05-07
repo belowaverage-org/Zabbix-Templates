@@ -36,7 +36,11 @@ $template = Invoke-WebRequest -UseBasicParsing -Uri $api -Method Post -Headers @
 }) | ConvertFrom-Json
 $template_data = $template.result | ConvertFrom-Json 
 $template_data.zabbix_export.templates | ForEach-Object {
-    $_ | Add-Member -Force -NotePropertyName wizard_ready -NotePropertyValue "YES"
+    if ($_.name -like "BA - Profile - *") {
+        $_ | Add-Member -Force -NotePropertyName wizard_ready -NotePropertyValue "YES"
+    } else {
+        $_ | Add-Member -Force -NotePropertyName wizard_ready -NotePropertyValue "NO"
+    }
     $_ | Add-Member -Force -NotePropertyName vendor -NotePropertyValue @{
         "name" = "below average"
         "version" = Get-Date -Format "yyyy.MM.dd.hh"
@@ -65,7 +69,11 @@ $templates.result | ForEach-Object {
     }) | ConvertFrom-Json
     $template_data = $template.result | ConvertFrom-Json 
     $template_data.zabbix_export.templates | ForEach-Object {
-        $_ | Add-Member -Force -NotePropertyName wizard_ready -NotePropertyValue "YES"
+        if ($_.name -like "BA - Profile - *") {
+            $_ | Add-Member -Force -NotePropertyName wizard_ready -NotePropertyValue "YES"
+        } else {
+            $_ | Add-Member -Force -NotePropertyName wizard_ready -NotePropertyValue "NO"
+        }
         $_ | Add-Member -Force -NotePropertyName vendor -NotePropertyValue @{
             "name" = "below average"
             "version" = Get-Date -Format "yyyy.MM.dd.hh"
