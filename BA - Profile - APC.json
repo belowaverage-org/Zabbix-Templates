@@ -1,55 +1,55 @@
 {
-    "zabbix_export": {
-        "version": "7.4",
-        "template_groups": [
-            {
-                "uuid": "46cd4e6f4d7444b9b1293cbcd76e311b",
-                "name": "BA/Profiles/UPS"
-            }
-        ],
+  "zabbix_export": {
+    "version": "7.4",
+    "template_groups": [
+      {
+        "uuid": "46cd4e6f4d7444b9b1293cbcd76e311b",
+        "name": "BA/Profiles/UPS"
+      }
+    ],
+    "templates": [
+      {
+        "uuid": "46224c7ee9ab40cf8fc1807cc2965f2d",
+        "template": "BA - Profile - APC",
+        "name": "BA - Profile - APC",
         "templates": [
-            {
-                "uuid": "46224c7ee9ab40cf8fc1807cc2965f2d",
-                "template": "BA - Profile - APC",
-                "name": "BA - Profile - APC",
-                "wizard_ready": "YES",
-                "vendor": {
-                    "name": "below average",
-                    "version": "0.0.0.0"
-                },
-                "templates": [
-                    {
-                        "name": "BA - Generic - ICMP"
-                    },
-                    {
-                        "name": "BA - Macro - Generic"
-                    },
-                    {
-                        "name": "BA - MIB - APC"
-                    },
-                    {
-                        "name": "BA - MIB - Generic"
-                    },
-                    {
-                        "name": "BA - Procedure - Update Name"
-                    }
-                ],
-                "groups": [
-                    {
-                        "name": "BA/Profiles/UPS"
-                    }
-                ],
-                "tags": [
-                    {
-                        "tag": "Template Type",
-                        "value": "Profile"
-                    },
-                    {
-                        "tag": "Vendor",
-                        "value": "APC"
-                    }
-                ]
-            }
-        ]
-    }
+          {
+            "name": "BA - Generic - ICMP"
+          },
+          {
+            "name": "BA - Macro - Generic"
+          },
+          {
+            "name": "BA - MIB - APC"
+          },
+          {
+            "name": "BA - MIB - Generic"
+          },
+          {
+            "name": "BA - Procedure - Update Name"
+          }
+        ],
+        "groups": [
+          {
+            "name": "BA/Profiles/UPS"
+          }
+        ],
+        "tags": [
+          {
+            "tag": "Template Type",
+            "value": "Profile"
+          },
+          {
+            "tag": "Vendor",
+            "value": "APC"
+          }
+        ],
+        "wizard_ready": "YES",
+        "vendor": {
+          "version": "2026.05.07.12",
+          "name": "below average"
+        }
+      }
+    ]
+  }
 }

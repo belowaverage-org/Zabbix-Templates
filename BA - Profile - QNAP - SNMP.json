@@ -1,62 +1,67 @@
 {
-    "zabbix_export": {
-        "version": "7.4",
-        "template_groups": [
-            {
-                "uuid": "a33341008cd4460cae6f021e7d32852e",
-                "name": "BA/Profiles/Servers/OS"
-            }
-        ],
+  "zabbix_export": {
+    "version": "7.4",
+    "template_groups": [
+      {
+        "uuid": "a33341008cd4460cae6f021e7d32852e",
+        "name": "BA/Profiles/Servers/OS"
+      }
+    ],
+    "templates": [
+      {
+        "uuid": "0967e7636cb94518932db5beb2d9ea8b",
+        "template": "BA - Profile - QNAP - SNMP",
+        "name": "BA - Profile - QNAP - SNMP",
         "templates": [
-            {
-                "uuid": "0967e7636cb94518932db5beb2d9ea8b",
-                "template": "BA - Profile - QNAP - SNMP",
-                "name": "BA - Profile - QNAP - SNMP",
-                "templates": [
-                    {
-                        "name": "BA - Generic - ICMP"
-                    },
-                    {
-                        "name": "BA - Macro - Generic"
-                    },
-                    {
-                        "name": "BA - Macro - Interfaces"
-                    },
-                    {
-                        "name": "BA - MIB - Generic"
-                    },
-                    {
-                        "name": "BA - MIB - Host Resources"
-                    },
-                    {
-                        "name": "BA - MIB - Interfaces"
-                    },
-                    {
-                        "name": "BA - MIB - NAS"
-                    },
-                    {
-                        "name": "BA - Procedure - Update Name"
-                    },
-                    {
-                        "name": "BA - SSH"
-                    }
-                ],
-                "groups": [
-                    {
-                        "name": "BA/Profiles/Servers/OS"
-                    }
-                ],
-                "tags": [
-                    {
-                        "tag": "Template Type",
-                        "value": "Profile"
-                    },
-                    {
-                        "tag": "Vendor",
-                        "value": "QNAP"
-                    }
-                ]
-            }
-        ]
-    }
+          {
+            "name": "BA - Generic - ICMP"
+          },
+          {
+            "name": "BA - Macro - Generic"
+          },
+          {
+            "name": "BA - Macro - Interfaces"
+          },
+          {
+            "name": "BA - MIB - Generic"
+          },
+          {
+            "name": "BA - MIB - Host Resources"
+          },
+          {
+            "name": "BA - MIB - Interfaces"
+          },
+          {
+            "name": "BA - MIB - NAS"
+          },
+          {
+            "name": "BA - Procedure - Update Name"
+          },
+          {
+            "name": "BA - SSH"
+          }
+        ],
+        "groups": [
+          {
+            "name": "BA/Profiles/Servers/OS"
+          }
+        ],
+        "tags": [
+          {
+            "tag": "Template Type",
+            "value": "Profile"
+          },
+          {
+            "tag": "Vendor",
+            "value": "QNAP"
+          }
+        ],
+        "wizard_ready": "YES",
+        "vendor": {
+          "version": "2026.05.07.12",
+          "name": "below average"
+        }
+      }
+    ]
+  }
 }

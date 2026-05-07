@@ -1,73 +1,73 @@
 {
-    "zabbix_export": {
-        "version": "7.4",
-        "template_groups": [
-            {
-                "uuid": "a33341008cd4460cae6f021e7d32852e",
-                "name": "BA/Profiles/Servers/OS"
-            }
-        ],
+  "zabbix_export": {
+    "version": "7.4",
+    "template_groups": [
+      {
+        "uuid": "a33341008cd4460cae6f021e7d32852e",
+        "name": "BA/Profiles/Servers/OS"
+      }
+    ],
+    "templates": [
+      {
+        "uuid": "22526bb9690840debbaa02fd6f35d5b0",
+        "template": "BA - Profile - Windows - SNMP",
+        "name": "BA - Profile - Windows - SNMP",
         "templates": [
-            {
-                "uuid": "22526bb9690840debbaa02fd6f35d5b0",
-                "template": "BA - Profile - Windows - SNMP",
-                "name": "BA - Profile - Windows - SNMP",
-                "wizard_ready": "YES",
-                "vendor": {
-                    "name": "below average",
-                    "version": "0.0.0.0"
-                },
-                "templates": [
-                    {
-                        "name": "BA - Generic - ICMP"
-                    },
-                    {
-                        "name": "BA - Macro - Generic"
-                    },
-                    {
-                        "name": "BA - Macro - Interfaces"
-                    },
-                    {
-                        "name": "BA - Macro - Windows"
-                    },
-                    {
-                        "name": "BA - MIB - Generic"
-                    },
-                    {
-                        "name": "BA - MIB - Host Resources"
-                    },
-                    {
-                        "name": "BA - MIB - Interfaces"
-                    },
-                    {
-                        "name": "BA - MIB - MAC to IP - RFC1213"
-                    },
-                    {
-                        "name": "BA - MIB - Windows"
-                    },
-                    {
-                        "name": "BA - Procedure - Update Name"
-                    },
-                    {
-                        "name": "BA - SSH"
-                    }
-                ],
-                "groups": [
-                    {
-                        "name": "BA/Profiles/Servers/OS"
-                    }
-                ],
-                "tags": [
-                    {
-                        "tag": "Template Type",
-                        "value": "Profile"
-                    },
-                    {
-                        "tag": "Vendor",
-                        "value": "Microsoft"
-                    }
-                ]
-            }
-        ]
-    }
+          {
+            "name": "BA - Generic - ICMP"
+          },
+          {
+            "name": "BA - Macro - Generic"
+          },
+          {
+            "name": "BA - Macro - Interfaces"
+          },
+          {
+            "name": "BA - Macro - Windows"
+          },
+          {
+            "name": "BA - MIB - Generic"
+          },
+          {
+            "name": "BA - MIB - Host Resources"
+          },
+          {
+            "name": "BA - MIB - Interfaces"
+          },
+          {
+            "name": "BA - MIB - MAC to IP - RFC1213"
+          },
+          {
+            "name": "BA - MIB - Windows"
+          },
+          {
+            "name": "BA - Procedure - Update Name"
+          },
+          {
+            "name": "BA - SSH"
+          }
+        ],
+        "groups": [
+          {
+            "name": "BA/Profiles/Servers/OS"
+          }
+        ],
+        "tags": [
+          {
+            "tag": "Template Type",
+            "value": "Profile"
+          },
+          {
+            "tag": "Vendor",
+            "value": "Microsoft"
+          }
+        ],
+        "wizard_ready": "YES",
+        "vendor": {
+          "version": "2026.05.07.12",
+          "name": "below average"
+        }
+      }
+    ]
+  }
 }

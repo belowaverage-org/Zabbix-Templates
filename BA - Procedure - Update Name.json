@@ -1,99 +1,100 @@
 {
-    "zabbix_export": {
-        "version": "7.4",
-        "template_groups": [
-            {
-                "uuid": "d323af8072864defab6d6e380742fb4d",
-                "name": "BA/Procedures"
-            }
+  "zabbix_export": {
+    "version": "7.4",
+    "template_groups": [
+      {
+        "uuid": "d323af8072864defab6d6e380742fb4d",
+        "name": "BA/Procedures"
+      }
+    ],
+    "templates": [
+      {
+        "uuid": "a63b4d7270ab4e44a4618cc7b23e7049",
+        "template": "BA - Procedure - Update Name",
+        "name": "BA - Procedure - Update Name",
+        "groups": [
+          {
+            "name": "BA/Procedures"
+          }
         ],
-        "templates": [
-            {
-                "uuid": "a63b4d7270ab4e44a4618cc7b23e7049",
-                "template": "BA - Procedure - Update Name",
-                "name": "BA - Procedure - Update Name",
-                "vendor": {
-                    "name": "below average",
-                    "version": "0.0.0.0"
-                },
-                "groups": [
-                    {
-                        "name": "BA/Procedures"
-                    }
-                ],
-                "items": [
-                    {
-                        "uuid": "9bb21d98410441d2b53177ca5f1a34a9",
-                        "name": "Update Visible Name via Inventory",
-                        "type": "SCRIPT",
-                        "key": "update.via.inventory",
-                        "delay": "12h",
-                        "history": "7d",
-                        "status": "DISABLED",
-                        "params": "try {\n\tvar params = JSON.parse(value);\n\tvar wr = new HttpRequest();\n\twr.addHeader('Content-Type: application/json-rpc');\n\twr.addHeader('Authorization: Bearer ' + params.key);\n\tvar raw_resp = wr.post(params.api, JSON.stringify({\n  \t\t\"jsonrpc\": \"2.0\",\n \t\t\"method\": \"host.get\",\n \t\t\"params\": {\n    \t\t\t\"selectInventory\": [ \"name\" ],\n\t\t\t\t\"filter\": {\n\t\t\t\t\"host\": [ params.host ]\n\t\t}},\n\t\t\"id\": 1\n\t}));\n\tvar response = JSON.parse(raw_resp);\n\tvar name = response.result[0].inventory.name.split('.')[0].toUpperCase();\n\tvar result = wr.post(params.api, JSON.stringify({\n  \t  \"jsonrpc\": \"2.0\",\n \t   \"method\": \"host.update\",\n \t   \"params\": {\n \t       \"hostid\": response.result[0].hostid,\n \t       \"name\": name  + ' (' + params.host + ')'\n\t    },\n\t    \"id\": 1\n\t}));\n\treturn 0;\n} catch(e) {\n\treturn 1;\n}",
-                        "valuemap": {
-                            "name": "Exit Code"
-                        },
-                        "timeout": "30s",
-                        "parameters": [
-                            {
-                                "name": "api",
-                                "value": "{$ZABSELFAPI}"
-                            },
-                            {
-                                "name": "host",
-                                "value": "{HOST.HOST}"
-                            },
-                            {
-                                "name": "key",
-                                "value": "{$ZABSELFKEY}"
-                            }
-                        ],
-                        "tags": [
-                            {
-                                "tag": "Item Type",
-                                "value": "Procedure"
-                            }
-                        ],
-                        "triggers": [
-                            {
-                                "uuid": "97394f77de1142e7b8df29b84909b773",
-                                "expression": "last(/BA - Procedure - Update Name/update.via.inventory)>0",
-                                "name": "Device name could not be updated",
-                                "priority": "INFO",
-                                "tags": [
-                                    {
-                                        "tag": "Trigger Type",
-                                        "value": "Recent"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ],
+        "items": [
+          {
+            "uuid": "9bb21d98410441d2b53177ca5f1a34a9",
+            "name": "Update Visible Name via Inventory",
+            "type": "SCRIPT",
+            "key": "update.via.inventory",
+            "delay": "12h",
+            "history": "7d",
+            "status": "DISABLED",
+            "params": "try {\n\tvar params = JSON.parse(value);\n\tvar wr = new HttpRequest();\n\twr.addHeader('Content-Type: application/json-rpc');\n\twr.addHeader('Authorization: Bearer ' + params.key);\n\tvar raw_resp = wr.post(params.api, JSON.stringify({\n  \t\t\"jsonrpc\": \"2.0\",\n \t\t\"method\": \"host.get\",\n \t\t\"params\": {\n    \t\t\t\"selectInventory\": [ \"name\" ],\n\t\t\t\t\"filter\": {\n\t\t\t\t\"host\": [ params.host ]\n\t\t}},\n\t\t\"id\": 1\n\t}));\n\tvar response = JSON.parse(raw_resp);\n\tvar name = response.result[0].inventory.name.split('.')[0].toUpperCase();\n\tvar result = wr.post(params.api, JSON.stringify({\n  \t  \"jsonrpc\": \"2.0\",\n \t   \"method\": \"host.update\",\n \t   \"params\": {\n \t       \"hostid\": response.result[0].hostid,\n \t       \"name\": name  + ' (' + params.host + ')'\n\t    },\n\t    \"id\": 1\n\t}));\n\treturn 0;\n} catch(e) {\n\treturn 1;\n}",
+            "valuemap": {
+              "name": "Exit Code"
+            },
+            "timeout": "30s",
+            "parameters": [
+              {
+                "name": "api",
+                "value": "{$ZABSELFAPI}"
+              },
+              {
+                "name": "host",
+                "value": "{HOST.HOST}"
+              },
+              {
+                "name": "key",
+                "value": "{$ZABSELFKEY}"
+              }
+            ],
+            "tags": [
+              {
+                "tag": "Item Type",
+                "value": "Procedure"
+              }
+            ],
+            "triggers": [
+              {
+                "uuid": "97394f77de1142e7b8df29b84909b773",
+                "expression": "last(/BA - Procedure - Update Name/update.via.inventory)>0",
+                "name": "Device name could not be updated",
+                "priority": "INFO",
                 "tags": [
-                    {
-                        "tag": "Template Type",
-                        "value": "Procedure"
-                    }
-                ],
-                "valuemaps": [
-                    {
-                        "uuid": "92c7e19c79934776b660d8ccb6ad3a1f",
-                        "name": "Exit Code",
-                        "mappings": [
-                            {
-                                "value": "0",
-                                "newvalue": "\ud83d\udfe2 Success"
-                            },
-                            {
-                                "value": "1",
-                                "newvalue": "\ud83d\udd34 Failed"
-                            }
-                        ]
-                    }
+                  {
+                    "tag": "Trigger Type",
+                    "value": "Recent"
+                  }
                 ]
-            }
-        ]
-    }
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "tag": "Template Type",
+            "value": "Procedure"
+          }
+        ],
+        "valuemaps": [
+          {
+            "uuid": "92c7e19c79934776b660d8ccb6ad3a1f",
+            "name": "Exit Code",
+            "mappings": [
+              {
+                "value": "0",
+                "newvalue": "🟢 Success"
+              },
+              {
+                "value": "1",
+                "newvalue": "🔴 Failed"
+              }
+            ]
+          }
+        ],
+        "wizard_ready": "YES",
+        "vendor": {
+          "version": "2026.05.07.12",
+          "name": "below average"
+        }
+      }
+    ]
+  }
 }
