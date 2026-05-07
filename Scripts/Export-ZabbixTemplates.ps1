@@ -34,7 +34,15 @@ $template = Invoke-WebRequest -UseBasicParsing -Uri $api -Method Post -Headers @
     }
     "id" = 1
 }) | ConvertFrom-Json
-$template.result | Out-File -FilePath "combined.json" -Encoding utf8
+$template_data = $template.result | ConvertFrom-Json 
+$template_data.zabbix_export.templates | ForEach-Object {
+    $_ | Add-Member -Force -NotePropertyName wizard_ready -NotePropertyValue "YES"
+    $_ | Add-Member -Force -NotePropertyName vendor -NotePropertyValue @{
+        "name" = "below average"
+        "version" = Get-Date -Format "yyyy.MM.dd.hh"
+    }
+}
+$template_data | ConvertTo-Json -Depth 100 | Out-File -FilePath "combined.json" -Encoding utf8
 
 $templates.result | ForEach-Object {
     $id = $_.templateid
@@ -55,5 +63,13 @@ $templates.result | ForEach-Object {
         }
         "id" = 1
     }) | ConvertFrom-Json
-    $template.result | Out-File -FilePath "$name.json" -Encoding utf8
+    $template_data = $template.result | ConvertFrom-Json 
+    $template_data.zabbix_export.templates | ForEach-Object {
+        $_ | Add-Member -Force -NotePropertyName wizard_ready -NotePropertyValue "YES"
+        $_ | Add-Member -Force -NotePropertyName vendor -NotePropertyValue @{
+            "name" = "below average"
+            "version" = Get-Date -Format "yyyy.MM.dd.hh"
+        }
+    }
+    $template_data | ConvertTo-Json -Depth 100 | Out-File -FilePath "$name.json" -Encoding utf8
 }
