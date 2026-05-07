@@ -310,7 +310,7 @@
             "value": "Poller"
           }
         ],
-        "wizard_ready": "YES",
+        "wizard_ready": "NO",
         "vendor": {
           "name": "below average",
           "version": "2026.05.07.12"

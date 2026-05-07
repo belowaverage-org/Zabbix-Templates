@@ -62,7 +62,7 @@
             "description": "This macro is used to identify dependents. The procedure will use this value to identify hosts that depend on this host. Dependents will need to have a tag called \"Dependable\" set to this value to associate the two or more hosts."
           }
         ],
-        "wizard_ready": "YES",
+        "wizard_ready": "NO",
         "vendor": {
           "name": "below average",
           "version": "2026.05.07.12"

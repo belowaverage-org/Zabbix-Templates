@@ -115,7 +115,7 @@
             "description": "Warn if the Zabbix Agent hasn't reported-in within this time. (seconds)"
           }
         ],
-        "wizard_ready": "YES",
+        "wizard_ready": "NO",
         "vendor": {
           "name": "below average",
           "version": "2026.05.07.12"
