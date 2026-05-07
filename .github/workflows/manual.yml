@@ -13,6 +13,7 @@ jobs:
          branch: main
      - name: Purge Old YAML / JSON
        run: rm *.yaml; rm *.json
+       continue-on-error: true
      - name: Download Templates
        shell: pwsh
        run: '&Scripts/Export-ZabbixTemplates.ps1'
