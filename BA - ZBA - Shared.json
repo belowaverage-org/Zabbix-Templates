@@ -1,0 +1,1402 @@
+{
+    "zabbix_export": {
+        "version": "7.4",
+        "template_groups": [
+            {
+                "uuid": "5b179fb589fa49ddae414d5c5bbd3dc6",
+                "name": "BA/ZBA"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "770b4218358c43049eeff3ed809f59c0",
+                "template": "BA - ZBA - Shared",
+                "name": "BA - ZBA - Shared",
+                "groups": [
+                    {
+                        "name": "BA/ZBA"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "917aa9109045467e8c96fddc7d7df1d8",
+                        "name": "Agent Status",
+                        "type": "CALCULATED",
+                        "key": "agent.status",
+                        "delay": "15s",
+                        "history": "7d",
+                        "params": "lastclock(//system.uptime)+{$ZBA_REPORT_IN_TIME_WARN}<now()",
+                        "description": "Keeps track of the last time the Agent reported-in to Zabbix (specifically the Uptime item). If it has been longer than {$ZBA_REPORT_IN_TIME_WARN} seconds.",
+                        "valuemap": {
+                            "name": "Agent Status"
+                        },
+                        "preprocessing": [
+                            {
+                                "type": "CHECK_NOT_SUPPORTED",
+                                "parameters": [
+                                    "-1"
+                                ],
+                                "error_handler": "CUSTOM_VALUE",
+                                "error_handler_params": "1"
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Status"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "19eb9315d27e4534b7cab96d3d000e75",
+                                "expression": "last(/BA - ZBA - Shared/agent.status)<>0",
+                                "name": "Agent has not reported-in within {$ZBA_REPORT_IN_TIME_WARN}s",
+                                "priority": "AVERAGE",
+                                "description": "The agent has not reported-in within the last {$ZBA_REPORT_IN_TIME_WARN}s.",
+                                "manual_close": "YES",
+                                "dependencies": [
+                                    {
+                                        "name": "ICMP Status != Up",
+                                        "expression": "last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0"
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Trigger Type",
+                                        "value": "State"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b90c66c1dae34ee1928f7f67cb1428c3",
+                        "name": "Memory Usage",
+                        "type": "CALCULATED",
+                        "key": "memory.usage",
+                        "delay": "15s",
+                        "history": "7d",
+                        "units": "%",
+                        "params": "(last(//vm.memory.size[total])-last(//vm.memory.size[available]))/last(//vm.memory.size[total])*100",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Usage"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "37248d35047543d6b03d452ef994f27d",
+                        "name": "Memory Used",
+                        "type": "CALCULATED",
+                        "key": "memory.used",
+                        "delay": "15s",
+                        "history": "7d",
+                        "units": "B",
+                        "params": "last(//vm.memory.size[total])-last(//vm.memory.size[available])",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Size"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "cad00aa80f69406c8ff20aec84fe56fd",
+                        "name": "Interface Discovery",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "net.if.discovery",
+                        "delay": "15m",
+                        "history": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Discovery"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "dc04fca55a504cc2807d432fa225debe",
+                        "name": "Interface Total In Rate",
+                        "type": "CALCULATED",
+                        "key": "net.if.in",
+                        "delay": "15s",
+                        "history": "7d",
+                        "units": "bps",
+                        "params": "sum(last_foreach(//net.if.in[*]))",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "8c83fefc30a84895b09292b1b4374939",
+                        "name": "Interface Total Out Rate",
+                        "type": "CALCULATED",
+                        "key": "net.if.out",
+                        "delay": "15s",
+                        "history": "7d",
+                        "units": "bps",
+                        "params": "sum(last_foreach(//net.if.out[*]))",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3bd16c4e1021440884e85c5d88b1cea2",
+                        "name": "Interface Total Rate",
+                        "type": "CALCULATED",
+                        "key": "net.if.total",
+                        "delay": "15s",
+                        "history": "7d",
+                        "units": "bps",
+                        "params": "last(//net.if.in)+last(//net.if.out)",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "c2c4e516620c42e29d0a7094010529c0",
+                        "name": "TCP Connections",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "net.tcp.socket.count[,,,,established]",
+                        "delay": "15s",
+                        "history": "7d",
+                        "description": "The number of TCP sockets that are open and connected.",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Count"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "39fd5425ba104fb69fe7bda346fc9069",
+                        "name": "UDP Connections",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "net.udp.socket.count[,,,,established]",
+                        "delay": "15s",
+                        "history": "7d",
+                        "description": "The number of UDP sockets that are open and connected.",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Count"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2b366b0958634ad09784e01254db82de",
+                        "name": "Processes",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "proc.num",
+                        "delay": "15s",
+                        "history": "7d",
+                        "description": "The number of processes running on the system.",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Count"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "f77eccc3a8e44b788bd4b38802193080",
+                        "name": "CPU Load",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.load",
+                        "history": "7d",
+                        "description": "CPU queue length (or CPU run queue length) represents the number of processes that are ready to run but are waiting for CPU time.",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Count"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "37af22ecb212478883019fe48a3ac2c4",
+                                "expression": "avg(/BA - ZBA - Shared/system.cpu.load,{$CPU_HIGH_AVG_TIME_WARN})>{$CPU_HIGH_AVG_QUEUE_WARN}",
+                                "name": "CPU Load > {$CPU_HIGH_AVG_QUEUE_WARN} for {$CPU_HIGH_AVG_TIME_WARN}",
+                                "priority": "WARNING",
+                                "description": "High CPU load (CPU thread queue length) indicates a busy machine.",
+                                "manual_close": "YES",
+                                "tags": [
+                                    {
+                                        "tag": "Trigger Type",
+                                        "value": "Threshold"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a1e754caa8784cc8a92f93cc68d1b07e",
+                        "name": "CPU Count",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.num",
+                        "delay": "15m",
+                        "history": "7d",
+                        "description": "How many CPUs the system has online.",
+                        "preprocessing": [
+                            {
+                                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                                "parameters": [
+                                    "6h"
+                                ]
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Count"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "88be7cc86e644f66935e2b93cde1c183",
+                        "name": "CPU Usage",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.util",
+                        "delay": "15s",
+                        "history": "7d",
+                        "units": "%",
+                        "description": "CPU usage refers to the percentage of processing power that a computer's central processing unit (CPU) is using at any given time, indicating how busy the system is .",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Usage"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "3a7b170616e14188bb916be5018878e5",
+                                "expression": "avg(/BA - ZBA - Shared/system.cpu.util, {$CPU_HIGH_AVG_TIME_WARN})>{$MEM_USAGE_WARN}",
+                                "name": "CPU Usage > {$MEM_USAGE_WARN}% for {$CPU_HIGH_AVG_TIME_WARN}",
+                                "priority": "WARNING",
+                                "description": "Indicates the system is overloaded.",
+                                "manual_close": "YES",
+                                "tags": [
+                                    {
+                                        "tag": "Trigger Type",
+                                        "value": "Threshold"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "abaea0686f374d109a878272739206ac",
+                        "name": "Uptime",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.uptime",
+                        "delay": "15s",
+                        "history": "7d",
+                        "units": "s",
+                        "description": "System uptime refers to the total time a computer system has been operational since its last reboot.",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Uptime"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "2786f8abb5444f738b6f5385196fcebc",
+                                "expression": "last(/BA - ZBA - Shared/system.uptime)<{$REBOOT_WARN_DURATION}",
+                                "name": "Uptime < {$REBOOT_WARN_DURATION}",
+                                "priority": "AVERAGE",
+                                "description": "This trigger indicates the device has rebooted within the last {$REBOOT_WARN_DURATION}.",
+                                "manual_close": "YES",
+                                "tags": [
+                                    {
+                                        "tag": "Trigger Type",
+                                        "value": "Threshold"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "bf0744d9d58a4071a80a9380c20d721d",
+                        "name": "Disk Discovery",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vfs.fs.get",
+                        "delay": "15s",
+                        "history": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Discovery"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "6004b7073c674bec9290c1543b5e3c04",
+                        "name": "Memory Available",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vm.memory.size[available]",
+                        "delay": "15s",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "units": "B",
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Size"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "66cf24df2a964017ad9985f6d4e23b64",
+                                "expression": "last(/BA - ZBA - Shared/vm.memory.size[available])<{$MEM_FREE_WARN}",
+                                "name": "Memory Available < {$MEM_FREE_WARN}",
+                                "priority": "AVERAGE",
+                                "description": "Not enough memory is available on the system. If this continues, this can cause stability issues and random app crashes.",
+                                "manual_close": "YES",
+                                "tags": [
+                                    {
+                                        "tag": "Item Type",
+                                        "value": "Threshold"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "224d5e9c94414c158c105b5c0296f360",
+                        "name": "Memory Total",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vm.memory.size[total]",
+                        "delay": "15m",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                                "parameters": [
+                                    "6h"
+                                ]
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "tag": "Item Type",
+                                "value": "Size"
+                            }
+                        ]
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "c70b16aaf202435eb6bd1c2211d68b0a",
+                        "name": "Disk Discovery",
+                        "type": "DEPENDENT",
+                        "key": "disk.discovery",
+                        "filter": {
+                            "conditions": [
+                                {
+                                    "macro": "{#FSNAME}",
+                                    "value": "{$DISK_FILTER}"
+                                }
+                            ]
+                        },
+                        "item_prototypes": [
+                            {
+                                "uuid": "df3c5376164f496bb38b50ef5462776a",
+                                "name": "Disk ({#FSLABEL}({#FSNAME}) - {#FSTYPE}) Free",
+                                "type": "DEPENDENT",
+                                "key": "disk.free[{#FSNAME}]",
+                                "history": "7d",
+                                "units": "B",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$[?(@.fsname == '{#FSNAME}')].bytes.free.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "vfs.fs.get"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Disk",
+                                        "value": "{#FSNAME}"
+                                    },
+                                    {
+                                        "tag": "Item Type",
+                                        "value": "Free"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "69a7a0e5a69540c49c33a51dcab28b2d",
+                                        "expression": "last(/BA - ZBA - Shared/disk.free[{#FSNAME}])<{$DISK_FREE_WARN}",
+                                        "name": "Disk ({#FSLABEL}({#FSNAME}) - {#FSTYPE}) Free < {$DISK_FREE_WARN}",
+                                        "priority": "AVERAGE",
+                                        "description": "This disk has less than {$DISK_FREE_WARN} of free space. Apps will begin to crash once the disk has reached full capacity.",
+                                        "manual_close": "YES",
+                                        "tags": [
+                                            {
+                                                "tag": "Trigger Type",
+                                                "value": "Threshold"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "0c7acedc48444f9fb41d71712aa88c74",
+                                "name": "Disk ({#FSLABEL}({#FSNAME}) - {#FSTYPE}) Total",
+                                "type": "DEPENDENT",
+                                "key": "disk.total[{#FSNAME}]",
+                                "history": "7d",
+                                "units": "B",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$[?(@.fsname == '{#FSNAME}')].bytes.total.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                                        "parameters": [
+                                            "6h"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "vfs.fs.get"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Disk",
+                                        "value": "{#FSNAME}"
+                                    },
+                                    {
+                                        "tag": "Item Type",
+                                        "value": "Total"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "cb6f736b3bd244b6b7c38ec8d86fbb9c",
+                                "name": "Disk ({#FSLABEL}({#FSNAME}) - {#FSTYPE}) Usage",
+                                "type": "DEPENDENT",
+                                "key": "disk.usage[{#FSNAME}]",
+                                "history": "7d",
+                                "units": "%",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$[?(@.fsname == '{#FSNAME}')].bytes.pused.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "vfs.fs.get"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Disk",
+                                        "value": "{#FSNAME}"
+                                    },
+                                    {
+                                        "tag": "Item Type",
+                                        "value": "Usage"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "35e33117be9946e090eccd7bba0747f2",
+                                "name": "Disk ({#FSLABEL}({#FSNAME}) - {#FSTYPE}) Used",
+                                "type": "DEPENDENT",
+                                "key": "disk.used[{#FSNAME}]",
+                                "history": "7d",
+                                "units": "B",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$[?(@.fsname == '{#FSNAME}')].bytes.used.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "vfs.fs.get"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Disk",
+                                        "value": "{#FSNAME}"
+                                    },
+                                    {
+                                        "tag": "Item Type",
+                                        "value": "Used"
+                                    }
+                                ]
+                            }
+                        ],
+                        "graph_prototypes": [
+                            {
+                                "uuid": "64e21be6f92d456d992e72e60c996f0f",
+                                "name": "Disk ({#FSLABEL}({#FSNAME}) - {#FSTYPE})",
+                                "graph_items": [
+                                    {
+                                        "color": "199C0D",
+                                        "calc_fnc": "ALL",
+                                        "item": {
+                                            "host": "BA - ZBA - Shared",
+                                            "key": "disk.total[{#FSNAME}]"
+                                        }
+                                    },
+                                    {
+                                        "sortorder": "1",
+                                        "color": "F63100",
+                                        "yaxisside": "RIGHT",
+                                        "calc_fnc": "ALL",
+                                        "item": {
+                                            "host": "BA - ZBA - Shared",
+                                            "key": "disk.usage[{#FSNAME}]"
+                                        }
+                                    },
+                                    {
+                                        "sortorder": "2",
+                                        "color": "2774A4",
+                                        "calc_fnc": "ALL",
+                                        "item": {
+                                            "host": "BA - ZBA - Shared",
+                                            "key": "disk.used[{#FSNAME}]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "vfs.fs.get"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#FSLABEL}",
+                                "path": "$.fslabel"
+                            },
+                            {
+                                "lld_macro": "{#FSNAME}",
+                                "path": "$.fsname"
+                            },
+                            {
+                                "lld_macro": "{#FSTYPE}",
+                                "path": "$.fstype"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JAVASCRIPT",
+                                "parameters": [
+                                    "var data = JSON.parse(value);\ndata.forEach(function(v,k) {\n    if (data[k].fslabel == undefined || data[k].fslabel == \"\") {\n        data[k].fslabel = \"\"; \n    } else {\n        data[k].fslabel += \" \";\n    }\n});\nreturn JSON.stringify(data);"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a7e60df4823b4c9095eac9cd26af5f87",
+                        "name": "Interface Discovery",
+                        "type": "DEPENDENT",
+                        "key": "interface.discovery",
+                        "filter": {
+                            "conditions": [
+                                {
+                                    "macro": "{#IFNAME}",
+                                    "value": "{$INTER_FILTER_REGEX}",
+                                    "operator": "NOT_MATCHES_REGEX"
+                                }
+                            ]
+                        },
+                        "item_prototypes": [
+                            {
+                                "uuid": "fd1a37c748d94c66b0deedb31ebdf797",
+                                "name": "Interface ({#IFNAME}} In Errors",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "net.if.in[{#IFNAME}, errors]",
+                                "delay": "15s",
+                                "history": "7d",
+                                "units": "pps",
+                                "preprocessing": [
+                                    {
+                                        "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                                        "parameters": [
+                                            "15m"
+                                        ]
+                                    },
+                                    {
+                                        "type": "CHANGE_PER_SECOND"
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Interface",
+                                        "value": "{#IFNAME}"
+                                    },
+                                    {
+                                        "tag": "Item Type",
+                                        "value": "Rate"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "36843d978080429ba6a77f28e618dd46",
+                                "name": "Interface ({#IFNAME}} In Rate",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "net.if.in[{#IFNAME}]",
+                                "delay": "15s",
+                                "history": "7d",
+                                "units": "bps",
+                                "preprocessing": [
+                                    {
+                                        "type": "CHANGE_PER_SECOND"
+                                    },
+                                    {
+                                        "type": "MULTIPLIER",
+                                        "parameters": [
+                                            "8"
+                                        ]
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Interface",
+                                        "value": "{#IFNAME}"
+                                    },
+                                    {
+                                        "tag": "Item Type",
+                                        "value": "Rate"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "40dc27f77bcb4ecc96138aefa9913e55",
+                                "name": "Interface ({#IFNAME}} Out Errors",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "net.if.out[{#IFNAME}, errors]",
+                                "delay": "15s",
+                                "history": "7d",
+                                "units": "pps",
+                                "preprocessing": [
+                                    {
+                                        "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                                        "parameters": [
+                                            "15m"
+                                        ]
+                                    },
+                                    {
+                                        "type": "CHANGE_PER_SECOND"
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Interface",
+                                        "value": "{#IFNAME}"
+                                    },
+                                    {
+                                        "tag": "Item Type",
+                                        "value": "Rate"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "97693d00552e49a2afd996887a2a1e9f",
+                                "name": "Interface ({#IFNAME}} Out Rate",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "net.if.out[{#IFNAME}]",
+                                "delay": "15s",
+                                "history": "7d",
+                                "units": "bps",
+                                "preprocessing": [
+                                    {
+                                        "type": "CHANGE_PER_SECOND"
+                                    },
+                                    {
+                                        "type": "MULTIPLIER",
+                                        "parameters": [
+                                            "8"
+                                        ]
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Interface",
+                                        "value": "{#IFNAME}"
+                                    },
+                                    {
+                                        "tag": "Item Type",
+                                        "value": "Rate"
+                                    }
+                                ]
+                            }
+                        ],
+                        "trigger_prototypes": [
+                            {
+                                "uuid": "5a25896af50b4e2089d32c0b9515b12c",
+                                "expression": "avg(/BA - ZBA - Shared/net.if.in[{#IFNAME}, errors], {$INTER_ERROR_WARN_TIME})+avg(/BA - ZBA - Shared/net.if.out[{#IFNAME}, errors], {$INTER_ERROR_WARN_TIME})>{$INTER_ERROR_WARN}",
+                                "name": "Interface ({#IFNAME}} Errors > {$INTER_ERROR_WARN} for {$INTER_ERROR_WARN_TIME}",
+                                "priority": "WARNING",
+                                "description": "More than {$INTER_ERROR_WARN} error(s) have been detected on this port within the last {$INTER_ERROR_WARN_TIME}.",
+                                "manual_close": "YES",
+                                "tags": [
+                                    {
+                                        "tag": "Trigger Type",
+                                        "value": "Threshold"
+                                    }
+                                ]
+                            }
+                        ],
+                        "graph_prototypes": [
+                            {
+                                "uuid": "8073743022d74901a90893453ba74b59",
+                                "name": "Interface ({#IFNAME}}",
+                                "yaxismax": "0",
+                                "graph_items": [
+                                    {
+                                        "color": "BF00FF",
+                                        "calc_fnc": "ALL",
+                                        "item": {
+                                            "host": "BA - ZBA - Shared",
+                                            "key": "net.if.in[{#IFNAME}, errors]"
+                                        }
+                                    },
+                                    {
+                                        "sortorder": "1",
+                                        "color": "0040FF",
+                                        "calc_fnc": "ALL",
+                                        "item": {
+                                            "host": "BA - ZBA - Shared",
+                                            "key": "net.if.in[{#IFNAME}]"
+                                        }
+                                    },
+                                    {
+                                        "sortorder": "2",
+                                        "color": "FF0000",
+                                        "calc_fnc": "ALL",
+                                        "item": {
+                                            "host": "BA - ZBA - Shared",
+                                            "key": "net.if.out[{#IFNAME}, errors]"
+                                        }
+                                    },
+                                    {
+                                        "sortorder": "3",
+                                        "color": "FF4000",
+                                        "calc_fnc": "ALL",
+                                        "item": {
+                                            "host": "BA - ZBA - Shared",
+                                            "key": "net.if.out[{#IFNAME}]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "net.if.discovery"
+                        }
+                    }
+                ],
+                "tags": [
+                    {
+                        "tag": "Agent",
+                        "value": "ZBA"
+                    },
+                    {
+                        "tag": "Template Type",
+                        "value": "Active"
+                    }
+                ],
+                "dashboards": [
+                    {
+                        "uuid": "96a6281665c94a4aa4e3c5041fc37269",
+                        "name": "\ud83d\udcc8 Resources",
+                        "pages": [
+                            {
+                                "widgets": [
+                                    {
+                                        "type": "item",
+                                        "width": "18",
+                                        "height": "3",
+                                        "fields": [
+                                            {
+                                                "type": "STRING",
+                                                "name": "bg_color",
+                                                "value": "144618"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "decimal_places",
+                                                "value": "0"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "decimal_size",
+                                                "value": "15"
+                                            },
+                                            {
+                                                "type": "ITEM",
+                                                "name": "itemid.0",
+                                                "value": {
+                                                    "host": "BA - ZBA - Shared",
+                                                    "key": "agent.status"
+                                                }
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.0",
+                                                "value": "2"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.1",
+                                                "value": "3"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.0.color",
+                                                "value": "5B0E0E"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.0.threshold",
+                                                "value": "1"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "time_size",
+                                                "value": "10"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "time_v_pos",
+                                                "value": "2"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "units_size",
+                                                "value": "10"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "value_size",
+                                                "value": "15"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "graph",
+                                        "y": "3",
+                                        "width": "36",
+                                        "height": "6",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid.0",
+                                                "value": {
+                                                    "host": "BA - ZBA - Shared",
+                                                    "name": "CPU"
+                                                }
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "reference",
+                                                "value": "ENBXG"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "graph",
+                                        "y": "9",
+                                        "width": "36",
+                                        "height": "6",
+                                        "fields": [
+                                            {
+                                                "type": "ITEM",
+                                                "name": "itemid.0",
+                                                "value": {
+                                                    "host": "BA - ZBA - Shared",
+                                                    "key": "proc.num"
+                                                }
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "reference",
+                                                "value": "UVTZT"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "source_type",
+                                                "value": "1"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "graphprototype",
+                                        "y": "15",
+                                        "width": "36",
+                                        "height": "18",
+                                        "fields": [
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "columns",
+                                                "value": "1"
+                                            },
+                                            {
+                                                "type": "GRAPH_PROTOTYPE",
+                                                "name": "graphid.0",
+                                                "value": {
+                                                    "host": "BA - ZBA - Shared",
+                                                    "name": "Disk ({#FSLABEL}({#FSNAME}) - {#FSTYPE})"
+                                                }
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "reference",
+                                                "value": "LCQYJ"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "rows",
+                                                "value": "3"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "item",
+                                        "x": "18",
+                                        "width": "18",
+                                        "height": "3",
+                                        "fields": [
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "decimal_places",
+                                                "value": "0"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "decimal_size",
+                                                "value": "15"
+                                            },
+                                            {
+                                                "type": "ITEM",
+                                                "name": "itemid.0",
+                                                "value": {
+                                                    "host": "BA - ZBA - Shared",
+                                                    "key": "system.uptime"
+                                                }
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.0",
+                                                "value": "2"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.1",
+                                                "value": "3"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "time_size",
+                                                "value": "10"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "time_v_pos",
+                                                "value": "2"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "units_size",
+                                                "value": "10"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "value_size",
+                                                "value": "15"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "gauge",
+                                        "x": "36",
+                                        "width": "18",
+                                        "height": "3",
+                                        "fields": [
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "angle",
+                                                "value": "270"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "decimal_places",
+                                                "value": "0"
+                                            },
+                                            {
+                                                "type": "ITEM",
+                                                "name": "itemid.0",
+                                                "value": {
+                                                    "host": "BA - ZBA - Shared",
+                                                    "key": "system.cpu.util"
+                                                }
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "max",
+                                                "value": "100"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "min",
+                                                "value": "0"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.0",
+                                                "value": "2"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.1",
+                                                "value": "3"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.2",
+                                                "value": "4"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.3",
+                                                "value": "5"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.0.color",
+                                                "value": "2E7D32"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.0.threshold",
+                                                "value": "0"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.1.color",
+                                                "value": "BF5300"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.1.threshold",
+                                                "value": "90"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.2.color",
+                                                "value": "891515"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.2.threshold",
+                                                "value": "95"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "th_show_arc",
+                                                "value": "1"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "graph",
+                                        "x": "36",
+                                        "y": "3",
+                                        "width": "36",
+                                        "height": "6",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid.0",
+                                                "value": {
+                                                    "host": "BA - ZBA - Shared",
+                                                    "name": "Memory"
+                                                }
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "reference",
+                                                "value": "BYYPY"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "graph",
+                                        "x": "36",
+                                        "y": "9",
+                                        "width": "36",
+                                        "height": "6",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid.0",
+                                                "value": {
+                                                    "host": "BA - ZBA - Shared",
+                                                    "name": "Connections"
+                                                }
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "reference",
+                                                "value": "IQXLQ"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "graphprototype",
+                                        "x": "36",
+                                        "y": "15",
+                                        "width": "36",
+                                        "height": "18",
+                                        "fields": [
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "columns",
+                                                "value": "1"
+                                            },
+                                            {
+                                                "type": "GRAPH_PROTOTYPE",
+                                                "name": "graphid.0",
+                                                "value": {
+                                                    "host": "BA - ZBA - Shared",
+                                                    "name": "Interface ({#IFNAME}}"
+                                                }
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "reference",
+                                                "value": "IUXOH"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "rows",
+                                                "value": "3"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "gauge",
+                                        "x": "54",
+                                        "width": "18",
+                                        "height": "3",
+                                        "fields": [
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "angle",
+                                                "value": "270"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "decimal_places",
+                                                "value": "0"
+                                            },
+                                            {
+                                                "type": "ITEM",
+                                                "name": "itemid.0",
+                                                "value": {
+                                                    "host": "BA - ZBA - Shared",
+                                                    "key": "memory.usage"
+                                                }
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "max",
+                                                "value": "100"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "min",
+                                                "value": "0"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.0",
+                                                "value": "2"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.1",
+                                                "value": "3"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.2",
+                                                "value": "4"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "show.3",
+                                                "value": "5"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.0.color",
+                                                "value": "2E7D32"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.0.threshold",
+                                                "value": "0"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.1.color",
+                                                "value": "BF5300"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.1.threshold",
+                                                "value": "90"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.2.color",
+                                                "value": "891515"
+                                            },
+                                            {
+                                                "type": "STRING",
+                                                "name": "thresholds.2.threshold",
+                                                "value": "95"
+                                            },
+                                            {
+                                                "type": "INTEGER",
+                                                "name": "th_show_arc",
+                                                "value": "1"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "8dada91e4bbf4e8f83652ecff3a90657",
+                        "name": "Agent Status",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "\ud83d\udfe2 Reporting-in"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "\ud83d\udd34 Not reporting-in"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "graphs": [
+            {
+                "uuid": "6aa4eb6457334b1b817474e4c0a3d853",
+                "name": "Connections",
+                "graph_items": [
+                    {
+                        "color": "199C0D",
+                        "calc_fnc": "MIN",
+                        "item": {
+                            "host": "BA - ZBA - Shared",
+                            "key": "net.tcp.socket.count[,,,,established]"
+                        }
+                    },
+                    {
+                        "sortorder": "1",
+                        "color": "F63100",
+                        "calc_fnc": "MIN",
+                        "item": {
+                            "host": "BA - ZBA - Shared",
+                            "key": "net.udp.socket.count[,,,,established]"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "ff70dfd19a4c466da0136cda15494a3a",
+                "name": "CPU",
+                "graph_items": [
+                    {
+                        "color": "FF8000",
+                        "calc_fnc": "ALL",
+                        "item": {
+                            "host": "BA - ZBA - Shared",
+                            "key": "system.cpu.load"
+                        }
+                    },
+                    {
+                        "sortorder": "1",
+                        "color": "0080FF",
+                        "yaxisside": "RIGHT",
+                        "calc_fnc": "ALL",
+                        "item": {
+                            "host": "BA - ZBA - Shared",
+                            "key": "system.cpu.util"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "965a64855f7c44869cbcc7f00959758f",
+                "name": "Memory",
+                "graph_items": [
+                    {
+                        "color": "199C0D",
+                        "calc_fnc": "ALL",
+                        "item": {
+                            "host": "BA - ZBA - Shared",
+                            "key": "vm.memory.size[total]"
+                        }
+                    },
+                    {
+                        "sortorder": "1",
+                        "color": "FFBF00",
+                        "calc_fnc": "ALL",
+                        "item": {
+                            "host": "BA - ZBA - Shared",
+                            "key": "memory.used"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "2774A4",
+                        "yaxisside": "RIGHT",
+                        "calc_fnc": "ALL",
+                        "item": {
+                            "host": "BA - ZBA - Shared",
+                            "key": "memory.usage"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
