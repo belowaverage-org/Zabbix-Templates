@@ -290,6 +290,7 @@
                 "uuid": "b4e904ee82e5466bbf04d14ae07954ef",
                 "expression": "last(/BA - MIB - Aruba OS/snmp.aruba.loopprotect.timer)<>{$LOOP_PROTECT_TIMER}",
                 "name": "Loop Protect Timer not set to {$LOOP_PROTECT_TIMER}s",
+                "status": "DISABLED",
                 "priority": "INFO",
                 "description": "Loop Protect Timer is not set to {$LOOP_PROTECT_TIMER} seconds.",
                 "manual_close": "YES",
@@ -800,8 +801,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "name": "below average",
-          "version": "2026.05.07.12"
+          "version": "2026.05.08.06",
+          "name": "below average"
         }
       }
     ],

@@ -19,11 +19,34 @@
         ],
         "items": [
           {
-            "uuid": "fc899d89f8354984b896bbad38c158ac",
+            "uuid": "5df783dc497e4012a5b16614b8621651",
             "name": "Interfaces MAC Count Discovery",
             "type": "SNMP_AGENT",
-            "snmp_oid": "discovery[{#PORT}, .1.3.6.1.2.1.17.4.3.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]",
-            "key": "snmp.interfaces.mac.count.discovery.json",
+            "snmp_oid": "walk[.1.3.6.1.2.1.31.1.1.1.1,.1.3.6.1.2.1.31.1.1.1.18]",
+            "key": "snmp.interfaces.mac.count.discovery.item",
+            "delay": "15m",
+            "history": "0",
+            "value_type": "TEXT",
+            "preprocessing": [
+              {
+                "type": "SNMP_WALK_TO_JSON",
+                "parameters": [
+                  "{#NAME}",
+                  ".1.3.6.1.2.1.31.1.1.1.1",
+                  "0",
+                  "{#ALIAS}",
+                  ".1.3.6.1.2.1.31.1.1.1.18",
+                  "0"
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "9ebe2ba0750e44d6aba6d54dba1504b4",
+            "name": "Interfaces MAC Discovery",
+            "type": "SNMP_AGENT",
+            "snmp_oid": "discovery[{#ADDR}, .1.3.6.1.2.1.17.4.3.1.1, {#IFINDEX}, .1.3.6.1.2.1.17.1.4.1.2, {#PORT}, .1.3.6.1.2.1.17.4.3.1.2, {#FDBSTAT}, .1.3.6.1.2.1.17.4.3.1.3, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]",
+            "key": "snmp.interfaces.mac.discovery.item",
             "delay": "15m",
             "history": "0",
             "value_type": "TEXT",
@@ -31,7 +54,7 @@
               {
                 "type": "JAVASCRIPT",
                 "parameters": [
-                  "var data = JSON.parse(value);\nvar ports = {};\nvar results = [];\ndata.forEach(function(macs) {\n    if (macs['{#PORT}'] == undefined) return;\n    if (ports[macs['{#PORT}']] == undefined) {\n        ports[macs['{#PORT}']] = 1;\n    } else {\n        ports[macs['{#PORT}']] += 1;\n    }\n});\ndata.forEach(function(interfaces) {\n        if (interfaces['{#NAME}'] == undefined) return;\n        interfaces['{#MACS}'] = ports[interfaces['{#SNMPINDEX}']];\n        if (interfaces['{#MACS}'] == undefined) interfaces['{#MACS}'] = 0;\n        results.push(interfaces);\n    });\nreturn JSON.stringify(results);"
+                  "var result = [];\nvar addressReg = /(\"{#ADDR}\":\"..)( )(..)( )(..)( )(..)( )(..)( )(..)( )/g;\nvalue = value.replace(addressReg, '$1:$3:$5:$7:$9:$11');\nvar jvalue = JSON.parse(value);\nvar macToPort = {};\njvalue.forEach(function(address) {\n    if (address['{#ADDR}'] == undefined) return;\n\tif (address['{#FDBSTAT}'] == 4) return;\n    var newAddrParts = [];\n    var addr = address['{#ADDR}'].toLowerCase();\n    var addrParts = addr.split(':');\n    addrParts.forEach(function(v) {\n        if (v.length == 1) v = '0' + v;\n        newAddrParts.push(v);\n    });\n    var newAddr = newAddrParts.join(':');\n    macToPort[newAddr] = address['{#PORT}'];\n});\nvar portToIfIndex = {};\njvalue.forEach(function(ifindex) {\n    if (ifindex['{#IFINDEX}'] == undefined) return;\n    portToIfIndex[ifindex['{#SNMPINDEX}']] = ifindex['{#IFINDEX}'];\n});\nvar ifIndexToInterface = {};\njvalue.forEach(function(interface) {\n    if (interface['{#NAME}'] == undefined) return;\n    ifIndexToInterface[interface['{#SNMPINDEX}']] = {\n        '{#NAME}': interface['{#NAME}'],\n        '{#ALIAS}': interface['{#ALIAS}']\n    };\n});\nfor (mac in macToPort) {\n    if (portToIfIndex[macToPort[mac]] == undefined) continue;\n    result.push({\n        '{#SNMPINDEX}': mac + ':' + macToPort[mac],\n        '{#MAC}': mac,\n        '{#NAME}': ifIndexToInterface[portToIfIndex[macToPort[mac]]]['{#NAME}'],\n        '{#ALIAS}': ifIndexToInterface[portToIfIndex[macToPort[mac]]]['{#ALIAS}']\n    });\n}\nreturn JSON.stringify(result);"
                 ]
               }
             ],
@@ -43,26 +66,17 @@
             ]
           },
           {
-            "uuid": "9ebe2ba0750e44d6aba6d54dba1504b4",
-            "name": "Interfaces MAC Discovery",
-            "type": "SNMP_AGENT",
-            "snmp_oid": "discovery[{#ADDR}, .1.3.6.1.2.1.17.4.3.1.1, {#IFINDEX}, .1.3.6.1.2.1.17.1.4.1.2, {#PORT}, .1.3.6.1.2.1.17.4.3.1.2, {#NAME}, .1.3.6.1.2.1.31.1.1.1.1, {#ALIAS}, .1.3.6.1.2.1.31.1.1.1.18]",
-            "key": "snmp.interfaces.mac.discovery.json",
+            "uuid": "4f17c9daac0742cfacfd1673bf66b8cf",
+            "name": "MAC Count",
+            "type": "CALCULATED",
+            "key": "snmp.mac.count",
             "delay": "15m",
-            "history": "0",
-            "value_type": "TEXT",
-            "preprocessing": [
-              {
-                "type": "JAVASCRIPT",
-                "parameters": [
-                  "var result = [];\nvar addressReg = /(\"{#ADDR}\":\"..)( )(..)( )(..)( )(..)( )(..)( )(..)( )/g;\nvalue = value.replace(addressReg, '$1:$3:$5:$7:$9:$11');\nvar jvalue = JSON.parse(value);\nvar macToPort = {};\njvalue.forEach(function(address) {\n    if (address['{#ADDR}'] == undefined) return;\n    var newAddrParts = [];\n    var addr = address['{#ADDR}'].toLowerCase();\n    var addrParts = addr.split(':');\n    addrParts.forEach(function(v) {\n        if (v.length == 1) v = '0' + v;\n        newAddrParts.push(v);\n    });\n    var newAddr = newAddrParts.join(':');\n    macToPort[newAddr] = address['{#PORT}'];\n});\nvar portToIfIndex = {};\njvalue.forEach(function(ifindex) {\n    if (ifindex['{#IFINDEX}'] == undefined) return;\n    portToIfIndex[ifindex['{#SNMPINDEX}']] = ifindex['{#IFINDEX}'];\n});\nvar ifIndexToInterface = {};\njvalue.forEach(function(interface) {\n    if (interface['{#NAME}'] == undefined) return;\n    ifIndexToInterface[interface['{#SNMPINDEX}']] = {\n        '{#NAME}': interface['{#NAME}'],\n        '{#ALIAS}': interface['{#ALIAS}']\n    };\n});\nfor (mac in macToPort) {\n    if (portToIfIndex[macToPort[mac]] == undefined) continue;\n    result.push({\n        '{#SNMPINDEX}': mac + ':' + macToPort[mac],\n        '{#MAC}': mac,\n        '{#NAME}': ifIndexToInterface[portToIfIndex[macToPort[mac]]]['{#NAME}'],\n        '{#ALIAS}': ifIndexToInterface[portToIfIndex[macToPort[mac]]]['{#ALIAS}']\n    });\n}\nreturn JSON.stringify(result);"
-                ]
-              }
-            ],
+            "history": "7d",
+            "params": "sum(last_foreach(//snmp.interfaces.mac.status[*,*]))",
             "tags": [
               {
                 "tag": "Item Type",
-                "value": "Discovery"
+                "value": "Count"
               }
             ]
           }
@@ -72,7 +86,7 @@
             "uuid": "b2841a94cb24434798eb25f1bae1be56",
             "name": "Interfaces MAC Count Discovery",
             "type": "DEPENDENT",
-            "key": "snmp.interfaces.mac.count.discovery",
+            "key": "snmp.interfaces.mac.count.discovery.rule",
             "filter": {
               "conditions": [
                 {
@@ -91,46 +105,13 @@
             "enabled_lifetime_type": "DISABLE_NEVER",
             "item_prototypes": [
               {
-                "uuid": "ea1e8ad01fa44b9c9432becb0580604c",
+                "uuid": "24e86850462f4d278625c5da3b530265",
                 "name": "Interface ({#NAME}: {#ALIAS}) MAC Count",
-                "type": "DEPENDENT",
-                "key": "snmp.interfaces.mac.count[{#NAME}]",
-                "history": "7d",
-                "preprocessing": [
-                  {
-                    "type": "JAVASCRIPT",
-                    "parameters": [
-                      "return {#MACS};"
-                    ]
-                  }
-                ],
-                "master_item": {
-                  "key": "snmp.interfaces.mac.count.discovery.json"
-                },
-                "tags": [
-                  {
-                    "tag": "Interface Name",
-                    "value": "{#NAME}"
-                  },
-                  {
-                    "tag": "Item Type",
-                    "value": "Count"
-                  }
-                ]
-              },
-              {
-                "uuid": "8205834112a849e9aaa49a9f929ecb6d",
-                "name": "Interface ({#NAME}: {#ALIAS}) Managed LLDP Status",
                 "type": "CALCULATED",
-                "key": "snmp.interfaces.mac.managed.lldp[{#NAME}]",
+                "key": "snmp.interfaces.mac.count[{#NAME}]",
                 "delay": "15m",
                 "history": "7d",
-                "status": "DISABLED",
-                "discover": "NO_DISCOVER",
-                "params": "find(//snmp.interfaces.lldp.desc[{#NAME}],#1,\"regexp\",\"{$INTER_UPLINK_MANAGED_EXCLUDE_LLDP_DESC}\")",
-                "valuemap": {
-                  "name": "Managed Status"
-                },
+                "params": "sum(last_foreach(//snmp.interfaces.mac.status[{#NAME},*]))",
                 "preprocessing": [
                   {
                     "type": "CHECK_NOT_SUPPORTED",
@@ -148,16 +129,18 @@
                   },
                   {
                     "tag": "Item Type",
-                    "value": "Status"
+                    "value": "Count"
                   }
                 ]
               },
               {
-                "uuid": "62187cc596264fe4938e8dd2cdc358ba",
+                "uuid": "a246cf889e7847149177f214ee84b876",
                 "name": "Interface ({#NAME}: {#ALIAS}) Uplink Status",
-                "type": "DEPENDENT",
+                "type": "CALCULATED",
                 "key": "snmp.interfaces.mac.uplinkstatus[{#NAME}]",
+                "delay": "15m",
                 "history": "7d",
+                "params": "last(//snmp.interfaces.mac.count[{#NAME}])",
                 "valuemap": {
                   "name": "Uplink Status"
                 },
@@ -165,13 +148,10 @@
                   {
                     "type": "JAVASCRIPT",
                     "parameters": [
-                      "if ({#MACS} >= {$INTER_UPLINK_THRESHOLD}) {\n    return 1;\n}\nreturn 0;"
+                      "if (value >= {$INTER_UPLINK_THRESHOLD}) {\n\treturn 1;\n} else {\n\treturn 0;\n}"
                     ]
                   }
                 ],
-                "master_item": {
-                  "key": "snmp.interfaces.mac.count.discovery.json"
-                },
                 "tags": [
                   {
                     "tag": "Interface Name",
@@ -184,26 +164,8 @@
                 ]
               }
             ],
-            "trigger_prototypes": [
-              {
-                "uuid": "3ba62eed99da49268e57928089ac4d41",
-                "expression": "last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.uplinkstatus[{#NAME}])=1 and last(/BA - MIB - Interfaces MAC/snmp.interfaces.mac.managed.lldp[{#NAME}])=0",
-                "name": "Interface ({#NAME}: {#ALIAS}) MAC Count >= {$INTER_UPLINK_THRESHOLD} With Un-managed Device",
-                "status": "DISABLED",
-                "discover": "NO_DISCOVER",
-                "priority": "INFO",
-                "description": "This interface has an un-managed device connected.",
-                "manual_close": "YES",
-                "tags": [
-                  {
-                    "tag": "Trigger Type",
-                    "value": "Threshold"
-                  }
-                ]
-              }
-            ],
             "master_item": {
-              "key": "snmp.interfaces.mac.count.discovery.json"
+              "key": "snmp.interfaces.mac.count.discovery.item"
             },
             "overrides": [
               {
@@ -237,7 +199,21 @@
             "uuid": "5bcb64d2d3f54e908235d4610981cddd",
             "name": "Interfaces MAC Discovery",
             "type": "DEPENDENT",
-            "key": "snmp.interfaces.mac.discovery",
+            "key": "snmp.interfaces.mac.discovery.rule",
+            "filter": {
+              "conditions": [
+                {
+                  "macro": "{#ALIAS}",
+                  "value": ".*{$INTER_FILTER_REGEX}.*",
+                  "operator": "NOT_MATCHES_REGEX"
+                },
+                {
+                  "macro": "{#NAME}",
+                  "value": ".*{$INTER_FILTER_REGEX}.*",
+                  "operator": "NOT_MATCHES_REGEX"
+                }
+              ]
+            },
             "lifetime": "30d",
             "enabled_lifetime_type": "DISABLE_NEVER",
             "item_prototypes": [
@@ -245,7 +221,7 @@
                 "uuid": "44672117f4544766855c1c106404e8c7",
                 "name": "Interface ({#NAME}: {#ALIAS}), MAC: {#MAC}",
                 "type": "DEPENDENT",
-                "key": "snmp.interfaces.mac.status[{#SNMPINDEX}]",
+                "key": "snmp.interfaces.mac.status[{#NAME},{#SNMPINDEX}]",
                 "history": "7d",
                 "trends": "30d",
                 "valuemap": {
@@ -268,7 +244,7 @@
                   }
                 ],
                 "master_item": {
-                  "key": "snmp.interfaces.mac.discovery.json"
+                  "key": "snmp.interfaces.mac.discovery.item"
                 },
                 "tags": [
                   {
@@ -287,7 +263,7 @@
               }
             ],
             "master_item": {
-              "key": "snmp.interfaces.mac.discovery.json"
+              "key": "snmp.interfaces.mac.discovery.item"
             }
           }
         ],
@@ -347,8 +323,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "name": "below average",
-          "version": "2026.05.07.12"
+          "version": "2026.05.08.06",
+          "name": "below average"
         }
       }
     ]

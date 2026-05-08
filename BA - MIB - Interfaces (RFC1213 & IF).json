@@ -121,23 +121,12 @@
                 "name": "Interface ({#NAME}: {#ALIAS}) Alert On Errors",
                 "type": "CALCULATED",
                 "key": "snmp.interfaces.alertonerrors[{#NAME}]",
-                "delay": "1h",
-                "history": "1d",
-                "trends": "0",
+                "delay": "15m",
+                "history": "7d",
                 "params": "last(//snmp.interfaces.mac.uplinkstatus[{#NAME}])",
                 "valuemap": {
                   "name": "Alert On Errors"
                 },
-                "preprocessing": [
-                  {
-                    "type": "CHECK_NOT_SUPPORTED",
-                    "parameters": [
-                      "-1"
-                    ],
-                    "error_handler": "CUSTOM_VALUE",
-                    "error_handler_params": "0"
-                  }
-                ],
                 "tags": [
                   {
                     "tag": "Interface Name",
@@ -934,8 +923,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "name": "below average",
-          "version": "2026.05.07.12"
+          "version": "2026.05.08.06",
+          "name": "below average"
         }
       }
     ]

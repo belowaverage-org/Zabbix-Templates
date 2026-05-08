@@ -3,8 +3,8 @@
     "version": "7.4",
     "template_groups": [
       {
-        "uuid": "a33341008cd4460cae6f021e7d32852e",
-        "name": "BA/Profiles/Servers/OS"
+        "uuid": "16f7634dd4204b5291414c6cdc420d63",
+        "name": "BA/Profiles/NAS"
       }
     ],
     "templates": [
@@ -43,7 +43,7 @@
         ],
         "groups": [
           {
-            "name": "BA/Profiles/Servers/OS"
+            "name": "BA/Profiles/NAS"
           }
         ],
         "tags": [
@@ -58,8 +58,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "name": "below average",
-          "version": "2026.05.07.12"
+          "version": "2026.05.08.06",
+          "name": "below average"
         }
       }
     ]
