@@ -25,7 +25,6 @@
             "key": "net.tcp.service[ssh,,]",
             "delay": "5m",
             "history": "7d",
-            "trends": "90d",
             "valuemap": {
               "name": "Status"
             },
@@ -87,8 +86,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ]

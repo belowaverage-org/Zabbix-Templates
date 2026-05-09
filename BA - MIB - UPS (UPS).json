@@ -25,7 +25,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.2.4.0",
             "key": "snmp.ups.battery.charge",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "%",
             "tags": [
               {
@@ -41,7 +41,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.2.3.0",
             "key": "snmp.ups.battery.runtime",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "s",
             "preprocessing": [
               {
@@ -65,7 +65,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.2.1.0",
             "key": "snmp.ups.battery.status",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "Battery Status"
             },
@@ -83,7 +83,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.2.7.0",
             "key": "snmp.ups.battery.temperature",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "C",
             "tags": [
               {
@@ -98,8 +98,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.2.1.33.1.1.2.0",
             "key": "snmp.ups.model",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
             "preprocessing": [
@@ -124,7 +124,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.6.1.0",
             "key": "snmp.ups.ups.alarms",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "tags": [
               {
                 "tag": "Item Type",
@@ -155,7 +155,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.3.3.1.2.1",
             "key": "snmp.ups.ups.inputfreq",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "Hertz",
             "preprocessing": [
               {
@@ -179,7 +179,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.3.3.1.3.1",
             "key": "snmp.ups.ups.inputvoltage",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "Volts",
             "tags": [
               {
@@ -195,7 +195,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.4.1.0",
             "key": "snmp.ups.ups.status",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "UPS Status"
             },
@@ -427,8 +427,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ],

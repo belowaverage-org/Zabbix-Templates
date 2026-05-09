@@ -140,8 +140,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.11.2.14.11.5.1.136.4.1.2.0",
             "key": "snmp.aruba.config.sha.running",
-            "delay": "15m",
-            "history": "7d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "preprocessing": [
               {
@@ -164,8 +164,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.11.2.14.11.5.1.136.4.1.3.0",
             "key": "snmp.aruba.config.sha.startup",
-            "delay": "15m",
-            "history": "7d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "preprocessing": [
               {
@@ -188,10 +188,18 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.11.2.14.11.5.1.59.1.3.1.4.1",
             "key": "snmp.aruba.flash.version",
-            "delay": "5m",
-            "history": "1d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "OS_SHORT",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -801,8 +809,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ],

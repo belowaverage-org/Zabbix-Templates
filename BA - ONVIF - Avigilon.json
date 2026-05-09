@@ -23,7 +23,7 @@
             "name": "Device Firmware Version",
             "type": "DEPENDENT",
             "key": "camera.firmware.version",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "OS",
             "preprocessing": [
@@ -57,7 +57,7 @@
             "type": "HTTP_AGENT",
             "key": "camera.info",
             "delay": "1h",
-            "history": "3h",
+            "history": "0",
             "value_type": "TEXT",
             "preprocessing": [
               {
@@ -91,7 +91,7 @@
             "type": "HTTP_AGENT",
             "key": "camera.media",
             "delay": "1h",
-            "history": "3h",
+            "history": "0",
             "value_type": "TEXT",
             "preprocessing": [
               {
@@ -128,7 +128,7 @@
             "name": "Device Model",
             "type": "DEPENDENT",
             "key": "camera.model",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
             "preprocessing": [
@@ -161,7 +161,7 @@
             "name": "Device Name",
             "type": "DEPENDENT",
             "key": "camera.name",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "NAME",
             "preprocessing": [
@@ -208,7 +208,7 @@
             "name": "Device MAC",
             "type": "DEPENDENT",
             "key": "camera.net.mac",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MACADDRESS_A",
             "preprocessing": [
@@ -249,7 +249,7 @@
             "type": "HTTP_AGENT",
             "key": "camera.scopes",
             "delay": "15m",
-            "history": "1h",
+            "history": "0",
             "value_type": "TEXT",
             "preprocessing": [
               {
@@ -308,7 +308,7 @@
             "name": "Device Sensor",
             "type": "DEPENDENT",
             "key": "camera.sensor",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "TYPE",
             "preprocessing": [
@@ -340,7 +340,7 @@
             "name": "Device Serial",
             "type": "DEPENDENT",
             "key": "camera.serial",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "SERIALNO_A",
             "preprocessing": [
@@ -679,8 +679,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ]

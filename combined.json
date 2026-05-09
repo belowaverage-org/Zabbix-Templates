@@ -147,7 +147,7 @@
                 "expression": "last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0",
                 "name": "ICMP Status != Up",
                 "priority": "HIGH",
-                "description": "This device is offline and un-reachable.",
+                "description": "This host is offline and un-reachable. Please verify connectivity.",
                 "manual_close": "YES",
                 "tags": [
                   {
@@ -383,8 +383,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -402,7 +402,7 @@
             "name": "Device Firmware Version",
             "type": "DEPENDENT",
             "key": "camera.firmware.version",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "OS",
             "preprocessing": [
@@ -435,7 +435,7 @@
             "name": "Device Model",
             "type": "DEPENDENT",
             "key": "camera.model",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
             "preprocessing": [
@@ -468,7 +468,7 @@
             "name": "Device Name",
             "type": "DEPENDENT",
             "key": "camera.name",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "NAME",
             "preprocessing": [
@@ -501,7 +501,7 @@
             "name": "Device MAC",
             "type": "DEPENDENT",
             "key": "camera.net.mac",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MACADDRESS_A",
             "preprocessing": [
@@ -535,7 +535,7 @@
             "type": "HTTP_AGENT",
             "key": "camera.parameters",
             "delay": "15m",
-            "history": "1h",
+            "history": "0",
             "value_type": "TEXT",
             "authtype": "DIGEST",
             "username": "{$AXIS_CAM_USERNAME}",
@@ -580,7 +580,7 @@
             "name": "Device Sensor",
             "type": "DEPENDENT",
             "key": "camera.sensor",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "TYPE",
             "preprocessing": [
@@ -613,7 +613,7 @@
             "name": "Device Serial",
             "type": "DEPENDENT",
             "key": "camera.serial",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "SERIALNO_A",
             "preprocessing": [
@@ -654,8 +654,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -1096,8 +1096,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -1148,6 +1148,7 @@
                 "expression": "last(/BA - HTTP - EarthCam/stream.status)=0",
                 "name": "EarthCam Stream Offline",
                 "priority": "WARNING",
+                "description": "The MyEarthCam website is not producing a stream for this device. Please check that the device is still streaming to EarthCam.",
                 "manual_close": "YES",
                 "tags": [
                   {
@@ -1187,8 +1188,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -1383,8 +1384,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -1429,15 +1430,21 @@
             "name": "Veeam Version",
             "type": "SCRIPT",
             "key": "veeam.version",
-            "delay": "12h",
-            "history": "30d",
-            "value_type": "TEXT",
+            "delay": "1h",
+            "history": "365d",
+            "value_type": "CHAR",
             "params": "var obj = JSON.parse(value);\nvar url = obj.url;\nvar api = obj.api;\nvar user = \"{$VEEAM_USER}\";\nvar pass = \"{$VEEAM_PASS}\";\nvar request = new HttpRequest();\nrequest.addHeader(\"x-api-version: 1.1-rev0\");\nrequest.addHeader(\"accept: application/json\");\nvar token = JSON.parse(request.post(url + \"oauth2/token\", \"grant_type=password&username=\" + user + \"&password=\" + pass)).access_token;\nrequest.addHeader(\"Authorization: Bearer \" + token);\nreturn request.get(url + api);",
             "preprocessing": [
               {
                 "type": "JSONPATH",
                 "parameters": [
                   "$.buildVersion"
+                ]
+              },
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
                 ]
               }
             ],
@@ -1691,8 +1698,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -1710,7 +1717,8 @@
             "name": "Zabbix - Stats",
             "type": "INTERNAL",
             "key": "zabbix[stats]",
-            "delay": "10s",
+            "delay": "15s",
+            "history": "0",
             "value_type": "TEXT",
             "tags": [
               {
@@ -1838,7 +1846,7 @@
             "name": "Zabbix - Stats - Items",
             "type": "DEPENDENT",
             "key": "zbx.stats.items",
-            "history": "1d",
+            "history": "7d",
             "preprocessing": [
               {
                 "type": "JSONPATH",
@@ -1862,7 +1870,7 @@
             "name": "Zabbix - Stats - Items Unsupported",
             "type": "DEPENDENT",
             "key": "zbx.stats.items_unsupported",
-            "history": "1d",
+            "history": "7d",
             "preprocessing": [
               {
                 "type": "JSONPATH",
@@ -2994,8 +3002,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -3107,8 +3115,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -3185,8 +3193,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -3218,8 +3226,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -3238,8 +3246,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.1.2.2.0",
             "key": "snmp.apc.age",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "DATE_HW_INSTALL",
             "preprocessing": [
@@ -3264,7 +3272,7 @@
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.2.2.1.0",
             "key": "snmp.apc.battery.charge",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "%",
             "tags": [
               {
@@ -3279,8 +3287,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.2.1.3.0",
             "key": "snmp.apc.battery.replaced",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "description": "Last time the battery was replaced.",
             "preprocessing": [
@@ -3305,7 +3313,7 @@
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.2.2.4.0",
             "key": "snmp.apc.battery.replacementstat",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "Battery Replace Indicator"
             },
@@ -3321,7 +3329,7 @@
                 "expression": "last(/BA - MIB - APC/snmp.apc.battery.replacementstat)<>1",
                 "name": "Battery Replacement Status not OK",
                 "priority": "AVERAGE",
-                "description": "The battery in this UPS needs replaced.",
+                "description": "The battery in this UPS needs replaced. Please replace the battery.",
                 "manual_close": "YES",
                 "tags": [
                   {
@@ -3339,7 +3347,7 @@
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.2.2.3.0",
             "key": "snmp.apc.battery.runtime",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "s",
             "preprocessing": [
               {
@@ -3363,7 +3371,7 @@
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.2.1.1.0",
             "key": "snmp.apc.battery.status",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "Battery Status"
             },
@@ -3381,7 +3389,7 @@
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.2.2.2.0",
             "key": "snmp.apc.battery.temperature",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "C",
             "tags": [
               {
@@ -3396,8 +3404,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.1.1.1.0",
             "key": "snmp.apc.model",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
             "preprocessing": [
@@ -3421,8 +3429,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.1.2.3.0",
             "key": "snmp.apc.serial",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "SERIALNO_A",
             "preprocessing": [
@@ -3447,7 +3455,7 @@
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.3.2.4.0",
             "key": "snmp.apc.ups.inputfreq",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "Hertz",
             "tags": [
               {
@@ -3463,7 +3471,7 @@
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.3.2.1.0",
             "key": "snmp.apc.ups.inputvoltage",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "Volts",
             "tags": [
               {
@@ -3479,7 +3487,7 @@
             "snmp_oid": ".1.3.6.1.4.1.318.1.1.1.4.1.1.0",
             "key": "snmp.apc.ups.status",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "UPS Status"
             },
@@ -3795,8 +3803,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -3931,8 +3939,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.11.2.14.11.5.1.136.4.1.2.0",
             "key": "snmp.aruba.config.sha.running",
-            "delay": "15m",
-            "history": "7d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "preprocessing": [
               {
@@ -3955,8 +3963,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.11.2.14.11.5.1.136.4.1.3.0",
             "key": "snmp.aruba.config.sha.startup",
-            "delay": "15m",
-            "history": "7d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "preprocessing": [
               {
@@ -3979,10 +3987,18 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.11.2.14.11.5.1.59.1.3.1.4.1",
             "key": "snmp.aruba.flash.version",
-            "delay": "5m",
-            "history": "1d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "OS_SHORT",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -4592,8 +4608,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -4613,7 +4629,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.2.1.0",
             "key": "snmp.cps.battery.charge",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "%",
             "tags": [
               {
@@ -4628,8 +4644,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.1.3.0",
             "key": "snmp.cps.battery.replaced",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "description": "Last time the battery was replaced.",
             "preprocessing": [
@@ -4654,7 +4670,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.2.5.0",
             "key": "snmp.cps.battery.replacementstat",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "Battery Replace Indicator"
             },
@@ -4688,7 +4704,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.2.4.0",
             "key": "snmp.cps.battery.runtime",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "s",
             "preprocessing": [
               {
@@ -4712,7 +4728,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.1.1.0",
             "key": "snmp.cps.battery.status",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "Battery Status"
             },
@@ -4730,7 +4746,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.2.3.0",
             "key": "snmp.cps.battery.temperature",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "C",
             "tags": [
               {
@@ -4745,8 +4761,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.1.1.1.0",
             "key": "snmp.cps.model",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
             "preprocessing": [
@@ -4770,8 +4786,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.1.2.3.0",
             "key": "snmp.cps.serial",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "SERIALNO_A",
             "preprocessing": [
@@ -4796,7 +4812,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.3.2.4.0",
             "key": "snmp.cps.ups.inputfreq",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "Hertz",
             "preprocessing": [
               {
@@ -4820,7 +4836,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.3.2.1.0",
             "key": "snmp.cps.ups.inputvoltage",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "Volts",
             "preprocessing": [
               {
@@ -4844,7 +4860,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.4.1.1.0",
             "key": "snmp.cps.ups.status",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "UPS Status"
             },
@@ -5105,8 +5121,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -5696,8 +5712,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -5716,7 +5732,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.2.1.1.1.0",
             "key": "snmp.description",
-            "delay": "12h",
+            "delay": "1h",
             "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "NOTES",
@@ -5741,7 +5757,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.2.1.1.6.0",
             "key": "snmp.location",
-            "delay": "12h",
+            "delay": "1h",
             "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "LOCATION",
@@ -5775,6 +5791,12 @@
                   "\\((.*)/(.*)\\)",
                   "\\1"
                 ]
+              },
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
               }
             ],
             "master_item": {
@@ -5802,6 +5824,12 @@
                   "\\((.*)/(.*)\\)",
                   "\\2"
                 ]
+              },
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
               }
             ],
             "master_item": {
@@ -5820,7 +5848,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.2.1.1.5.0",
             "key": "snmp.name",
-            "delay": "12h",
+            "delay": "1h",
             "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "NAME",
@@ -5861,7 +5889,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.2.1.1.2.0",
             "key": "snmp.objectid",
-            "delay": "12h",
+            "delay": "1h",
             "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "TYPE",
@@ -5925,9 +5953,9 @@
               {
                 "uuid": "ed77aa0f513b454d90a231185baef9be",
                 "expression": "last(/BA - MIB - Generic/snmp.uptime)<={$REBOOT_WARN_DURATION}",
-                "name": "Device rebooted",
+                "name": "Uptime < {$REBOOT_WARN_DURATION}",
                 "priority": "AVERAGE",
-                "description": "This device rebooted within the last {$REBOOT_WARN_DURATION} minutes.",
+                "description": "This host has rebooted within the last {$REBOOT_WARN_DURATION}. Please verify the health of this host and that the reboot was expected.",
                 "manual_close": "YES",
                 "tags": [
                   {
@@ -6079,8 +6107,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -6935,8 +6963,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -6955,8 +6983,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.674.10892.5.1.3.12.0",
             "key": "snmp.idrac.model",
-            "delay": "6h",
-            "history": "90d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
             "preprocessing": [
@@ -6980,8 +7008,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.674.10892.5.1.3.2.0",
             "key": "snmp.idrac.servicetag",
-            "delay": "6h",
-            "history": "90d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "TAG",
             "preprocessing": [
@@ -7005,7 +7033,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.674.10892.5.2.1.0",
             "key": "snmp.idrac.status",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "Object Status"
             },
@@ -7757,8 +7785,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -7779,7 +7807,6 @@
             "key": "ilo.bios.status",
             "delay": "30m",
             "history": "7d",
-            "trends": "90d",
             "valuemap": {
               "name": "Condition"
             },
@@ -7801,8 +7828,9 @@
               {
                 "uuid": "8a90f354f7d8437ebcc6b624f6116407",
                 "expression": "last(/BA - MIB - iLO/ilo.bios.status)>=3",
-                "name": "BIOS Status fault",
+                "name": "BIOS Status Fault",
                 "priority": "HIGH",
+                "description": "This host is indicating a fault in the BIOS. Please check the health of this host.",
                 "manual_close": "YES",
                 "tags": [
                   {
@@ -7819,7 +7847,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.232.6.1.3.0",
             "key": "snmp.ilo.health",
-            "history": "30d",
+            "history": "7d",
             "description": "Overall global health of the server.",
             "valuemap": {
               "name": "Condition"
@@ -7852,8 +7880,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.232.2.2.4.2.0",
             "key": "snmp.ilo.model",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
             "preprocessing": [
@@ -7877,8 +7905,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.232.2.2.2.1.0",
             "key": "snmp.ilo.serial",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "SERIALNO_A",
             "preprocessing": [
@@ -8884,8 +8912,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -8952,7 +8980,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": "walk[.1.3.6.1.2.1.31.1.1.1.1,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.2,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.7,.1.3.6.1.2.1.2.2.1.10,.1.3.6.1.2.1.2.2.1.16,.1.3.6.1.2.1.2.2.1.8,.1.3.6.1.2.1.2.2.1.14,.1.3.6.1.2.1.2.2.1.20,.1.3.6.1.2.1.2.2.1.5,.1.3.6.1.2.1.31.1.1.1.18,.1.3.6.1.2.1.2.2.1.13,.1.3.6.1.2.1.2.2.1.19,.1.3.6.1.2.1.2.2.1.3]",
             "key": "snmp.interfaces",
-            "delay": "10s",
+            "delay": "15s",
             "history": "0",
             "value_type": "TEXT",
             "tags": [
@@ -9803,8 +9831,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -9923,8 +9951,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -10130,8 +10158,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -10449,8 +10477,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -10619,8 +10647,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -10700,8 +10728,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -10846,8 +10874,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -10992,8 +11020,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -11012,8 +11040,17 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.14988.1.1.7.4.0",
             "key": "ros.bl.version",
-            "history": "1h",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -11048,10 +11085,18 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.14988.1.1.7.8.0",
             "key": "ros.boardname",
-            "delay": "12h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -11088,10 +11133,18 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.14988.1.1.7.3.0",
             "key": "ros.serial",
-            "delay": "12h",
-            "history": "90d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "SERIALNO_A",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -11105,9 +11158,18 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.14988.1.1.4.4.0",
             "key": "ros.version",
-            "history": "1h",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "SOFTWARE",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -11411,8 +11473,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -11431,6 +11493,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": "walk[.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.2,.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.4,.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.5,.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.6,.1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.8]",
             "key": "disk.discovery",
+            "delay": "5m",
             "history": "0",
             "value_type": "TEXT",
             "tags": [
@@ -11446,6 +11509,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": "walk[.1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.2,.1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.3,.1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.4]",
             "key": "disk.perf.discovery",
+            "delay": "5m",
             "history": "0",
             "value_type": "TEXT",
             "tags": [
@@ -11461,6 +11525,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": "walk[.1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.4,.1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.5]",
             "key": "fan.discovery",
+            "delay": "5m",
             "history": "0",
             "value_type": "TEXT",
             "tags": [
@@ -11476,6 +11541,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": "walk[.1.3.6.1.4.1.24681.1.4.1.1.1.2.1.2.1.2,.1.3.6.1.4.1.24681.1.4.1.1.1.2.1.2.1.5,.1.3.6.1.4.1.24681.1.4.1.1.1.2.1.2.1.7]",
             "key": "raid.discovery",
+            "delay": "5m",
             "history": "0",
             "value_type": "TEXT",
             "tags": [
@@ -12010,8 +12076,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -12031,7 +12097,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.2.4.0",
             "key": "snmp.ups.battery.charge",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "%",
             "tags": [
               {
@@ -12047,7 +12113,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.2.3.0",
             "key": "snmp.ups.battery.runtime",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "s",
             "preprocessing": [
               {
@@ -12071,7 +12137,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.2.1.0",
             "key": "snmp.ups.battery.status",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "Battery Status"
             },
@@ -12089,7 +12155,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.2.7.0",
             "key": "snmp.ups.battery.temperature",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "C",
             "tags": [
               {
@@ -12104,8 +12170,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.2.1.33.1.1.2.0",
             "key": "snmp.ups.model",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
             "preprocessing": [
@@ -12130,7 +12196,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.6.1.0",
             "key": "snmp.ups.ups.alarms",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "tags": [
               {
                 "tag": "Item Type",
@@ -12161,7 +12227,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.3.3.1.2.1",
             "key": "snmp.ups.ups.inputfreq",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "Hertz",
             "preprocessing": [
               {
@@ -12185,7 +12251,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.3.3.1.3.1",
             "key": "snmp.ups.ups.inputvoltage",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "Volts",
             "tags": [
               {
@@ -12201,7 +12267,7 @@
             "snmp_oid": ".1.3.6.1.2.1.33.1.4.1.0",
             "key": "snmp.ups.ups.status",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "UPS Status"
             },
@@ -12433,8 +12499,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -12769,8 +12835,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -13016,8 +13082,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -13035,7 +13101,7 @@
             "name": "Device Firmware Version",
             "type": "DEPENDENT",
             "key": "camera.firmware.version",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "OS",
             "preprocessing": [
@@ -13069,7 +13135,7 @@
             "type": "HTTP_AGENT",
             "key": "camera.info",
             "delay": "1h",
-            "history": "3h",
+            "history": "0",
             "value_type": "TEXT",
             "preprocessing": [
               {
@@ -13103,7 +13169,7 @@
             "type": "HTTP_AGENT",
             "key": "camera.media",
             "delay": "1h",
-            "history": "3h",
+            "history": "0",
             "value_type": "TEXT",
             "preprocessing": [
               {
@@ -13140,7 +13206,7 @@
             "name": "Device Model",
             "type": "DEPENDENT",
             "key": "camera.model",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
             "preprocessing": [
@@ -13173,7 +13239,7 @@
             "name": "Device Name",
             "type": "DEPENDENT",
             "key": "camera.name",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "NAME",
             "preprocessing": [
@@ -13220,7 +13286,7 @@
             "name": "Device MAC",
             "type": "DEPENDENT",
             "key": "camera.net.mac",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MACADDRESS_A",
             "preprocessing": [
@@ -13261,7 +13327,7 @@
             "type": "HTTP_AGENT",
             "key": "camera.scopes",
             "delay": "15m",
-            "history": "1h",
+            "history": "0",
             "value_type": "TEXT",
             "preprocessing": [
               {
@@ -13320,7 +13386,7 @@
             "name": "Device Sensor",
             "type": "DEPENDENT",
             "key": "camera.sensor",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "TYPE",
             "preprocessing": [
@@ -13352,7 +13418,7 @@
             "name": "Device Serial",
             "type": "DEPENDENT",
             "key": "camera.serial",
-            "history": "7d",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "SERIALNO_A",
             "preprocessing": [
@@ -13691,8 +13757,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -13751,8 +13817,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -13838,8 +13904,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -13880,8 +13946,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -13946,8 +14012,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14021,8 +14087,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14060,8 +14126,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14099,8 +14165,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14147,8 +14213,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14198,8 +14264,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14261,8 +14327,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14303,8 +14369,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14345,8 +14411,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14780,8 +14846,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14831,8 +14897,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14879,8 +14945,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14948,8 +15014,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -14996,8 +15062,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -15050,8 +15116,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -15098,8 +15164,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -15143,8 +15209,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -15185,8 +15251,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -15239,8 +15305,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -15296,8 +15362,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -15344,8 +15410,8 @@
         ],
         "wizard_ready": "YES",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -15365,7 +15431,6 @@
             "key": "net.tcp.service[ssh,,]",
             "delay": "5m",
             "history": "7d",
-            "trends": "90d",
             "valuemap": {
               "name": "Status"
             },
@@ -15427,8 +15492,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -15446,7 +15511,7 @@
             "name": "Aruba Config",
             "type": "HTTP_AGENT",
             "key": "ssh.config",
-            "delay": "6h",
+            "delay": "1d",
             "history": "90d",
             "value_type": "TEXT",
             "inventory_link": "SOFTWARE_FULL",
@@ -15481,7 +15546,7 @@
                 "expression": "nodata(/BA - SSH - Aruba Config/ssh.config,3d)=1",
                 "name": "Could not retrieve configuration via SSH",
                 "priority": "WARNING",
-                "description": "Check that the SSH user can login to back the configuration up.",
+                "description": "Zabbix failed to download the configuration from this device. Please check that Zabbix is able to SSH into this host to retrieve the configuration.",
                 "manual_close": "YES",
                 "dependencies": [
                   {
@@ -15511,8 +15576,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -15537,6 +15602,14 @@
             "username": "{$ROS_SSH_USER}",
             "password": "{$ROS_SSH_PASS}",
             "inventory_link": "SOFTWARE_FULL",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -15557,8 +15630,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -15977,8 +16050,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -16025,7 +16098,7 @@
                 "expression": "last(/BA - ZBA - Shared/agent.status)<>0",
                 "name": "Agent has not reported-in within {$ZBA_REPORT_IN_TIME_WARN}s",
                 "priority": "AVERAGE",
-                "description": "The agent has not reported-in within the last {$ZBA_REPORT_IN_TIME_WARN}s.",
+                "description": "The agent has not reported-in within the last {$ZBA_REPORT_IN_TIME_WARN}s. Please make sure the Zabbix Agent service is running on this host.",
                 "manual_close": "YES",
                 "dependencies": [
                   {
@@ -16288,7 +16361,7 @@
                 "expression": "last(/BA - ZBA - Shared/system.uptime)<{$REBOOT_WARN_DURATION}",
                 "name": "Uptime < {$REBOOT_WARN_DURATION}",
                 "priority": "AVERAGE",
-                "description": "This trigger indicates the device has rebooted within the last {$REBOOT_WARN_DURATION}.",
+                "description": "This host has rebooted within the last {$REBOOT_WARN_DURATION}. Please verify the health of this host and that the reboot was expected.",
                 "manual_close": "YES",
                 "tags": [
                   {
@@ -16304,7 +16377,7 @@
             "name": "Disk Discovery",
             "type": "ZABBIX_ACTIVE",
             "key": "vfs.fs.get",
-            "delay": "15s",
+            "delay": "5m",
             "history": "0",
             "value_type": "TEXT",
             "tags": [
@@ -17289,8 +17362,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       },
       {
@@ -17351,6 +17424,7 @@
                 "opdata": "{{ITEM.VALUE}.regsub(\"(.*)\", \\1)}",
                 "status": "DISABLED",
                 "priority": "WARNING",
+                "description": "A logon failure has been detected, please verify that this is not an active attack.",
                 "type": "MULTIPLE",
                 "manual_close": "YES",
                 "tags": [
@@ -17879,8 +17953,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ],

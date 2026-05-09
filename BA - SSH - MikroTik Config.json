@@ -30,6 +30,14 @@
             "username": "{$ROS_SSH_USER}",
             "password": "{$ROS_SSH_PASS}",
             "inventory_link": "SOFTWARE_FULL",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -50,8 +58,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ]

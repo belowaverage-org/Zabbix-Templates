@@ -23,7 +23,8 @@
             "name": "Zabbix - Stats",
             "type": "INTERNAL",
             "key": "zabbix[stats]",
-            "delay": "10s",
+            "delay": "15s",
+            "history": "0",
             "value_type": "TEXT",
             "tags": [
               {
@@ -151,7 +152,7 @@
             "name": "Zabbix - Stats - Items",
             "type": "DEPENDENT",
             "key": "zbx.stats.items",
-            "history": "1d",
+            "history": "7d",
             "preprocessing": [
               {
                 "type": "JSONPATH",
@@ -175,7 +176,7 @@
             "name": "Zabbix - Stats - Items Unsupported",
             "type": "DEPENDENT",
             "key": "zbx.stats.items_unsupported",
-            "history": "1d",
+            "history": "7d",
             "preprocessing": [
               {
                 "type": "JSONPATH",
@@ -1307,8 +1308,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ],

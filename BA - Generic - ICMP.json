@@ -87,7 +87,7 @@
                 "expression": "last(/BA - Generic - ICMP/icmppingretry[{HOST.HOST},3])=0",
                 "name": "ICMP Status != Up",
                 "priority": "HIGH",
-                "description": "This device is offline and un-reachable.",
+                "description": "This host is offline and un-reachable. Please verify connectivity.",
                 "manual_close": "YES",
                 "tags": [
                   {
@@ -323,8 +323,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ],

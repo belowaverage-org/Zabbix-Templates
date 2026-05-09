@@ -52,7 +52,7 @@
                 "expression": "last(/BA - ZBA - Shared/agent.status)<>0",
                 "name": "Agent has not reported-in within {$ZBA_REPORT_IN_TIME_WARN}s",
                 "priority": "AVERAGE",
-                "description": "The agent has not reported-in within the last {$ZBA_REPORT_IN_TIME_WARN}s.",
+                "description": "The agent has not reported-in within the last {$ZBA_REPORT_IN_TIME_WARN}s. Please make sure the Zabbix Agent service is running on this host.",
                 "manual_close": "YES",
                 "dependencies": [
                   {
@@ -315,7 +315,7 @@
                 "expression": "last(/BA - ZBA - Shared/system.uptime)<{$REBOOT_WARN_DURATION}",
                 "name": "Uptime < {$REBOOT_WARN_DURATION}",
                 "priority": "AVERAGE",
-                "description": "This trigger indicates the device has rebooted within the last {$REBOOT_WARN_DURATION}.",
+                "description": "This host has rebooted within the last {$REBOOT_WARN_DURATION}. Please verify the health of this host and that the reboot was expected.",
                 "manual_close": "YES",
                 "tags": [
                   {
@@ -331,7 +331,7 @@
             "name": "Disk Discovery",
             "type": "ZABBIX_ACTIVE",
             "key": "vfs.fs.get",
-            "delay": "15s",
+            "delay": "5m",
             "history": "0",
             "value_type": "TEXT",
             "tags": [
@@ -1316,8 +1316,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ],

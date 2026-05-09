@@ -24,8 +24,17 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.14988.1.1.7.4.0",
             "key": "ros.bl.version",
-            "history": "1h",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -60,10 +69,18 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.14988.1.1.7.8.0",
             "key": "ros.boardname",
-            "delay": "12h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -100,10 +117,18 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.14988.1.1.7.3.0",
             "key": "ros.serial",
-            "delay": "12h",
-            "history": "90d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "SERIALNO_A",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -117,9 +142,18 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.14988.1.1.4.4.0",
             "key": "ros.version",
-            "history": "1h",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "SOFTWARE",
+            "preprocessing": [
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
+              }
+            ],
             "tags": [
               {
                 "tag": "Item Type",
@@ -423,8 +457,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ],

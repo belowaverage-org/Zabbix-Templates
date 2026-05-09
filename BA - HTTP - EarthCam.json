@@ -56,6 +56,7 @@
                 "expression": "last(/BA - HTTP - EarthCam/stream.status)=0",
                 "name": "EarthCam Stream Offline",
                 "priority": "WARNING",
+                "description": "The MyEarthCam website is not producing a stream for this device. Please check that the device is still streaming to EarthCam.",
                 "manual_close": "YES",
                 "tags": [
                   {
@@ -95,8 +96,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ]

@@ -25,7 +25,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.2.1.0",
             "key": "snmp.cps.battery.charge",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "%",
             "tags": [
               {
@@ -40,8 +40,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.1.3.0",
             "key": "snmp.cps.battery.replaced",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "description": "Last time the battery was replaced.",
             "preprocessing": [
@@ -66,7 +66,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.2.5.0",
             "key": "snmp.cps.battery.replacementstat",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "Battery Replace Indicator"
             },
@@ -100,7 +100,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.2.4.0",
             "key": "snmp.cps.battery.runtime",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "s",
             "preprocessing": [
               {
@@ -124,7 +124,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.1.1.0",
             "key": "snmp.cps.battery.status",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "Battery Status"
             },
@@ -142,7 +142,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.2.2.3.0",
             "key": "snmp.cps.battery.temperature",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "C",
             "tags": [
               {
@@ -157,8 +157,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.1.1.1.0",
             "key": "snmp.cps.model",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "MODEL",
             "preprocessing": [
@@ -182,8 +182,8 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.1.2.3.0",
             "key": "snmp.cps.serial",
-            "delay": "6h",
-            "history": "30d",
+            "delay": "1h",
+            "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "SERIALNO_A",
             "preprocessing": [
@@ -208,7 +208,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.3.2.4.0",
             "key": "snmp.cps.ups.inputfreq",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "Hertz",
             "preprocessing": [
               {
@@ -232,7 +232,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.3.2.1.0",
             "key": "snmp.cps.ups.inputvoltage",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "units": "Volts",
             "preprocessing": [
               {
@@ -256,7 +256,7 @@
             "snmp_oid": ".1.3.6.1.4.1.3808.1.1.1.4.1.1.0",
             "key": "snmp.cps.ups.status",
             "delay": "5m",
-            "history": "30d",
+            "history": "7d",
             "valuemap": {
               "name": "UPS Status"
             },
@@ -517,8 +517,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ],

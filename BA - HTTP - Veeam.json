@@ -50,15 +50,21 @@
             "name": "Veeam Version",
             "type": "SCRIPT",
             "key": "veeam.version",
-            "delay": "12h",
-            "history": "30d",
-            "value_type": "TEXT",
+            "delay": "1h",
+            "history": "365d",
+            "value_type": "CHAR",
             "params": "var obj = JSON.parse(value);\nvar url = obj.url;\nvar api = obj.api;\nvar user = \"{$VEEAM_USER}\";\nvar pass = \"{$VEEAM_PASS}\";\nvar request = new HttpRequest();\nrequest.addHeader(\"x-api-version: 1.1-rev0\");\nrequest.addHeader(\"accept: application/json\");\nvar token = JSON.parse(request.post(url + \"oauth2/token\", \"grant_type=password&username=\" + user + \"&password=\" + pass)).access_token;\nrequest.addHeader(\"Authorization: Bearer \" + token);\nreturn request.get(url + api);",
             "preprocessing": [
               {
                 "type": "JSONPATH",
                 "parameters": [
                   "$.buildVersion"
+                ]
+              },
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
                 ]
               }
             ],
@@ -312,8 +318,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ]

@@ -23,7 +23,7 @@
             "name": "Aruba Config",
             "type": "HTTP_AGENT",
             "key": "ssh.config",
-            "delay": "6h",
+            "delay": "1d",
             "history": "90d",
             "value_type": "TEXT",
             "inventory_link": "SOFTWARE_FULL",
@@ -58,7 +58,7 @@
                 "expression": "nodata(/BA - SSH - Aruba Config/ssh.config,3d)=1",
                 "name": "Could not retrieve configuration via SSH",
                 "priority": "WARNING",
-                "description": "Check that the SSH user can login to back the configuration up.",
+                "description": "Zabbix failed to download the configuration from this device. Please check that Zabbix is able to SSH into this host to retrieve the configuration.",
                 "manual_close": "YES",
                 "dependencies": [
                   {
@@ -88,8 +88,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ]

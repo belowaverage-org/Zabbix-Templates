@@ -24,7 +24,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.2.1.1.1.0",
             "key": "snmp.description",
-            "delay": "12h",
+            "delay": "1h",
             "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "NOTES",
@@ -49,7 +49,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.2.1.1.6.0",
             "key": "snmp.location",
-            "delay": "12h",
+            "delay": "1h",
             "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "LOCATION",
@@ -83,6 +83,12 @@
                   "\\((.*)/(.*)\\)",
                   "\\1"
                 ]
+              },
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
               }
             ],
             "master_item": {
@@ -110,6 +116,12 @@
                   "\\((.*)/(.*)\\)",
                   "\\2"
                 ]
+              },
+              {
+                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                "parameters": [
+                  "1d"
+                ]
               }
             ],
             "master_item": {
@@ -128,7 +140,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.2.1.1.5.0",
             "key": "snmp.name",
-            "delay": "12h",
+            "delay": "1h",
             "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "NAME",
@@ -169,7 +181,7 @@
             "type": "SNMP_AGENT",
             "snmp_oid": ".1.3.6.1.2.1.1.2.0",
             "key": "snmp.objectid",
-            "delay": "12h",
+            "delay": "1h",
             "history": "365d",
             "value_type": "CHAR",
             "inventory_link": "TYPE",
@@ -233,9 +245,9 @@
               {
                 "uuid": "ed77aa0f513b454d90a231185baef9be",
                 "expression": "last(/BA - MIB - Generic/snmp.uptime)<={$REBOOT_WARN_DURATION}",
-                "name": "Device rebooted",
+                "name": "Uptime < {$REBOOT_WARN_DURATION}",
                 "priority": "AVERAGE",
-                "description": "This device rebooted within the last {$REBOOT_WARN_DURATION} minutes.",
+                "description": "This host has rebooted within the last {$REBOOT_WARN_DURATION}. Please verify the health of this host and that the reboot was expected.",
                 "manual_close": "YES",
                 "tags": [
                   {
@@ -387,8 +399,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "version": "2026.05.08.06",
-          "name": "below average"
+          "name": "below average",
+          "version": "2026.05.09.02"
         }
       }
     ]
