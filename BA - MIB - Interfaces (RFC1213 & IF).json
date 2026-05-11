@@ -23,7 +23,7 @@
             "name": "Interface Total In Rate",
             "type": "CALCULATED",
             "key": "snmp.interface.rate.in.total",
-            "delay": "10s",
+            "delay": "15s",
             "history": "7d",
             "units": "bps",
             "params": "sum(last_foreach(//snmp.interfaces.in[*]))",
@@ -39,7 +39,7 @@
             "name": "Interface Total Out Rate",
             "type": "CALCULATED",
             "key": "snmp.interface.rate.out.total",
-            "delay": "10s",
+            "delay": "15s",
             "history": "7d",
             "units": "bps",
             "params": "sum(last_foreach(//snmp.interfaces.out[*]))",
@@ -55,7 +55,7 @@
             "name": "Interface Total Rate",
             "type": "CALCULATED",
             "key": "snmp.interface.rate.total",
-            "delay": "10s",
+            "delay": "15s",
             "history": "7d",
             "units": "bps",
             "params": "last(//snmp.interface.rate.in.total)+last(//snmp.interface.rate.out.total)",
@@ -923,8 +923,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "name": "below average",
-          "version": "2026.05.09.02"
+          "version": "2026.05.11.01",
+          "name": "below average"
         }
       }
     ]

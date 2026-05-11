@@ -24,7 +24,7 @@
             "name": "Dependable Procedure",
             "type": "CALCULATED",
             "key": "ba.procedure.dependable",
-            "delay": "10s",
+            "delay": "15s",
             "history": "1d",
             "trends": "0",
             "params": "last(//icmppingretry[{HOST.HOST},3])",
@@ -64,8 +64,8 @@
         ],
         "wizard_ready": "NO",
         "vendor": {
-          "name": "below average",
-          "version": "2026.05.09.02"
+          "version": "2026.05.11.01",
+          "name": "below average"
         }
       }
     ]
